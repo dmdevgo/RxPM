@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}
+
+dependencies {
+
+    compile rootProject.ext.kotlinStdlib
+
+    provided rootProject.ext.supportAppCompat
+    provided rootProject.ext.conductor
+
+    //Rx
+    compile rootProject.ext.rxJava2
+    compile rootProject.ext.rxRelay2
+    compile rootProject.ext.rxAndroid2
+
+    compile rootProject.ext.outlast
+}

@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "me.dmdev.rxpm.sample"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}
+
+dependencies {
+
+    compile rootProject.ext.kotlinStdlib
+
+    compile project(':rxpm')
+
+    compile rootProject.ext.supportAppCompat
+    compile rootProject.ext.timber
+
+}
