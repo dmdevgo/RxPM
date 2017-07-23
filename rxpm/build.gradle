@@ -28,12 +28,16 @@ dependencies {
     compile rootProject.ext.kotlinStdlib
 
     provided rootProject.ext.supportAppCompat
+    provided rootProject.ext.supportDesign
     provided rootProject.ext.conductor
 
     //Rx
     compile rootProject.ext.rxJava2
     compile rootProject.ext.rxRelay2
     compile rootProject.ext.rxAndroid2
+
+    provided rootProject.ext.rxBindingKotlin
+    provided rootProject.ext.rxBindingSupportV4Kotlin
 
     compile rootProject.ext.outlast
 }
