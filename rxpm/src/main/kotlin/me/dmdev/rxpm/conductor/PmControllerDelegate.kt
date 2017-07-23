@@ -7,12 +7,11 @@ import me.dmdev.rxpm.PresentationModel.LifeCycleState
 /**
  * @author Dmitriy Gorbunov
  */
-class PmControllerDelegate<PM : PresentationModel>(private val pmView: PmView<PM>) {
+class PmControllerDelegate<out PM : PresentationModel>(private val pmView: PmView<PM>) {
 
-    lateinit var pm :PM
+    val pm :PM = pmView.providePresentationModel()
 
     fun onCreate() {
-        pm = pmView.providePresentationModel()
         pm.lifeCycleConsumer.accept(LifeCycleState.ON_CREATE)
     }
 
