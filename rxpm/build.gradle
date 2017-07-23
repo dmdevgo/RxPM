@@ -22,6 +22,9 @@ android {
 
 dependencies {
 
+    testCompile rootProject.junit
+    testCompile rootProject.mockito
+
     compile rootProject.ext.kotlinStdlib
 
     provided rootProject.ext.supportAppCompat
