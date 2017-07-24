@@ -5,6 +5,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
+import org.junit.Assert
 import org.junit.Test
 
 /**
@@ -108,6 +109,36 @@ class PmExtensionsTest {
 
         to.assertValues(1, 2, 5, 6)
         to.assertNoErrors()
+    }
+
+    @Test
+    fun testBufferWhileIdle() {
+        val openCloseObservable = BehaviorRelay.createDefault<Boolean>(false)
+        val relay = PublishRelay.create<Int>()
+        val commandsObservable = relay.bufferWhileIdle(openCloseObservable)
+
+        val commands = mutableListOf<Int>()
+
+        var disposable = commandsObservable.subscribe { commands.add(it) }
+
+        relay.accept(1)
+        relay.accept(2)
+
+        disposable.dispose()
+        openCloseObservable.accept(true)
+
+        relay.accept(3)
+        relay.accept(4)
+
+        Assert.assertArrayEquals(intArrayOf(1,2), commands.toIntArray())
+
+        disposable = commandsObservable.subscribe { commands.add(it) }
+        openCloseObservable.accept(false)
+
+        Assert.assertArrayEquals(intArrayOf(1,2,3,4), commands.toIntArray())
+
+        disposable.dispose()
+
     }
 
 }

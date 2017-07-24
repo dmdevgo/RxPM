@@ -5,7 +5,9 @@ import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
+import io.reactivex.functions.Function
 
 /**
  * @author Dmitriy Gorbunov
@@ -34,4 +36,31 @@ inline fun Completable.bindProgress(progress: BehaviorRelay<Boolean>): Completab
 
 inline fun <T> Observable<T>.skipWhileProgress(progress: BehaviorRelay<Boolean>): Observable<T> {
     return this.filter { progress.value == false }
+}
+
+inline fun <T> Observable<T>.bufferWhileIdle(isIdle: Observable<Boolean>, bufferSize: Int? = null): Observable<T> {
+
+    return Observable
+            .merge(
+                    this.withLatestFrom(isIdle,
+                                        BiFunction<T, Boolean, Pair<T, Boolean>> { t, idle ->
+                                            Pair(t, idle)
+                                        })
+                            .filter { !it.second }
+                            .map { it.first },
+                    this
+                            .buffer(
+                                    isIdle.filter { it },
+                                    Function<Boolean, Observable<Boolean>> {
+                                        isIdle.filter { !it }
+                                    })
+                            .map {
+                                if (bufferSize != null) it.takeLast(bufferSize)
+                                else it
+                            }
+                            .flatMapIterable { it }
+
+            )
+            .publish()
+            .apply { connect() }
 }

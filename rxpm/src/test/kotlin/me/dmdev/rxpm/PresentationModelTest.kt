@@ -1,7 +1,9 @@
 package me.dmdev.rxpm
 
+import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PresentationModel.LifeCycleState
+import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito
 
@@ -68,6 +70,83 @@ class PresentationModelTest {
         Mockito.verify(callbacks).onDestroy()
 
     }
+
+    @Test
+    fun testBufferWhileUnbind() {
+        val pm = object : PresentationModel() {
+            val relay = PublishRelay.create<Int>()
+            val commands = relay.bufferWhileUnbind()
+        }
+
+        val commands = mutableListOf<Int>()
+
+        pm.commands.subscribe { commands.add(it) }
+
+        pm.lifeCycleConsumer.accept(LifeCycleState.ON_CREATE)
+
+        pm.relay.accept(1)
+        pm.relay.accept(2)
+
+        Assert.assertArrayEquals(intArrayOf(), commands.toIntArray())
+
+        pm.lifeCycleConsumer.accept(LifeCycleState.ON_BIND)
+
+        Assert.assertArrayEquals(intArrayOf(1, 2), commands.toIntArray())
+
+        pm.relay.accept(3)
+        pm.relay.accept(4)
+
+        Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4), commands.toIntArray())
+
+        pm.lifeCycleConsumer.accept(LifeCycleState.ON_UNBIND)
+
+        pm.relay.accept(5)
+        pm.relay.accept(6)
+
+        Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4), commands.toIntArray())
+
+        pm.lifeCycleConsumer.accept(LifeCycleState.ON_BIND)
+
+        Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4, 5, 6), commands.toIntArray())
+
+        pm.lifeCycleConsumer.accept(LifeCycleState.ON_UNBIND)
+
+        pm.relay.accept(7)
+
+        Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4, 5, 6), commands.toIntArray())
+
+        pm.lifeCycleConsumer.accept(LifeCycleState.ON_DESTROY)
+
+        pm.relay.accept(8)
+
+        Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4, 5, 6), commands.toIntArray())
+
+    }
+
+    @Test
+    fun testBufferWhileUnbindSize1() {
+        val pm = object : PresentationModel() {
+            val relay = PublishRelay.create<Int>()
+            val commands = relay.bufferWhileUnbind(bufferSize = 1)
+        }
+
+        val commands = mutableListOf<Int>()
+
+        pm.commands.subscribe { commands.add(it) }
+
+        pm.lifeCycleConsumer.accept(LifeCycleState.ON_CREATE)
+
+        pm.relay.accept(1)
+        pm.relay.accept(2)
+        pm.relay.accept(3)
+
+        Assert.assertArrayEquals(intArrayOf(), commands.toIntArray())
+
+        pm.lifeCycleConsumer.accept(LifeCycleState.ON_BIND)
+
+        Assert.assertArrayEquals(intArrayOf(3), commands.toIntArray())
+
+    }
 }
 
 open class TestChildPm(childPm: TestPm) : PresentationModel() {
@@ -77,10 +156,21 @@ open class TestChildPm(childPm: TestPm) : PresentationModel() {
 }
 
 open class TestPm(val callbacks: LifeCycleCallbacks) : PresentationModel() {
-    override fun onCreate() { callbacks.onCreate() }
-    override fun onBind() { callbacks.onBind() }
-    override fun onUnbind() { callbacks.onUnbind() }
-    override fun onDestroy() { callbacks.onDestroy() }
+    override fun onCreate() {
+        callbacks.onCreate()
+    }
+
+    override fun onBind() {
+        callbacks.onBind()
+    }
+
+    override fun onUnbind() {
+        callbacks.onUnbind()
+    }
+
+    override fun onDestroy() {
+        callbacks.onDestroy()
+    }
 }
 
 open class LifeCycleCallbacks {
