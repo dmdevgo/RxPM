@@ -23,8 +23,8 @@ android {
 
 dependencies {
 
-    testCompile rootProject.junit
-    testCompile rootProject.mockito
+    testCompile rootProject.junitKotlin
+    testCompile rootProject.mockitoKotlin
 
     compile rootProject.ext.kotlinStdlib
 
