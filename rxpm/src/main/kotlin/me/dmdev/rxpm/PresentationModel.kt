@@ -14,41 +14,41 @@ abstract class PresentationModel {
     private val compositeDestroy = CompositeDisposable()
     private val compositeUnbind = CompositeDisposable()
 
-    private val lifeCycleState = BehaviorRelay.createDefault<LifeCycleState>(LifeCycleState.NULL)
+    private val lifeсycleState = BehaviorRelay.createDefault<Lifecycle>(Lifecycle.NULL)
     private val unbindState = BehaviorRelay.create<Boolean>()
 
-    val lifeCycleObservable = lifeCycleState.asObservable()
-    val lifeCycleConsumer = lifeCycleState.asConsumer()
+    val lifeCycleObservable = lifeсycleState.asObservable()
+    val lifeCycleConsumer = lifeсycleState.asConsumer()
 
     init {
-        lifeCycleState
-                .takeUntil { it == LifeCycleState.ON_DESTROY }
+        lifeсycleState
+                .takeUntil { it == Lifecycle.ON_DESTROY }
                 .subscribe {
                     when (it) {
-                        LifeCycleState.ON_CREATE -> onCreate()
-                        LifeCycleState.ON_BIND -> onBind()
-                        LifeCycleState.ON_UNBIND -> {
+                        Lifecycle.ON_CREATE -> onCreate()
+                        Lifecycle.ON_BIND -> onBind()
+                        Lifecycle.ON_UNBIND -> {
                             compositeUnbind.clear()
                             onUnbind()
                         }
-                        LifeCycleState.ON_DESTROY -> {
+                        Lifecycle.ON_DESTROY -> {
                             compositeDestroy.clear()
                             onDestroy()
                         }
-                        LifeCycleState.NULL -> {
+                        Lifecycle.NULL -> {
                             // do nothing ON_NULL
                         }
                     }
                 }
 
-        lifeCycleState
+        lifeсycleState
                 .map {
                     when (it) {
 
-                        LifeCycleState.ON_UNBIND,
-                        LifeCycleState.ON_CREATE -> true
+                        Lifecycle.ON_UNBIND,
+                        Lifecycle.ON_CREATE -> true
 
-                        LifeCycleState.ON_BIND -> false
+                        Lifecycle.ON_BIND -> false
 
                         else -> {
                             false
@@ -76,7 +76,7 @@ abstract class PresentationModel {
     }
 
     protected fun PresentationModel.bindLifecycle() {
-        this@PresentationModel.lifeCycleState
+        this@PresentationModel.lifeсycleState
                 .subscribe(this.lifeCycleConsumer)
                 .untilDestroy()
     }
@@ -85,7 +85,7 @@ abstract class PresentationModel {
         return this.bufferWhileIdle(unbindState, bufferSize)
     }
 
-    enum class LifeCycleState {
+    enum class Lifecycle {
         NULL, ON_CREATE, ON_DESTROY, ON_BIND, ON_UNBIND
     }
 }

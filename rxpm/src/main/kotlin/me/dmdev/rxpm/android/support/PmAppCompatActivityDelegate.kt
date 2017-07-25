@@ -1,10 +1,10 @@
-package me.dmdev.rxpm.support
+package me.dmdev.rxpm.android.support
 
 import android.app.Activity
 import android.os.Bundle
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.PresentationModel.LifeCycleState
+import me.dmdev.rxpm.PresentationModel.Lifecycle
 import me.jeevuz.outlast.Outlasting
 import me.jeevuz.outlast.predefined.ActivityOutlast
 
@@ -57,14 +57,14 @@ class PmAppCompatActivityDelegate<out PM : PresentationModel>(private val activi
     private fun bind() {
         if (!binded) {
             pmView.onBindPresentationModel()
-            pm.lifeCycleConsumer.accept(LifeCycleState.ON_BIND)
+            pm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
             binded = true
         }
     }
 
     private fun unbind() {
         if (binded) {
-            pm.lifeCycleConsumer.accept(LifeCycleState.ON_UNBIND)
+            pm.lifeCycleConsumer.accept(Lifecycle.ON_UNBIND)
             pmView.onUnbindPresentationModel()
             pmView.compositeDisposable.clear()
             binded = false

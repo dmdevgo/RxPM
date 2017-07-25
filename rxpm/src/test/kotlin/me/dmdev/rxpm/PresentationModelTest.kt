@@ -2,7 +2,7 @@ package me.dmdev.rxpm
 
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.observers.TestObserver
-import me.dmdev.rxpm.PresentationModel.LifeCycleState
+import me.dmdev.rxpm.PresentationModel.Lifecycle
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito
@@ -17,21 +17,21 @@ class PresentationModelTest {
 
         val callbacks = Mockito.mock(LifeCycleCallbacks::class.java)
         val testPm = TestPm(callbacks)
-        val to = TestObserver<LifeCycleState>()
+        val to = TestObserver<Lifecycle>()
 
         testPm.lifeCycleObservable.subscribe(to)
 
-        testPm.lifeCycleConsumer.accept(LifeCycleState.ON_CREATE)
-        testPm.lifeCycleConsumer.accept(LifeCycleState.ON_BIND)
-        testPm.lifeCycleConsumer.accept(LifeCycleState.ON_UNBIND)
-        testPm.lifeCycleConsumer.accept(LifeCycleState.ON_DESTROY)
+        testPm.lifeCycleConsumer.accept(Lifecycle.ON_CREATE)
+        testPm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
+        testPm.lifeCycleConsumer.accept(Lifecycle.ON_UNBIND)
+        testPm.lifeCycleConsumer.accept(Lifecycle.ON_DESTROY)
 
         to.assertSubscribed()
-        to.assertValues(LifeCycleState.NULL,
-                        LifeCycleState.ON_CREATE,
-                        LifeCycleState.ON_BIND,
-                        LifeCycleState.ON_UNBIND,
-                        LifeCycleState.ON_DESTROY)
+        to.assertValues(Lifecycle.NULL,
+                        Lifecycle.ON_CREATE,
+                        Lifecycle.ON_BIND,
+                        Lifecycle.ON_UNBIND,
+                        Lifecycle.ON_DESTROY)
         to.assertNoErrors()
 
         Mockito.verify(callbacks).onCreate()
@@ -47,21 +47,21 @@ class PresentationModelTest {
         val callbacks = Mockito.mock(LifeCycleCallbacks::class.java)
         val childPm = TestPm(callbacks)
         val testChildPm = TestChildPm(childPm)
-        val to = TestObserver<LifeCycleState>()
+        val to = TestObserver<Lifecycle>()
 
         testChildPm.lifeCycleObservable.subscribe(to)
 
-        testChildPm.lifeCycleConsumer.accept(LifeCycleState.ON_CREATE)
-        testChildPm.lifeCycleConsumer.accept(LifeCycleState.ON_BIND)
-        testChildPm.lifeCycleConsumer.accept(LifeCycleState.ON_UNBIND)
-        testChildPm.lifeCycleConsumer.accept(LifeCycleState.ON_DESTROY)
+        testChildPm.lifeCycleConsumer.accept(Lifecycle.ON_CREATE)
+        testChildPm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
+        testChildPm.lifeCycleConsumer.accept(Lifecycle.ON_UNBIND)
+        testChildPm.lifeCycleConsumer.accept(Lifecycle.ON_DESTROY)
 
         to.assertSubscribed()
-        to.assertValues(LifeCycleState.NULL,
-                        LifeCycleState.ON_CREATE,
-                        LifeCycleState.ON_BIND,
-                        LifeCycleState.ON_UNBIND,
-                        LifeCycleState.ON_DESTROY)
+        to.assertValues(Lifecycle.NULL,
+                        Lifecycle.ON_CREATE,
+                        Lifecycle.ON_BIND,
+                        Lifecycle.ON_UNBIND,
+                        Lifecycle.ON_DESTROY)
         to.assertNoErrors()
 
         Mockito.verify(callbacks).onCreate()
@@ -82,14 +82,14 @@ class PresentationModelTest {
 
         pm.commands.subscribe { commands.add(it) }
 
-        pm.lifeCycleConsumer.accept(LifeCycleState.ON_CREATE)
+        pm.lifeCycleConsumer.accept(Lifecycle.ON_CREATE)
 
         pm.relay.accept(1)
         pm.relay.accept(2)
 
         Assert.assertArrayEquals(intArrayOf(), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(LifeCycleState.ON_BIND)
+        pm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
 
         Assert.assertArrayEquals(intArrayOf(1, 2), commands.toIntArray())
 
@@ -98,24 +98,24 @@ class PresentationModelTest {
 
         Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(LifeCycleState.ON_UNBIND)
+        pm.lifeCycleConsumer.accept(Lifecycle.ON_UNBIND)
 
         pm.relay.accept(5)
         pm.relay.accept(6)
 
         Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(LifeCycleState.ON_BIND)
+        pm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
 
         Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4, 5, 6), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(LifeCycleState.ON_UNBIND)
+        pm.lifeCycleConsumer.accept(Lifecycle.ON_UNBIND)
 
         pm.relay.accept(7)
 
         Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4, 5, 6), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(LifeCycleState.ON_DESTROY)
+        pm.lifeCycleConsumer.accept(Lifecycle.ON_DESTROY)
 
         pm.relay.accept(8)
 
@@ -134,7 +134,7 @@ class PresentationModelTest {
 
         pm.commands.subscribe { commands.add(it) }
 
-        pm.lifeCycleConsumer.accept(LifeCycleState.ON_CREATE)
+        pm.lifeCycleConsumer.accept(Lifecycle.ON_CREATE)
 
         pm.relay.accept(1)
         pm.relay.accept(2)
@@ -142,7 +142,7 @@ class PresentationModelTest {
 
         Assert.assertArrayEquals(intArrayOf(), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(LifeCycleState.ON_BIND)
+        pm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
 
         Assert.assertArrayEquals(intArrayOf(3), commands.toIntArray())
 

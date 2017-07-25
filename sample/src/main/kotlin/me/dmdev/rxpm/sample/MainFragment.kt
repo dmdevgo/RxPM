@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import me.dmdev.rxpm.support.PmFragment
+import me.dmdev.rxpm.android.support.PmFragment
 import timber.log.Timber
 
 /**
