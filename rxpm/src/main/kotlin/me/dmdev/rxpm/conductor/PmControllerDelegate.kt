@@ -12,12 +12,12 @@ class PmControllerDelegate<out PM : PresentationModel>(private val pmView: PmVie
     val pm :PM = pmView.providePresentationModel()
 
     fun onCreate() {
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_CREATE)
+        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
     }
 
     fun onCreateView() {
         pmView.onBindPresentationModel()
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
+        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
     }
 
     fun onAttach() {}
@@ -25,12 +25,12 @@ class PmControllerDelegate<out PM : PresentationModel>(private val pmView: PmVie
     fun onDetach() {}
 
     fun onDestroyView() {
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_UNBIND)
+        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
         pmView.onUnbindPresentationModel()
         pmView.compositeDisposable.clear()
     }
 
     fun onDestroy() {
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_DESTROY)
+        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
     }
 }

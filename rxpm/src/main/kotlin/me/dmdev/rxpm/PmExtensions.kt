@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package me.dmdev.rxpm
 
 import com.jakewharton.rxrelay2.BehaviorRelay

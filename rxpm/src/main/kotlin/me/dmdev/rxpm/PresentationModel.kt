@@ -1,7 +1,6 @@
 package me.dmdev.rxpm
 
 import com.jakewharton.rxrelay2.BehaviorRelay
-import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -14,48 +13,38 @@ abstract class PresentationModel {
     private val compositeDestroy = CompositeDisposable()
     private val compositeUnbind = CompositeDisposable()
 
-    private val lifeсycleState = BehaviorRelay.createDefault<Lifecycle>(Lifecycle.NULL)
-    private val unbindState = BehaviorRelay.create<Boolean>()
+    private val lifeсycle = BehaviorRelay.create<Lifecycle>()
+    private val unbind = BehaviorRelay.create<Boolean>()
 
-    val lifeCycleObservable = lifeсycleState.asObservable()
-    val lifeCycleConsumer = lifeсycleState.asConsumer()
+    val lifecycleState = lifeсycle.asObservable()
+    val lifecycleConsumer = lifeсycle.asConsumer()
 
     init {
-        lifeсycleState
-                .takeUntil { it == Lifecycle.ON_DESTROY }
+        lifeсycle
+                .takeUntil { it == Lifecycle.DESTROYED }
                 .subscribe {
                     when (it) {
-                        Lifecycle.ON_CREATE -> onCreate()
-                        Lifecycle.ON_BIND -> onBind()
-                        Lifecycle.ON_UNBIND -> {
+                        Lifecycle.CREATED -> onCreate()
+                        Lifecycle.BINDED -> onBind()
+                        Lifecycle.UNBINDED -> {
                             compositeUnbind.clear()
                             onUnbind()
                         }
-                        Lifecycle.ON_DESTROY -> {
+                        Lifecycle.DESTROYED -> {
                             compositeDestroy.clear()
                             onDestroy()
                         }
-                        Lifecycle.NULL -> {
-                            // do nothing ON_NULL
-                        }
                     }
                 }
 
-        lifeсycleState
+        lifeсycle
                 .map {
                     when (it) {
-
-                        Lifecycle.ON_UNBIND,
-                        Lifecycle.ON_CREATE -> true
-
-                        Lifecycle.ON_BIND -> false
-
-                        else -> {
-                            false
-                        }
+                        Lifecycle.BINDED -> false
+                        else -> true
                     }
                 }
-                .subscribe(unbindState)
+                .subscribe(unbind)
                 .untilDestroy()
     }
 
@@ -76,16 +65,16 @@ abstract class PresentationModel {
     }
 
     protected fun PresentationModel.bindLifecycle() {
-        this@PresentationModel.lifeсycleState
-                .subscribe(this.lifeCycleConsumer)
+        this@PresentationModel.lifeсycle
+                .subscribe(this.lifecycleConsumer)
                 .untilDestroy()
     }
 
-    protected fun <T> PublishRelay<T>.bufferWhileUnbind(bufferSize: Int? = null): Observable<T> {
-        return this.bufferWhileIdle(unbindState, bufferSize)
+    protected fun <T> Observable<T>.bufferWhileUnbind(bufferSize: Int? = null): Observable<T> {
+        return this.bufferWhileIdle(unbind, bufferSize)
     }
 
     enum class Lifecycle {
-        NULL, ON_CREATE, ON_DESTROY, ON_BIND, ON_UNBIND
+        CREATED, BINDED, UNBINDED, DESTROYED
     }
 }

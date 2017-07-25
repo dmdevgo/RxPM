@@ -7,10 +7,10 @@ import me.jeevuz.outlast.Outlasting
 class PmWrapper<out PM : PresentationModel>(val pm: PM) : Outlasting {
 
     override fun onCreate() {
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_CREATE)
+        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
     }
 
     override fun onDestroy() {
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_DESTROY)
+        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
     }
 }

@@ -19,19 +19,19 @@ class PresentationModelTest {
         val testPm = TestPm(callbacks)
         val to = TestObserver<Lifecycle>()
 
-        testPm.lifeCycleObservable.subscribe(to)
+        testPm.lifecycleState.subscribe(to)
 
-        testPm.lifeCycleConsumer.accept(Lifecycle.ON_CREATE)
-        testPm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
-        testPm.lifeCycleConsumer.accept(Lifecycle.ON_UNBIND)
-        testPm.lifeCycleConsumer.accept(Lifecycle.ON_DESTROY)
+        testPm.lifecycleConsumer.accept(Lifecycle.CREATED)
+        testPm.lifecycleConsumer.accept(Lifecycle.BINDED)
+        testPm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+        testPm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
 
         to.assertSubscribed()
         to.assertValues(Lifecycle.NULL,
-                        Lifecycle.ON_CREATE,
-                        Lifecycle.ON_BIND,
-                        Lifecycle.ON_UNBIND,
-                        Lifecycle.ON_DESTROY)
+                        Lifecycle.CREATED,
+                        Lifecycle.BINDED,
+                        Lifecycle.UNBINDED,
+                        Lifecycle.DESTROYED)
         to.assertNoErrors()
 
         Mockito.verify(callbacks).onCreate()
@@ -49,19 +49,19 @@ class PresentationModelTest {
         val testChildPm = TestChildPm(childPm)
         val to = TestObserver<Lifecycle>()
 
-        testChildPm.lifeCycleObservable.subscribe(to)
+        testChildPm.lifecycleState.subscribe(to)
 
-        testChildPm.lifeCycleConsumer.accept(Lifecycle.ON_CREATE)
-        testChildPm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
-        testChildPm.lifeCycleConsumer.accept(Lifecycle.ON_UNBIND)
-        testChildPm.lifeCycleConsumer.accept(Lifecycle.ON_DESTROY)
+        testChildPm.lifecycleConsumer.accept(Lifecycle.CREATED)
+        testChildPm.lifecycleConsumer.accept(Lifecycle.BINDED)
+        testChildPm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+        testChildPm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
 
         to.assertSubscribed()
         to.assertValues(Lifecycle.NULL,
-                        Lifecycle.ON_CREATE,
-                        Lifecycle.ON_BIND,
-                        Lifecycle.ON_UNBIND,
-                        Lifecycle.ON_DESTROY)
+                        Lifecycle.CREATED,
+                        Lifecycle.BINDED,
+                        Lifecycle.UNBINDED,
+                        Lifecycle.DESTROYED)
         to.assertNoErrors()
 
         Mockito.verify(callbacks).onCreate()
@@ -82,14 +82,14 @@ class PresentationModelTest {
 
         pm.commands.subscribe { commands.add(it) }
 
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_CREATE)
+        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
 
         pm.relay.accept(1)
         pm.relay.accept(2)
 
         Assert.assertArrayEquals(intArrayOf(), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
+        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
 
         Assert.assertArrayEquals(intArrayOf(1, 2), commands.toIntArray())
 
@@ -98,24 +98,24 @@ class PresentationModelTest {
 
         Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_UNBIND)
+        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
 
         pm.relay.accept(5)
         pm.relay.accept(6)
 
         Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
+        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
 
         Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4, 5, 6), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_UNBIND)
+        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
 
         pm.relay.accept(7)
 
         Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4, 5, 6), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_DESTROY)
+        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
 
         pm.relay.accept(8)
 
@@ -134,7 +134,7 @@ class PresentationModelTest {
 
         pm.commands.subscribe { commands.add(it) }
 
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_CREATE)
+        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
 
         pm.relay.accept(1)
         pm.relay.accept(2)
@@ -142,7 +142,7 @@ class PresentationModelTest {
 
         Assert.assertArrayEquals(intArrayOf(), commands.toIntArray())
 
-        pm.lifeCycleConsumer.accept(Lifecycle.ON_BIND)
+        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
 
         Assert.assertArrayEquals(intArrayOf(3), commands.toIntArray())
 
