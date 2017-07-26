@@ -30,9 +30,6 @@ ext {
     supportAppCompat = "com.android.support:appcompat-v7:$supportVersion"
     supportDesign = "com.android.support:design:$supportVersion"
 
-    junit = "junit:junit:4.12"
-    mockito = "org.mockito:mockito-core:2.8.47"
-
     kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     rxJava2 = "io.reactivex.rxjava2:rxjava:2.1.0"
@@ -46,4 +43,9 @@ ext {
     conductor = "com.bluelinelabs:conductor:2.1.4"
     outlast = "me.jeevuz.outlast:outlast:1.1"
     timber = "com.jakewharton.timber:timber:4.5.1"
+
+    junit = "junit:junit:4.12"
+    mockito = "org.mockito:mockito-core:2.8.47"
+    junitKotlin = "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+    mockitoKotlin = "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
 }

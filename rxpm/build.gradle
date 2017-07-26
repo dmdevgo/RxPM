@@ -45,6 +45,8 @@ dependencies {
     compile rootProject.ext.outlast
 
     // For tests
+    testCompile rootProject.junitKotlin
+    testCompile rootProject.mockitoKotlin
     testCompile rootProject.junit
     testCompile rootProject.mockito
 }
