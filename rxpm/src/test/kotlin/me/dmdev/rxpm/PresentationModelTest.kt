@@ -27,8 +27,7 @@ class PresentationModelTest {
         testPm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
 
         to.assertSubscribed()
-        to.assertValues(Lifecycle.NULL,
-                        Lifecycle.CREATED,
+        to.assertValues(Lifecycle.CREATED,
                         Lifecycle.BINDED,
                         Lifecycle.UNBINDED,
                         Lifecycle.DESTROYED)
@@ -57,8 +56,7 @@ class PresentationModelTest {
         testChildPm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
 
         to.assertSubscribed()
-        to.assertValues(Lifecycle.NULL,
-                        Lifecycle.CREATED,
+        to.assertValues(Lifecycle.CREATED,
                         Lifecycle.BINDED,
                         Lifecycle.UNBINDED,
                         Lifecycle.DESTROYED)

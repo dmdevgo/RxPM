@@ -35,14 +35,16 @@ dependencies {
     compile rootProject.ext.rxRelay2
     compile rootProject.ext.rxAndroid2
 
+    // RxBindings
+    compile rootProject.ext.rxBindingKotlin
+    compile(rootProject.ext.rxBindingSupportV4Kotlin) {
+        exclude module: 'support-core-ui'
+    }
+
     // Persistent PM
     compile rootProject.ext.outlast
 
     // For tests
     testCompile rootProject.junit
     testCompile rootProject.mockito
-
-    // TODO: Разве тут нужны эти зависимости? Вроде только в проекте
-    provided rootProject.ext.rxBindingKotlin
-    provided rootProject.ext.rxBindingSupportV4Kotlin
 }

@@ -35,8 +35,8 @@ inline fun Completable.bindProgress(progressConsumer: Consumer<Boolean>): Comple
             .doOnTerminate { progressConsumer.accept(false) }
 }
 
-inline fun <T> Observable<T>.skipWhileProgress(progressState: Observable<Boolean>): Observable<T> {
-    return this.withLatestFrom(progressState,
+inline fun <T> Observable<T>.skipWhileInProgress(progressState: Observable<Boolean>): Observable<T> {
+    return this.withLatestFrom(progressState.startWith(false),
                                BiFunction<T, Boolean, Pair<T, Boolean>> { t, progress ->
                                    Pair(t, progress)
                                })
@@ -54,6 +54,7 @@ inline fun <T> Observable<T>.bufferWhileIdle(isIdle: Observable<Boolean>, buffer
                                         })
                             .filter { !it.second }
                             .map { it.first },
+
                     this
                             .buffer(
                                     isIdle.filter { it },

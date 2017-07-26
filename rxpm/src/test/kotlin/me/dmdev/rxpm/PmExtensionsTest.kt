@@ -96,7 +96,7 @@ class PmExtensionsTest {
         val relay = PublishRelay.create<Int>()
         val to = TestObserver<Int>()
 
-        relay.skipWhileProgress(progress).subscribe(to)
+        relay.skipWhileInProgress(progress).subscribe(to)
 
         relay.accept(1)
         relay.accept(2)
