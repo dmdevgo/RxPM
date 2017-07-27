@@ -1,10 +1,10 @@
-package me.dmdev.rxpm.support
+package me.dmdev.rxpm.android.support
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.PresentationModel.LifeCycleState
+import me.dmdev.rxpm.PresentationModel.Lifecycle
 import me.jeevuz.outlast.Outlasting
 import me.jeevuz.outlast.predefined.FragmentOutlast
 
@@ -59,14 +59,14 @@ class PmFragmentDelegate<out PM : PresentationModel>(private val fragment: Fragm
     private fun bind() {
         if (!binded) {
             pmView.onBindPresentationModel()
-            pm.lifeCycleConsumer.accept(LifeCycleState.ON_BIND)
+            pm.lifecycleConsumer.accept(Lifecycle.BINDED)
             binded = true
         }
     }
 
     private fun unbind() {
         if (binded) {
-            pm.lifeCycleConsumer.accept(LifeCycleState.ON_UNBIND)
+            pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
             pmView.onUnbindPresentationModel()
             pmView.compositeDisposable.clear()
             binded = false

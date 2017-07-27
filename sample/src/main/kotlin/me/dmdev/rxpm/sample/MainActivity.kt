@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.sample
 
 import android.os.Bundle
-import me.dmdev.rxpm.support.PmAppCompatActivity
+import me.dmdev.rxpm.android.support.PmAppCompatActivity
 import timber.log.Timber
 
 class MainActivity : PmAppCompatActivity<MainPm>() {

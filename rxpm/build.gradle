@@ -22,24 +22,29 @@ android {
 }
 
 dependencies {
-
-    testCompile rootProject.junitKotlin
-    testCompile rootProject.mockitoKotlin
-
+    // Kotlin
     compile rootProject.ext.kotlinStdlib
 
+    // For default implementations
     provided rootProject.ext.supportAppCompat
     provided rootProject.ext.supportDesign
     provided rootProject.ext.conductor
 
-    //Rx
+    // Rx
     compile rootProject.ext.rxJava2
     compile rootProject.ext.rxRelay2
     compile rootProject.ext.rxAndroid2
 
-    provided rootProject.ext.rxBindingKotlin
-    provided rootProject.ext.rxBindingSupportV4Kotlin
+    // RxBindings
+    compile rootProject.ext.rxBindingKotlin
+    compile(rootProject.ext.rxBindingSupportV4Kotlin) {
+        exclude module: 'support-core-ui'
+    }
 
+    // Persistent PM
     compile rootProject.ext.outlast
 
+    // For tests
+    testCompile rootProject.junitKotlin
+    testCompile rootProject.mockitoKotlin
 }

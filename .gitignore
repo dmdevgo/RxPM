@@ -7,7 +7,6 @@ local.properties
 
 # Idea
 .idea/
-.idea/vcs.xml
 **/*.iml
 
 # Mac OS

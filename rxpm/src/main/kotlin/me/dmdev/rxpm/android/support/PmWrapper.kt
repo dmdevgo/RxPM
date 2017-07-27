@@ -1,16 +1,16 @@
-package me.dmdev.rxpm.support
+package me.dmdev.rxpm.android.support
 
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.PresentationModel.LifeCycleState
+import me.dmdev.rxpm.PresentationModel.Lifecycle
 import me.jeevuz.outlast.Outlasting
 
 class PmWrapper<out PM : PresentationModel>(val pm: PM) : Outlasting {
 
     override fun onCreate() {
-        pm.lifeCycleConsumer.accept(LifeCycleState.ON_CREATE)
+        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
     }
 
     override fun onDestroy() {
-        pm.lifeCycleConsumer.accept(LifeCycleState.ON_DESTROY)
+        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
     }
 }

@@ -10,6 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.android.support.PmFragmentDelegate
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -68,8 +69,8 @@ class PmFragmentDelegateTest {
     @Test
     fun testPresentationModelLifeCycle() {
 
-        val testObserver = TestObserver<PresentationModel.LifeCycleState>()
-        pm.lifeCycleObservable.subscribe(testObserver)
+        val testObserver = TestObserver<PresentationModel.Lifecycle>()
+        pm.lifecycleState.subscribe(testObserver)
 
         val delegate = PmFragmentDelegate(fragmentMock, pmViewMock)
 
@@ -82,11 +83,10 @@ class PmFragmentDelegateTest {
         whenever(fragmentMock.isRemoving).thenReturn(true)
         delegate.onDestroy()
 
-        testObserver.assertValues(PresentationModel.LifeCycleState.NULL,
-                                  PresentationModel.LifeCycleState.ON_CREATE,
-                                  PresentationModel.LifeCycleState.ON_BIND,
-                                  PresentationModel.LifeCycleState.ON_UNBIND,
-                                  PresentationModel.LifeCycleState.ON_DESTROY)
+        testObserver.assertValues(PresentationModel.Lifecycle.CREATED,
+                                  PresentationModel.Lifecycle.BINDED,
+                                  PresentationModel.Lifecycle.UNBINDED,
+                                  PresentationModel.Lifecycle.DESTROYED)
     }
 
 }
