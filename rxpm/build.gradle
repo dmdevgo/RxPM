@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+    }
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
@@ -8,6 +18,13 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'consumer-proguard-rules.txt'
+        }
     }
 
     compileOptions {
@@ -47,4 +64,41 @@ dependencies {
     // For tests
     testCompile rootProject.junitKotlin
     testCompile rootProject.mockitoKotlin
+}
+
+ext {
+    libraryVersion = '0.1'
+    publishedGroupId = 'me.dmdev.rxpm'
+}
+
+group = publishedGroupId
+version = libraryVersion
+
+// Configuration of the library uploading to the Bintray
+// Note: Call 'bintrayUpload' task (it will execute 'install' task first)
+apply from: 'androidmaven.gradle'
+apply from: 'bintray.gradle'
+
+// Tasks for sources and javadocs jars
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+//Disable Javadoc tasks
+tasks.withType(Javadoc).all { enabled = false }
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
 }

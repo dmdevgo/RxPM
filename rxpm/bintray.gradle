@@ -1,0 +1,23 @@
+apply plugin: 'com.jfrog.bintray'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+
+    user = properties.getProperty("bintrayUser")
+    key = properties.getProperty("bintrayApiKey")
+
+    configurations = ['archives']
+
+    pkg {
+        repo = 'maven'
+        name = 'RxPM'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/dmdevgo/RxPM.git'
+        publish = true
+    }
+}
+
+// Dependency to call only bintrayUpload task
+bintrayUpload.dependsOn install
