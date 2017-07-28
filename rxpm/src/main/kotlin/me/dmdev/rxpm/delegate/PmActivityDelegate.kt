@@ -43,7 +43,7 @@ class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activ
     }
 
     fun onPause() {
-        //For symmetry, may be used in the future
+        // For symmetry, may be used in the future
     }
 
     fun onStop() {
