@@ -15,37 +15,37 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val fragment
                                                             private val pmView: PmView<PM>) {
 
 
-    private lateinit var outlastDelegate: FragmentOutlast<PmWrapper<PM>>
+    private lateinit var outlast: FragmentOutlast<PmWrapper<PM>>
     private var binded = false
 
-    val presentationModel: PM get() = outlastDelegate.outlasting.presentationModel
+    val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
     fun onCreate(savedInstanceState: Bundle?) {
-        outlastDelegate = FragmentOutlast(fragment,
-                                          Outlasting.Creator<PmWrapper<PM>> {
+        outlast = FragmentOutlast(fragment,
+                                  Outlasting.Creator<PmWrapper<PM>> {
                                               PmWrapper(pmView.providePresentationModel())
                                           },
-                                          savedInstanceState)
-        outlastDelegate.outlasting.presentationModel // D>- create outlasting object
+                                  savedInstanceState)
+        presentationModel // Create lazy presentation model now
     }
 
     fun onStart() {
-        outlastDelegate.onStart()
+        outlast.onStart()
         bind()
     }
 
     fun onResume() {
-        outlastDelegate.onResume()
+        outlast.onResume()
         bind()
     }
 
     fun onSaveInstanceState(outState: Bundle) {
-        outlastDelegate.onSaveInstanceState(outState)
+        outlast.onSaveInstanceState(outState)
         unbind()
     }
 
     fun onPause() {
-        //For symmetry, may be used in the future
+        // For symmetry, may be used in the future
     }
 
     fun onStop() {
@@ -53,7 +53,7 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val fragment
     }
 
     fun onDestroy() {
-        outlastDelegate.onDestroy()
+        outlast.onDestroy()
     }
 
     private fun bind() {

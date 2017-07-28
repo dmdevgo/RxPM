@@ -14,31 +14,32 @@ import me.jeevuz.outlast.predefined.ActivityOutlast
 class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activity,
                                                      private val pmView: PmView<PM>) {
 
-    private lateinit var outlastDelegate: ActivityOutlast<PmWrapper<PM>>
+    private lateinit var outlast: ActivityOutlast<PmWrapper<PM>>
     private var binded = false
-    val presentationModel: PM get() = outlastDelegate.outlasting.presentationModel
+
+    val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
     fun onCreate(savedInstanceState: Bundle?) {
-        outlastDelegate = ActivityOutlast(activity,
-                                          Outlasting.Creator<PmWrapper<PM>> {
+        outlast = ActivityOutlast(activity,
+                                  Outlasting.Creator<PmWrapper<PM>> {
                                               PmWrapper(pmView.providePresentationModel())
                                           },
-                                          savedInstanceState)
-        outlastDelegate.outlasting.presentationModel // D>- create outlasting object
+                                  savedInstanceState)
+        presentationModel // Create lazy presentation model now
     }
 
     fun onStart() {
-        outlastDelegate.onStart()
+        outlast.onStart()
         bind()
     }
 
     fun onResume() {
-        outlastDelegate.onResume()
+        outlast.onResume()
         bind()
     }
 
     fun onSaveInstanceState(outState: Bundle) {
-        outlastDelegate.onSaveInstanceState(outState)
+        outlast.onSaveInstanceState(outState)
         unbind()
     }
 
@@ -51,7 +52,7 @@ class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activ
     }
 
     fun onDestroy() {
-        outlastDelegate.onDestroy()
+        outlast.onDestroy()
     }
 
     private fun bind() {
