@@ -1,10 +1,10 @@
 package me.dmdev.rxpm.sample
 
 import android.os.Bundle
-import me.dmdev.rxpm.android.support.PmAppCompatActivity
+import me.dmdev.rxpm.base.PmSupportActivity
 import timber.log.Timber
 
-class MainActivity : PmAppCompatActivity<MainPm>() {
+class MainActivity : PmSupportActivity<MainPm>() {
 
     companion object {
         init {

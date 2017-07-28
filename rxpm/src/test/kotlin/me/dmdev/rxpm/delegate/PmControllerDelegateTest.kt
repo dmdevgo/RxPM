@@ -1,4 +1,4 @@
-package me.dmdev.rxpm.conductor
+package me.dmdev.rxpm.delegate
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
@@ -8,6 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.delegate.PmControllerDelegate
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals

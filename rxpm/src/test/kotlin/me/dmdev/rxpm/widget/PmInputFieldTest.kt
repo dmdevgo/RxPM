@@ -1,8 +1,7 @@
-package me.dmdev.rxpm.widgets
+package me.dmdev.rxpm.widget
 
 import io.reactivex.observers.TestObserver
 import org.junit.Test
-import ru.mobileup.yami.pm.PmInputField
 
 /**
  * @author Dmitriy Gorbunov

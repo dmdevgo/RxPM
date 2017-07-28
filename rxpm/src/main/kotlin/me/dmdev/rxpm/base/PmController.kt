@@ -1,4 +1,4 @@
-package me.dmdev.rxpm.conductor
+package me.dmdev.rxpm.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.bluelinelabs.conductor.RestoreViewOnCreateController
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.delegate.PmControllerDelegate
 
 /**
  * @author Dmitriy Gorbunov

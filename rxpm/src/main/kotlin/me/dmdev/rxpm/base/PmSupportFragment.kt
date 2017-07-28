@@ -1,24 +1,25 @@
-package me.dmdev.rxpm.android.support
+package me.dmdev.rxpm.base
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.delegate.PmSupportFragmentDelegate
 
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class PmAppCompatActivity<out PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
+abstract class PmSupportFragment<out PM : PresentationModel> : Fragment(), PmView<PM> {
 
-    private lateinit var delegate: PmAppCompatActivityDelegate<PM>
+    private lateinit var delegate: PmSupportFragmentDelegate<PM>
     final override val compositeDisposable = CompositeDisposable()
 
     final override val pm get() = delegate.pm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        delegate = PmAppCompatActivityDelegate(this, this)
+        delegate = PmSupportFragmentDelegate(this, this)
         delegate.onCreate(savedInstanceState)
     }
 

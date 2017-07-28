@@ -1,27 +1,25 @@
-package me.dmdev.rxpm.android.support
+package me.dmdev.rxpm.delegate
 
+import android.app.Activity
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.PresentationModel.Lifecycle
 import me.jeevuz.outlast.Outlasting
-import me.jeevuz.outlast.predefined.FragmentOutlast
+import me.jeevuz.outlast.predefined.ActivityOutlast
 
 /**
  * @author Dmitriy Gorbunov
  */
-class PmFragmentDelegate<out PM : PresentationModel>(private val fragment: Fragment,
+class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activity,
                                                      private val pmView: PmView<PM>) {
 
-
-    private lateinit var outlastDelegate: FragmentOutlast<PmWrapper<PM>>
+    private lateinit var outlastDelegate: ActivityOutlast<PmWrapper<PM>>
     private var binded = false
-
     val pm: PM get() = outlastDelegate.outlasting.pm
 
     fun onCreate(savedInstanceState: Bundle?) {
-        outlastDelegate = FragmentOutlast(fragment,
+        outlastDelegate = ActivityOutlast(activity,
                                           Outlasting.Creator<PmWrapper<PM>> {
                                               PmWrapper(pmView.providePresentationModel())
                                           },
@@ -72,4 +70,5 @@ class PmFragmentDelegate<out PM : PresentationModel>(private val fragment: Fragm
             binded = false
         }
     }
+
 }

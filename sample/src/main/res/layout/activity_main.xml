@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="me.dmdev.rxpm.sample.MainFragment"
+        android:name="me.dmdev.rxpm.sample.MainSupportFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -1,4 +1,4 @@
-package me.dmdev.rxpm.conductor
+package me.dmdev.rxpm.delegate
 
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel

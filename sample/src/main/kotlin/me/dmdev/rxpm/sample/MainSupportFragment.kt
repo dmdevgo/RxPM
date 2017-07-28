@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import me.dmdev.rxpm.android.support.PmFragment
+import me.dmdev.rxpm.base.PmSupportFragment
 import timber.log.Timber
 
 /**
  * @author Dmitriy Gorbunov
  */
-class MainFragment : PmFragment<FragmentPm>() {
+class MainSupportFragment : PmSupportFragment<FragmentPm>() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FrameLayout(context)

@@ -1,7 +1,6 @@
-package me.dmdev.rxpm.support
+package me.dmdev.rxpm.delegate
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
+import android.app.Activity
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
@@ -10,21 +9,21 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.android.support.PmFragmentDelegate
+import me.dmdev.rxpm.delegate.PmActivityDelegate
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
+
 /**
  * @author Dmitriy Gorbunov
  */
-class PmFragmentDelegateTest {
+class PmSupportActivityDelegateTest {
 
     lateinit var pm: PresentationModel
     lateinit var compositeDisposableMock: CompositeDisposable
     lateinit var pmViewMock: PmView<PresentationModel>
-    lateinit var activityMock: FragmentActivity
-    lateinit var fragmentMock: Fragment
+    lateinit var activityMock: Activity
 
     @Before
     fun initTest() {
@@ -35,15 +34,13 @@ class PmFragmentDelegateTest {
         whenever(pmViewMock.compositeDisposable).thenReturn(compositeDisposableMock)
         whenever(pmViewMock.providePresentationModel()).thenReturn(pm)
 
-        activityMock = mock<FragmentActivity>()
-        fragmentMock = mock<Fragment>()
-        whenever(fragmentMock.activity).thenReturn(activityMock)
+        activityMock = mock<Activity>()
     }
 
     @Test
     fun testViewLifeCycle() {
 
-        val delegate = PmFragmentDelegate(fragmentMock, pmViewMock)
+        val delegate = PmActivityDelegate(activityMock, pmViewMock)
 
         delegate.onCreate(null)
 
@@ -62,7 +59,6 @@ class PmFragmentDelegateTest {
         verify(compositeDisposableMock).clear()
 
         whenever(activityMock.isFinishing).thenReturn(true)
-        whenever(fragmentMock.isRemoving).thenReturn(true)
         delegate.onDestroy()
     }
 
@@ -72,7 +68,7 @@ class PmFragmentDelegateTest {
         val testObserver = TestObserver<PresentationModel.Lifecycle>()
         pm.lifecycleState.subscribe(testObserver)
 
-        val delegate = PmFragmentDelegate(fragmentMock, pmViewMock)
+        val delegate = PmActivityDelegate(activityMock, pmViewMock)
 
         delegate.onCreate(null)
         delegate.onStart()
@@ -80,7 +76,6 @@ class PmFragmentDelegateTest {
         delegate.onPause()
         delegate.onStop()
         whenever(activityMock.isFinishing).thenReturn(true)
-        whenever(fragmentMock.isRemoving).thenReturn(true)
         delegate.onDestroy()
 
         testObserver.assertValues(PresentationModel.Lifecycle.CREATED,

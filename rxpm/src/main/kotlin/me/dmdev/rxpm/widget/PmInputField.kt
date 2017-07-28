@@ -1,4 +1,4 @@
-package ru.mobileup.yami.pm
+package me.dmdev.rxpm.widget
 
 import android.support.design.widget.TextInputLayout
 import android.text.SpannableString

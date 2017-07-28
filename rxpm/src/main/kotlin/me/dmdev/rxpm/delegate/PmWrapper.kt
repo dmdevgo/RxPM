@@ -1,10 +1,10 @@
-package me.dmdev.rxpm.android.support
+package me.dmdev.rxpm.delegate
 
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.PresentationModel.Lifecycle
 import me.jeevuz.outlast.Outlasting
 
-class PmWrapper<out PM : PresentationModel>(val pm: PM) : Outlasting {
+internal class PmWrapper<out PM : PresentationModel>(val pm: PM) : Outlasting {
 
     override fun onCreate() {
         pm.lifecycleConsumer.accept(Lifecycle.CREATED)
