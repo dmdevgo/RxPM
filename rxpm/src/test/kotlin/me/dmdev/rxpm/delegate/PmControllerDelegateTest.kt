@@ -39,7 +39,7 @@ class PmControllerDelegateTest {
         delegate.onCreate()
 
         verify(pmViewMock).providePresentationModel()
-        assertEquals(pm, delegate.pm)
+        assertEquals(pm, delegate.presentationModel)
 
         delegate.onCreateView()
         verify(pmViewMock).onBindPresentationModel(pm)

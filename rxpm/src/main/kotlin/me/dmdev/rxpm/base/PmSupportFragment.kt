@@ -15,7 +15,7 @@ abstract class PmSupportFragment<out PM : PresentationModel> : Fragment(), PmVie
     private lateinit var delegate: PmSupportFragmentDelegate<PM>
     final override val compositeUnbind = CompositeDisposable()
 
-    final override val presentationModel get() = delegate.pm
+    final override val presentationModel get() = delegate.presentationModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -16,7 +16,7 @@ class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activ
 
     private lateinit var outlastDelegate: ActivityOutlast<PmWrapper<PM>>
     private var binded = false
-    val pm: PM get() = outlastDelegate.outlasting.pm
+    val presentationModel: PM get() = outlastDelegate.outlasting.presentationModel
 
     fun onCreate(savedInstanceState: Bundle?) {
         outlastDelegate = ActivityOutlast(activity,
@@ -24,7 +24,7 @@ class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activ
                                               PmWrapper(pmView.providePresentationModel())
                                           },
                                           savedInstanceState)
-        outlastDelegate.outlasting.pm // D>- create outlasting object
+        outlastDelegate.outlasting.presentationModel // D>- create outlasting object
     }
 
     fun onStart() {
@@ -56,15 +56,15 @@ class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activ
 
     private fun bind() {
         if (!binded) {
-            pmView.onBindPresentationModel(pm)
-            pm.lifecycleConsumer.accept(Lifecycle.BINDED)
+            pmView.onBindPresentationModel(presentationModel)
+            presentationModel.lifecycleConsumer.accept(Lifecycle.BINDED)
             binded = true
         }
     }
 
     private fun unbind() {
         if (binded) {
-            pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+            presentationModel.lifecycleConsumer.accept(Lifecycle.UNBINDED)
             pmView.onUnbindPresentationModel()
             pmView.compositeUnbind.clear()
             binded = false

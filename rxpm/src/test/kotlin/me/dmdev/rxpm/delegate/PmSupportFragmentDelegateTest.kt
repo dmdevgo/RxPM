@@ -47,7 +47,7 @@ class PmSupportFragmentDelegateTest {
         delegate.onCreate(null)
 
         verify(pmViewMock).providePresentationModel()
-        assertEquals(pm, delegate.pm)
+        assertEquals(pm, delegate.presentationModel)
 
         delegate.onStart()
         verify(pmViewMock).onBindPresentationModel(pm)

@@ -15,7 +15,7 @@ abstract class PmSupportActivity<out PM : PresentationModel> : AppCompatActivity
     private lateinit var delegate: PmActivityDelegate<PM>
     final override val compositeUnbind = CompositeDisposable()
 
-    final override val presentationModel get() = delegate.pm
+    final override val presentationModel get() = delegate.presentationModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
