@@ -1,6 +1,7 @@
 package me.dmdev.rxpm.sample
 
 import android.os.Bundle
+import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmSupportActivity
 import timber.log.Timber
 
@@ -22,7 +23,7 @@ class MainActivity : PmSupportActivity<MainPm>() {
         return MainPm()
     }
 
-    override fun onBindPresentationModel() {
+    override fun onBindPresentationModel(pm: PresentationModel) {
         Timber.i("onBindPresentationModel")
     }
 

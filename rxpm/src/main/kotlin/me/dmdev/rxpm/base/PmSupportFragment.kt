@@ -13,9 +13,9 @@ import me.dmdev.rxpm.delegate.PmSupportFragmentDelegate
 abstract class PmSupportFragment<out PM : PresentationModel> : Fragment(), PmView<PM> {
 
     private lateinit var delegate: PmSupportFragmentDelegate<PM>
-    final override val compositeDisposable = CompositeDisposable()
+    final override val compositeUnbind = CompositeDisposable()
 
-    final override val pm get() = delegate.pm
+    final override val presentationModel get() = delegate.pm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

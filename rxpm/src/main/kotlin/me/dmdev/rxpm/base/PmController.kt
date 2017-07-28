@@ -17,7 +17,7 @@ abstract class PmController<out PM : PresentationModel>(args: Bundle? = null) : 
     @Suppress("LeakingThis")
     private val delegate: PmControllerDelegate<PM> = PmControllerDelegate(this)
 
-    final override val pm get() = delegate.pm
+    final override val presentationModel get() = delegate.pm
 
     init {
         delegate.onCreate()

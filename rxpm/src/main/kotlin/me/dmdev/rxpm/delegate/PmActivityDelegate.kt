@@ -56,7 +56,7 @@ class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activ
 
     private fun bind() {
         if (!binded) {
-            pmView.onBindPresentationModel()
+            pmView.onBindPresentationModel(pm)
             pm.lifecycleConsumer.accept(Lifecycle.BINDED)
             binded = true
         }
@@ -66,7 +66,7 @@ class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activ
         if (binded) {
             pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
             pmView.onUnbindPresentationModel()
-            pmView.compositeDisposable.clear()
+            pmView.compositeUnbind.clear()
             binded = false
         }
     }

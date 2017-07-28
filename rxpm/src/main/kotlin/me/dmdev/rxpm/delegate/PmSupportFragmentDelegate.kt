@@ -58,7 +58,7 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val fragment
 
     private fun bind() {
         if (!binded) {
-            pmView.onBindPresentationModel()
+            pmView.onBindPresentationModel(pm)
             pm.lifecycleConsumer.accept(Lifecycle.BINDED)
             binded = true
         }
@@ -68,7 +68,7 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val fragment
         if (binded) {
             pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
             pmView.onUnbindPresentationModel()
-            pmView.compositeDisposable.clear()
+            pmView.compositeUnbind.clear()
             binded = false
         }
     }
