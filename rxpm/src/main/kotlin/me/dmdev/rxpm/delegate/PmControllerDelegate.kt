@@ -9,28 +9,32 @@ import me.dmdev.rxpm.PresentationModel.Lifecycle
  */
 class PmControllerDelegate<out PM : PresentationModel>(private val pmView: PmView<PM>) {
 
-    val pm :PM = pmView.providePresentationModel()
+    val presentationModel:PM = pmView.providePresentationModel()
 
     fun onCreate() {
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
+        presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)
     }
 
     fun onCreateView() {
-        pmView.onBindPresentationModel()
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
+        pmView.onBindPresentationModel(presentationModel)
+        presentationModel.lifecycleConsumer.accept(Lifecycle.BINDED)
     }
 
-    fun onAttach() {}
+    fun onAttach() {
+        // May be used in the future
+    }
 
-    fun onDetach() {}
+    fun onDetach() {
+        // May be used in the future
+    }
 
     fun onDestroyView() {
-        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+        presentationModel.lifecycleConsumer.accept(Lifecycle.UNBINDED)
         pmView.onUnbindPresentationModel()
-        pmView.compositeDisposable.clear()
+        pmView.compositeUnbind.clear()
     }
 
     fun onDestroy() {
-        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        presentationModel.lifecycleConsumer.accept(Lifecycle.DESTROYED)
     }
 }
