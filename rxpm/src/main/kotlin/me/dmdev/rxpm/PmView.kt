@@ -36,7 +36,9 @@ interface PmView<out PM : PresentationModel> {
     /**
      * Called when the view unbinds from the [Presentation Model][presentationModel].
      */
-    fun onUnbindPresentationModel()
+    fun onUnbindPresentationModel() {
+        // Nо-op. Override if you need it.
+    }
 
     /**
      * Local extension to subscribe to the observable and add it to the subscriptions list
