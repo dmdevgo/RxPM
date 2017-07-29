@@ -46,6 +46,7 @@ dependencies {
     provided rootProject.ext.supportAppCompat
     provided rootProject.ext.supportDesign
     provided rootProject.ext.conductor
+    provided rootProject.ext.googleMaps
 
     // Rx
     compile rootProject.ext.rxJava2

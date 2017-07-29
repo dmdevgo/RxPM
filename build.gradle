@@ -30,6 +30,9 @@ ext {
     supportAppCompat = "com.android.support:appcompat-v7:$supportVersion"
     supportDesign = "com.android.support:design:$supportVersion"
 
+    playServicesVersion = '10.2.4'
+    googleMaps = "com.google.android.gms:play-services-maps:$playServicesVersion"
+
     kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     rxJava2 = "io.reactivex.rxjava2:rxjava:2.1.0"
