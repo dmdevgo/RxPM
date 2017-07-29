@@ -8,7 +8,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.delegate.PmControllerDelegate
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -28,7 +27,7 @@ class PmControllerDelegateTest {
         compositeDisposableMock = mock<CompositeDisposable>()
 
         pmViewMock = mock<PmView<PresentationModel>>()
-        whenever(pmViewMock.compositeDisposable).thenReturn(compositeDisposableMock)
+        whenever(pmViewMock.compositeUnbind).thenReturn(compositeDisposableMock)
         whenever(pmViewMock.providePresentationModel()).thenReturn(pm)
     }
 
@@ -40,10 +39,10 @@ class PmControllerDelegateTest {
         delegate.onCreate()
 
         verify(pmViewMock).providePresentationModel()
-        assertEquals(pm, delegate.pm)
+        assertEquals(pm, delegate.presentationModel)
 
         delegate.onCreateView()
-        verify(pmViewMock).onBindPresentationModel()
+        verify(pmViewMock).onBindPresentationModel(pm)
 
         delegate.onAttach()
         delegate.onDetach()

@@ -11,41 +11,43 @@ import me.jeevuz.outlast.predefined.FragmentOutlast
 /**
  * @author Dmitriy Gorbunov
  */
-class PmSupportFragmentDelegate<out PM : PresentationModel>(private val fragment: Fragment,
-                                                            private val pmView: PmView<PM>) {
+class PmSupportFragmentDelegate<out PM : PresentationModel>(private val pmView: PmView<PM>) {
 
+    init {
+        require(pmView is Fragment) {"This class can be used only with support Fragment PmView!"}
+    }
 
-    private lateinit var outlastDelegate: FragmentOutlast<PmWrapper<PM>>
+    private lateinit var outlast: FragmentOutlast<PmWrapper<PM>>
     private var binded = false
 
-    val pm: PM get() = outlastDelegate.outlasting.pm
+    val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
     fun onCreate(savedInstanceState: Bundle?) {
-        outlastDelegate = FragmentOutlast(fragment,
-                                          Outlasting.Creator<PmWrapper<PM>> {
+        outlast = FragmentOutlast(pmView as Fragment,
+                                  Outlasting.Creator<PmWrapper<PM>> {
                                               PmWrapper(pmView.providePresentationModel())
                                           },
-                                          savedInstanceState)
-        outlastDelegate.outlasting.pm // D>- create outlasting object
+                                  savedInstanceState)
+        presentationModel // Create lazy presentation model now
     }
 
     fun onStart() {
-        outlastDelegate.onStart()
+        outlast.onStart()
         bind()
     }
 
     fun onResume() {
-        outlastDelegate.onResume()
+        outlast.onResume()
         bind()
     }
 
     fun onSaveInstanceState(outState: Bundle) {
-        outlastDelegate.onSaveInstanceState(outState)
+        outlast.onSaveInstanceState(outState)
         unbind()
     }
 
     fun onPause() {
-        //For symmetry, may be used in the future
+        // For symmetry, may be used in the future
     }
 
     fun onStop() {
@@ -53,22 +55,22 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val fragment
     }
 
     fun onDestroy() {
-        outlastDelegate.onDestroy()
+        outlast.onDestroy()
     }
 
     private fun bind() {
         if (!binded) {
-            pmView.onBindPresentationModel()
-            pm.lifecycleConsumer.accept(Lifecycle.BINDED)
+            pmView.onBindPresentationModel(presentationModel)
+            presentationModel.lifecycleConsumer.accept(Lifecycle.BINDED)
             binded = true
         }
     }
 
     private fun unbind() {
         if (binded) {
-            pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+            presentationModel.lifecycleConsumer.accept(Lifecycle.UNBINDED)
             pmView.onUnbindPresentationModel()
-            pmView.compositeDisposable.clear()
+            pmView.compositeUnbind.clear()
             binded = false
         }
     }
