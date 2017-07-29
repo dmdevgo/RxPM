@@ -10,6 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.base.PmSupportFragment
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -30,19 +31,19 @@ class PmSupportFragmentDelegateTest {
         pm = spy<PresentationModel>()
         compositeDisposableMock = mock<CompositeDisposable>()
 
-        pmViewMock = mock<PmView<PresentationModel>>()
+        pmViewMock = mock<PmSupportFragment<PresentationModel>>()
         whenever(pmViewMock.compositeUnbind).thenReturn(compositeDisposableMock)
         whenever(pmViewMock.providePresentationModel()).thenReturn(pm)
 
         activityMock = mock<FragmentActivity>()
-        fragmentMock = mock<Fragment>()
+        fragmentMock = pmViewMock as Fragment
         whenever(fragmentMock.activity).thenReturn(activityMock)
     }
 
     @Test
     fun testViewLifeCycle() {
 
-        val delegate = PmSupportFragmentDelegate(fragmentMock, pmViewMock)
+        val delegate = PmSupportFragmentDelegate(pmViewMock)
 
         delegate.onCreate(null)
 
@@ -71,7 +72,7 @@ class PmSupportFragmentDelegateTest {
         val testObserver = TestObserver<PresentationModel.Lifecycle>()
         pm.lifecycleState.subscribe(testObserver)
 
-        val delegate = PmSupportFragmentDelegate(fragmentMock, pmViewMock)
+        val delegate = PmSupportFragmentDelegate(pmViewMock)
 
         delegate.onCreate(null)
         delegate.onStart()

@@ -20,7 +20,7 @@ abstract class PmSupportFragment<out PM : PresentationModel> : Fragment(), PmVie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        delegate = PmSupportFragmentDelegate(this, this)
+        delegate = PmSupportFragmentDelegate(this)
         delegate.onCreate(savedInstanceState)
     }
 

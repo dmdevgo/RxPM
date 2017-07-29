@@ -11,8 +11,11 @@ import me.jeevuz.outlast.predefined.ActivityOutlast
 /**
  * @author Dmitriy Gorbunov
  */
-class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activity,
-                                                     private val pmView: PmView<PM>) {
+class PmActivityDelegate<out PM : PresentationModel>(private val pmView: PmView<PM>) {
+
+    init {
+        require(pmView is Activity) {"This class can be used only with Activity PmView!"}
+    }
 
     private lateinit var outlast: ActivityOutlast<PmWrapper<PM>>
     private var binded = false
@@ -20,7 +23,7 @@ class PmActivityDelegate<out PM : PresentationModel>(private val activity: Activ
     val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
     fun onCreate(savedInstanceState: Bundle?) {
-        outlast = ActivityOutlast(activity,
+        outlast = ActivityOutlast(pmView as Activity,
                                   Outlasting.Creator<PmWrapper<PM>> {
                                               PmWrapper(pmView.providePresentationModel())
                                           },

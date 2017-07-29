@@ -11,9 +11,11 @@ import me.jeevuz.outlast.predefined.FragmentOutlast
 /**
  * @author Dmitriy Gorbunov
  */
-class PmSupportFragmentDelegate<out PM : PresentationModel>(private val fragment: Fragment,
-                                                            private val pmView: PmView<PM>) {
+class PmSupportFragmentDelegate<out PM : PresentationModel>(private val pmView: PmView<PM>) {
 
+    init {
+        require(pmView is Fragment) {"This class can be used only with support Fragment PmView!"}
+    }
 
     private lateinit var outlast: FragmentOutlast<PmWrapper<PM>>
     private var binded = false
@@ -21,7 +23,7 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val fragment
     val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
     fun onCreate(savedInstanceState: Bundle?) {
-        outlast = FragmentOutlast(fragment,
+        outlast = FragmentOutlast(pmView as Fragment,
                                   Outlasting.Creator<PmWrapper<PM>> {
                                               PmWrapper(pmView.providePresentationModel())
                                           },

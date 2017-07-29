@@ -20,7 +20,7 @@ abstract class PmSupportActivity<out PM : PresentationModel> : AppCompatActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        delegate = PmActivityDelegate(this, this)
+        delegate = PmActivityDelegate(this)
         delegate.onCreate(savedInstanceState)
     }
 
