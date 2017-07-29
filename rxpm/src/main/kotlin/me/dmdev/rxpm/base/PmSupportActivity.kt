@@ -13,6 +13,7 @@ import me.dmdev.rxpm.delegate.PmActivityDelegate
 abstract class PmSupportActivity<out PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
 
     private lateinit var delegate: PmActivityDelegate<PM>
+
     final override val compositeUnbind = CompositeDisposable()
 
     final override val presentationModel get() = delegate.presentationModel

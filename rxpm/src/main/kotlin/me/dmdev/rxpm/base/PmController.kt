@@ -55,5 +55,4 @@ abstract class PmController<out PM : PresentationModel>(args: Bundle? = null) : 
         super.onDestroy()
         delegate.onDestroy()
     }
-
 }
