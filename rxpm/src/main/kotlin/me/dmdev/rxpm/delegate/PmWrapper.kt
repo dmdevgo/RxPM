@@ -7,7 +7,7 @@ import me.jeevuz.outlast.Outlasting
 /**
  * @author Dmitriy Gorbunov
  */
-class PmWrapper<out PM : PresentationModel>(val presentationModel: PM) : Outlasting {
+internal class PmWrapper<out PM : PresentationModel>(val presentationModel: PM) : Outlasting {
 
     override fun onCreate() {
         presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)
