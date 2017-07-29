@@ -10,7 +10,7 @@ import me.dmdev.rxpm.delegate.PmActivityDelegate
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class PmSupportActivity<out PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
+abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
 
     private lateinit var delegate: PmActivityDelegate<PM>
 

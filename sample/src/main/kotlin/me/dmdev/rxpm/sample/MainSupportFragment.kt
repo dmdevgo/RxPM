@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmSupportFragment
 import timber.log.Timber
 
@@ -23,11 +22,12 @@ class MainSupportFragment : PmSupportFragment<FragmentPm>() {
         return FragmentPm()
     }
 
-    override fun onBindPresentationModel(pm: PresentationModel) {
+    override fun onBindPresentationModel(pm: FragmentPm) {
         Timber.i("onBindPresentationModel")
     }
 
     override fun onUnbindPresentationModel() {
         Timber.i("onUnbindPresentationModel")
     }
+
 }

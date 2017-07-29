@@ -10,7 +10,7 @@ import me.dmdev.rxpm.delegate.PmSupportFragmentDelegate
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class PmSupportFragment<out PM : PresentationModel> : Fragment(), PmView<PM> {
+abstract class PmSupportFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
 
     private lateinit var delegate: PmSupportFragmentDelegate<PM>
 

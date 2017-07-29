@@ -12,7 +12,7 @@ import me.dmdev.rxpm.delegate.PmControllerDelegate
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class PmController<out PM : PresentationModel>(args: Bundle? = null) : RestoreViewOnCreateController(args),
+abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : RestoreViewOnCreateController(args),
                                                                                 PmView<PM> {
 
     @Suppress("LeakingThis")

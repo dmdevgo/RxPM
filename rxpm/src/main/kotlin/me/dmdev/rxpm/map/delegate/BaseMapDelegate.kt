@@ -41,13 +41,13 @@ open class BaseMapDelegate<PM : MapPresentationModel>(private val mapPmView: Map
         mapView?.onCreate(savedInstanceState?.getBundle(MAP_VIEW_BUNDLE_KEY))
         mapView?.getMapAsync {
             googleMap = it
-            mapPmView.onBindMapPresentationModel(mapPmView.pm, it)
-            mapPmView.pm.mapReadyConsumer.accept(true)
+            mapPmView.onBindMapPresentationModel(mapPmView.presentationModel, it)
+            mapPmView.presentationModel.mapReadyConsumer.accept(true)
         }
     }
 
     protected fun onDestroyMapView() {
-        mapPmView.pm.mapReadyConsumer.accept(false)
+        mapPmView.presentationModel.mapReadyConsumer.accept(false)
         mapPmView.onUnbindMapPresentationModel()
         mapView?.onDestroy()
         mapView = null
