@@ -9,7 +9,7 @@ import io.reactivex.functions.Consumer
 /**
  * @author Dmitriy Gorbunov
  */
-interface PmView<out PM : PresentationModel> {
+interface PmView<PM : PresentationModel> {
 
     /**
      * [PresentationModel] for this view.
@@ -30,7 +30,7 @@ interface PmView<out PM : PresentationModel> {
      * Bind to the [Presentation Model][presentationModel] in that method.
      * Use convenient extensions [bindTo] (all subscriptions done using it will be cleared on [unbind][compositeUnbind]).
      */
-    fun onBindPresentationModel(pm: PresentationModel)
+    fun onBindPresentationModel(pm: PM)
 
 
     /**
