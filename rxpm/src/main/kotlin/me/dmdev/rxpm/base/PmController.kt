@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.RestoreViewOnCreateController
+import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.delegate.PmControllerDelegate
@@ -17,6 +18,8 @@ abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : Rest
 
     @Suppress("LeakingThis")
     private val delegate: PmControllerDelegate<PM> = PmControllerDelegate(this)
+
+    final override val compositeUnbind = CompositeDisposable()
 
     final override val presentationModel get() = delegate.presentationModel
 
