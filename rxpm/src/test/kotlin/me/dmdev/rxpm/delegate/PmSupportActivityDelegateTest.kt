@@ -9,6 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.base.PmSupportActivity
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -17,7 +18,7 @@ import kotlin.test.assertEquals
 /**
  * @author Dmitriy Gorbunov
  */
-class PmSupportActivityDelegateTest {
+class PmSupportActivityDelegateTest { // TODO: Rename this class
 
     lateinit var pm: PresentationModel
     lateinit var compositeDisposableMock: CompositeDisposable
@@ -29,17 +30,17 @@ class PmSupportActivityDelegateTest {
         pm = spy<PresentationModel>()
         compositeDisposableMock = mock<CompositeDisposable>()
 
-        pmViewMock = mock<PmView<PresentationModel>>()
+        pmViewMock = mock<PmSupportActivity<PresentationModel>>()
         whenever(pmViewMock.compositeUnbind).thenReturn(compositeDisposableMock)
         whenever(pmViewMock.providePresentationModel()).thenReturn(pm)
 
-        activityMock = mock<Activity>()
+        activityMock = pmViewMock as Activity
     }
 
     @Test
     fun testViewLifeCycle() {
 
-        val delegate = PmActivityDelegate(activityMock, pmViewMock)
+        val delegate = PmActivityOrFragmentDelegate(pmViewMock)
 
         delegate.onCreate(null)
 
@@ -67,7 +68,7 @@ class PmSupportActivityDelegateTest {
         val testObserver = TestObserver<PresentationModel.Lifecycle>()
         pm.lifecycleState.subscribe(testObserver)
 
-        val delegate = PmActivityDelegate(activityMock, pmViewMock)
+        val delegate = PmActivityOrFragmentDelegate(pmViewMock)
 
         delegate.onCreate(null)
         delegate.onStart()

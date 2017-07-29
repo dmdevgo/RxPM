@@ -5,21 +5,21 @@ import android.support.v7.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.delegate.PmActivityDelegate
+import me.dmdev.rxpm.delegate.PmActivityOrFragmentDelegate
 
 /**
  * @author Dmitriy Gorbunov
  */
 abstract class PmSupportActivity<out PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
 
-    private lateinit var delegate: PmActivityDelegate<PM>
+    private lateinit var delegate: PmActivityOrFragmentDelegate<PM>
     final override val compositeUnbind = CompositeDisposable()
 
     final override val presentationModel get() = delegate.presentationModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        delegate = PmActivityDelegate(this, this)
+        delegate = PmActivityOrFragmentDelegate(this)
         delegate.onCreate(savedInstanceState)
     }
 

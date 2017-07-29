@@ -1,31 +1,41 @@
 package me.dmdev.rxpm.delegate
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.PresentationModel.Lifecycle
+import me.jeevuz.outlast.Outlast
 import me.jeevuz.outlast.Outlasting
+import me.jeevuz.outlast.predefined.ActivityOutlast
 import me.jeevuz.outlast.predefined.FragmentOutlast
 
 /**
  * @author Dmitriy Gorbunov
  */
-class PmSupportFragmentDelegate<out PM : PresentationModel>(private val fragment: Fragment,
-                                                            private val pmView: PmView<PM>) {
+class PmActivityOrFragmentDelegate<out PM : PresentationModel>(private val pmView: PmView<PM>) {
 
-
-    private lateinit var outlast: FragmentOutlast<PmWrapper<PM>>
+    private lateinit var outlast: Outlast<PmWrapper<PM>>
     private var binded = false
 
     val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
     fun onCreate(savedInstanceState: Bundle?) {
-        outlast = FragmentOutlast(fragment,
-                                  Outlasting.Creator<PmWrapper<PM>> {
-                                              PmWrapper(pmView.providePresentationModel())
-                                          },
-                                  savedInstanceState)
+
+        val outlastingCreator = Outlasting.Creator<PmWrapper<PM>> {
+            PmWrapper(pmView.providePresentationModel())
+        }
+
+        // Choose outlast implementation
+        outlast = when(pmView) {
+            is Activity -> ActivityOutlast(pmView, outlastingCreator, savedInstanceState)
+            is Fragment -> FragmentOutlast(pmView, outlastingCreator, savedInstanceState)
+
+            else -> throw IllegalArgumentException(
+                    "This class can be used only with PmView that is Activity or Fragment")
+        }
+
         presentationModel // Create lazy presentation model now
     }
 
@@ -72,4 +82,5 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val fragment
             binded = false
         }
     }
+
 }
