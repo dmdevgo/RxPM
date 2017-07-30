@@ -16,22 +16,22 @@ class PmControllerDelegate<out PM : PresentationModel>(private val pmView: PmVie
     }
 
     fun onCreateView() {
+        // May be used in the future
+    }
+
+    fun onAttach() {
         pmView.onBindPresentationModel(presentationModel)
         presentationModel.lifecycleConsumer.accept(Lifecycle.BINDED)
     }
 
-    fun onAttach() {
-        // May be used in the future
-    }
-
     fun onDetach() {
-        // May be used in the future
-    }
-
-    fun onDestroyView() {
         presentationModel.lifecycleConsumer.accept(Lifecycle.UNBINDED)
         pmView.onUnbindPresentationModel()
         pmView.compositeUnbind.clear()
+    }
+
+    fun onDestroyView() {
+        // May be used in the future
     }
 
     fun onDestroy() {
