@@ -2,11 +2,12 @@ package me.dmdev.rxpm.map.delegate
 
 import android.os.Bundle
 import android.view.View
+import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.map.MapPmView
 import me.dmdev.rxpm.map.MapPresentationModel
 
-class MapActivityDelegate<PM : MapPresentationModel>(mapPmView: MapPmView<PM>)
-    : BaseMapDelegate<PM>(mapPmView) {
+class MapActivityDelegate<PM>(mapPmView: MapPmView<PM>) : BaseMapDelegate<PM>(mapPmView)
+where PM : PresentationModel, PM : MapPresentationModel {
 
     fun onPostCreate(contentView: View, savedInstanceState: Bundle?) {
         onCreateMapView(contentView, savedInstanceState)

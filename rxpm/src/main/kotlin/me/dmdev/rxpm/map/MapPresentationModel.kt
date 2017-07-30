@@ -1,20 +1,18 @@
 package me.dmdev.rxpm.map
 
-import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.asConsumer
+import io.reactivex.functions.Consumer
 import me.dmdev.rxpm.bufferWhileIdle
 
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class MapPresentationModel : PresentationModel() {
+interface MapPresentationModel {
 
-    private val mapReady = BehaviorRelay.createDefault<Boolean>(false)
-    val mapReadyConsumer = mapReady.asConsumer()
+    val mapReadyConsumer: Consumer<Boolean>
+    val mapReadyState: Observable<Boolean>
 
-    protected fun <T> Observable<T>.bufferWhileMapUnbind(bufferSize: Int? = null): Observable<T> {
-        return this.bufferWhileIdle(mapReady.map { !it }, bufferSize)
+    fun <T> Observable<T>.bufferWhileMapUnbind(bufferSize: Int? = null): Observable<T> {
+        return this.bufferWhileIdle(mapReadyState.map { !it }, bufferSize)
     }
 }

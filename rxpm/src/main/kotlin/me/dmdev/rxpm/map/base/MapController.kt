@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
+import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmController
 import me.dmdev.rxpm.map.MapPmView
 import me.dmdev.rxpm.map.MapPresentationModel
@@ -12,8 +13,9 @@ import me.dmdev.rxpm.map.delegate.MapPmControllerDelegate
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class MapController<PM : MapPresentationModel>(args: Bundle? = null) : PmController<PM>(args),
-                                                                                MapPmView<PM> {
+abstract class MapController<PM>(args: Bundle? = null) : PmController<PM>(args),
+                                                         MapPmView<PM>
+where PM : PresentationModel, PM : MapPresentationModel {
 
     @Suppress("LeakingThis")
     private val mapDelegate = MapPmControllerDelegate(this)

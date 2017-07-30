@@ -5,13 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
+import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.map.MapPmView
 import me.dmdev.rxpm.map.MapPresentationModel
 
 /**
  * @author Dmitriy Gorbunov
  */
-open class BaseMapDelegate<PM : MapPresentationModel>(private val mapPmView: MapPmView<PM>) {
+open class BaseMapDelegate<PM>(private val mapPmView: MapPmView<PM>)
+where PM : PresentationModel, PM : MapPresentationModel {
 
     companion object {
         private const val MAP_VIEW_BUNDLE_KEY = "map_view_bundle"

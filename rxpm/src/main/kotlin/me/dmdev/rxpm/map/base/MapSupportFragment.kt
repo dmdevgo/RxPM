@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmSupportFragment
 import me.dmdev.rxpm.map.MapPmView
 import me.dmdev.rxpm.map.MapPresentationModel
@@ -12,8 +13,9 @@ import me.dmdev.rxpm.map.delegate.MapPmSupportFragmentDelegate
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class MapSupportFragment<PM : MapPresentationModel> : PmSupportFragment<PM>(),
-                                                               MapPmView<PM> {
+abstract class MapSupportFragment<PM> : PmSupportFragment<PM>(),
+                                        MapPmView<PM>
+where PM : PresentationModel, PM : MapPresentationModel {
 
     private lateinit var mapDelegate: MapPmSupportFragmentDelegate<PM>
 
