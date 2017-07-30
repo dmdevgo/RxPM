@@ -44,7 +44,7 @@ interface PmView<PM : PresentationModel> {
      * Local extension to subscribe to the observable and add it to the subscriptions list
      * that will be CLEARED [ON UNBIND][compositeUnbind], so use it ONLY in [onBindPresentationModel].
      */
-    fun <T> Observable<T>.bindTo(consumer: Consumer<in T>) {
+    infix fun <T> Observable<T>.bindTo(consumer: Consumer<in T>) {
         compositeUnbind.add(
                 this
                         .observeOn(AndroidSchedulers.mainThread())
@@ -56,7 +56,7 @@ interface PmView<PM : PresentationModel> {
      * Local extension to subscribe to the observable and add it to the subscriptions list
      * that will be CLEARED [ON UNBIND][compositeUnbind], so use it ONLY in [onBindPresentationModel].
      */
-    fun <T> Observable<T>.bindTo(consumer: (T) -> Unit) {
+    infix fun <T> Observable<T>.bindTo(consumer: (T) -> Unit) {
         compositeUnbind.add(
                 this
                         .observeOn(AndroidSchedulers.mainThread())
@@ -67,14 +67,14 @@ interface PmView<PM : PresentationModel> {
     /**
      * Local extension to pass the empty value to the [Consumer].
      */
-    fun passTo(consumer: Consumer<Unit>) {
+    infix fun passTo(consumer: Consumer<Unit>) {
         consumer.accept(Unit)
     }
 
     /**
      * Local extension to pass the value to the [Consumer].
      */
-    fun <T> T.passTo(consumer: Consumer<T>) {
+    infix fun <T> T.passTo(consumer: Consumer<T>) {
         consumer.accept(this)
     }
 
