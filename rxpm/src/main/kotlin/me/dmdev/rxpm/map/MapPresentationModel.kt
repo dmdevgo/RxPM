@@ -1,18 +1,12 @@
 package me.dmdev.rxpm.map
 
-import io.reactivex.Observable
-import io.reactivex.functions.Consumer
-import me.dmdev.rxpm.bufferWhileIdle
+import me.dmdev.rxpm.PresentationModel
 
 /**
  * @author Dmitriy Gorbunov
  */
-interface MapPresentationModel {
+class MapPresentationModel : PresentationModel(),
+                             MapPmExtension {
 
-    val mapReadyConsumer: Consumer<Boolean>
-    val mapReadyState: Observable<Boolean>
-
-    fun <T> Observable<T>.bufferWhileMapUnbind(bufferSize: Int? = null): Observable<T> {
-        return this.bufferWhileIdle(mapReadyState.map { !it }, bufferSize)
-    }
+    override val mapReadiness = MapPmExtension.MapReadiness()
 }

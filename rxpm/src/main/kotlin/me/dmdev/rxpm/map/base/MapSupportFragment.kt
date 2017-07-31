@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmSupportFragment
 import me.dmdev.rxpm.map.MapPmView
-import me.dmdev.rxpm.map.MapPresentationModel
+import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.delegate.MapPmSupportFragmentDelegate
 
 /**
@@ -15,7 +15,7 @@ import me.dmdev.rxpm.map.delegate.MapPmSupportFragmentDelegate
  */
 abstract class MapSupportFragment<PM> : PmSupportFragment<PM>(),
                                         MapPmView<PM>
-where PM : PresentationModel, PM : MapPresentationModel {
+where PM : PresentationModel, PM : MapPmExtension {
 
     private lateinit var mapDelegate: MapPmSupportFragmentDelegate<PM>
 

@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.MapPmView
-import me.dmdev.rxpm.map.MapPresentationModel
 
 /**
  * @author Dmitriy Gorbunov
  */
 open class BaseMapDelegate<PM>(private val mapPmView: MapPmView<PM>)
-where PM : PresentationModel, PM : MapPresentationModel {
+where PM : PresentationModel, PM : MapPmExtension {
 
     companion object {
         private const val MAP_VIEW_BUNDLE_KEY = "map_view_bundle"
@@ -44,12 +44,12 @@ where PM : PresentationModel, PM : MapPresentationModel {
         mapView?.getMapAsync {
             googleMap = it
             mapPmView.onBindMapPresentationModel(mapPmView.presentationModel, it)
-            mapPmView.presentationModel.mapReadyConsumer.accept(true)
+            mapPmView.presentationModel.mapReadiness.consumer.accept(true)
         }
     }
 
     protected fun onDestroyMapView() {
-        mapPmView.presentationModel.mapReadyConsumer.accept(false)
+        mapPmView.presentationModel.mapReadiness.consumer.accept(false)
         mapPmView.onUnbindMapPresentationModel()
         mapView?.onDestroy()
         mapView = null

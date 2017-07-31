@@ -4,7 +4,7 @@ import android.os.Bundle
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmSupportActivity
 import me.dmdev.rxpm.map.MapPmView
-import me.dmdev.rxpm.map.MapPresentationModel
+import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.delegate.MapActivityDelegate
 
 /**
@@ -12,7 +12,7 @@ import me.dmdev.rxpm.map.delegate.MapActivityDelegate
  */
 abstract class MapSupportActivity<PM> : PmSupportActivity<PM>(),
                                         MapPmView<PM>
-where PM : PresentationModel, PM : MapPresentationModel {
+where PM : PresentationModel, PM : MapPmExtension {
 
     private lateinit var mapDelegate: MapActivityDelegate<PM>
 
