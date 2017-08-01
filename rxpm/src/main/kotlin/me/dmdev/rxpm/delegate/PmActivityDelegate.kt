@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Bundle
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.PresentationModel.Lifecycle
 import me.jeevuz.outlast.Outlasting
 import me.jeevuz.outlast.predefined.ActivityOutlast
 
@@ -18,7 +17,7 @@ class PmActivityDelegate<out PM : PresentationModel>(private val pmView: PmView<
     }
 
     private lateinit var outlast: ActivityOutlast<PmWrapper<PM>>
-    private var binded = false
+    private lateinit var binder: PmBinder<PM>
 
     val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
@@ -29,21 +28,22 @@ class PmActivityDelegate<out PM : PresentationModel>(private val pmView: PmView<
                                           },
                                   savedInstanceState)
         presentationModel // Create lazy presentation model now
+        binder = PmBinder(presentationModel, pmView)
     }
 
     fun onStart() {
         outlast.onStart()
-        bind()
+        binder.bind()
     }
 
     fun onResume() {
         outlast.onResume()
-        bind()
+        binder.bind()
     }
 
     fun onSaveInstanceState(outState: Bundle) {
         outlast.onSaveInstanceState(outState)
-        unbind()
+        binder.unbind()
     }
 
     fun onPause() {
@@ -51,28 +51,11 @@ class PmActivityDelegate<out PM : PresentationModel>(private val pmView: PmView<
     }
 
     fun onStop() {
-        unbind()
+        binder.unbind()
     }
 
     fun onDestroy() {
         outlast.onDestroy()
-    }
-
-    private fun bind() {
-        if (!binded) {
-            pmView.onBindPresentationModel(presentationModel)
-            presentationModel.lifecycleConsumer.accept(Lifecycle.BINDED)
-            binded = true
-        }
-    }
-
-    private fun unbind() {
-        if (binded) {
-            presentationModel.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-            pmView.onUnbindPresentationModel()
-            pmView.compositeUnbind.clear()
-            binded = false
-        }
     }
 
 }
