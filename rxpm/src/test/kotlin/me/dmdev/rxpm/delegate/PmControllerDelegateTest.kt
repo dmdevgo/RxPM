@@ -42,14 +42,15 @@ class PmControllerDelegateTest {
         assertEquals(pm, delegate.presentationModel)
 
         delegate.onCreateView()
-        verify(pmViewMock).onBindPresentationModel(pm)
 
         delegate.onAttach()
-        delegate.onDetach()
+        verify(pmViewMock).onBindPresentationModel(pm)
 
-        delegate.onDestroyView()
+        delegate.onDetach()
         verify(pmViewMock).onUnbindPresentationModel()
         verify(compositeDisposableMock).clear()
+
+        delegate.onDestroyView()
 
         delegate.onDestroy()
 
