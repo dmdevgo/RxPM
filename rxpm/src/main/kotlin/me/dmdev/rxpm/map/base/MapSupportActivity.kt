@@ -1,63 +1,68 @@
 package me.dmdev.rxpm.map.base
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.base.PmSupportActivity
 import me.dmdev.rxpm.map.MapPmView
 import me.dmdev.rxpm.map.MapPmExtension
-import me.dmdev.rxpm.map.delegate.MapActivityDelegate
+import me.dmdev.rxpm.map.delegate.MapPmActivityDelegate
 
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class MapSupportActivity<PM> : PmSupportActivity<PM>(),
-                                        MapPmView<PM>
+abstract class MapSupportActivity<PM> : AppCompatActivity(), MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
-    private lateinit var mapDelegate: MapActivityDelegate<PM>
+    private lateinit var delegate: MapPmActivityDelegate<PM>
+
+    final override val compositeUnbind = CompositeDisposable()
+
+    final override val presentationModel get() = delegate.presentationModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mapDelegate = MapActivityDelegate(this)
+        delegate = MapPmActivityDelegate(this)
+        delegate.onCreate(savedInstanceState)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        mapDelegate.onPostCreate(this.findViewById(android.R.id.content), savedInstanceState)
+        delegate.onPostCreate(this.findViewById(android.R.id.content), savedInstanceState)
     }
 
     override fun onStart() {
         super.onStart()
-        mapDelegate.onStart()
+        delegate.onStart()
     }
 
     override fun onResume() {
         super.onResume()
-        mapDelegate.onResume()
+        delegate.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mapDelegate.onPause()
+        delegate.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        mapDelegate.onSaveInstanceState(outState)
+        delegate.onSaveInstanceState(outState)
     }
 
     override fun onStop() {
         super.onStop()
-        mapDelegate.onStop()
+        delegate.onStop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapDelegate.onDestroy()
+        delegate.onDestroy()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapDelegate.onLowMemory()
+        delegate.onLowMemory()
     }
 }

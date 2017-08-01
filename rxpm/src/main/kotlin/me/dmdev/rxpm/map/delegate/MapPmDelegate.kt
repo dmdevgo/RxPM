@@ -12,30 +12,27 @@ import me.dmdev.rxpm.map.MapPmView
 /**
  * @author Dmitriy Gorbunov
  */
-open class BaseMapDelegate<PM>(private val mapPmView: MapPmView<PM>)
+internal class MapPmDelegate<PM>(private val pm: PM,
+                                 private val mapPmView: MapPmView<PM>)
 where PM : PresentationModel, PM : MapPmExtension {
 
     companion object {
         private const val MAP_VIEW_BUNDLE_KEY = "map_view_bundle"
     }
 
-    protected var mapView: MapView?
+    private var mapView: MapView?
         get() = mapPmView.mapView
         set(value) {
             mapPmView.mapView = value
         }
 
-    protected var googleMap: GoogleMap?
+    private var googleMap: GoogleMap?
         get() = mapPmView.googleMap
         set(value) {
             mapPmView.googleMap = value
         }
 
-    fun onLowMemory() {
-        mapView?.onLowMemory()
-    }
-
-    protected fun onCreateMapView(view: View, savedInstanceState: Bundle?) {
+    fun onCreateMapView(view: View, savedInstanceState: Bundle?) {
         mapView = findMapView(view) ?: throw IllegalArgumentException("MapView not found")
         // *** IMPORTANT ***
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
@@ -43,26 +40,53 @@ where PM : PresentationModel, PM : MapPmExtension {
         mapView?.onCreate(savedInstanceState?.getBundle(MAP_VIEW_BUNDLE_KEY))
         mapView?.getMapAsync {
             googleMap = it
-            mapPmView.onBindMapPresentationModel(mapPmView.presentationModel, it)
-            mapPmView.presentationModel.mapReadiness.consumer.accept(true)
+            mapPmView.onBindMapPresentationModel(pm, it)
+            pm.mapReadiness.consumer.accept(true)
         }
     }
 
-    protected fun onDestroyMapView() {
-        mapPmView.presentationModel.mapReadiness.consumer.accept(false)
-        mapPmView.onUnbindMapPresentationModel()
-        mapView?.onDestroy()
-        mapView = null
-        googleMap = null
+    fun onStart() {
+        mapView?.onStart()
     }
 
-    protected fun saveInstanceState(outState: Bundle) {
+    fun onResume() {
+        mapView?.onResume()
+    }
+
+    fun onPause() {
+        mapView?.onPause()
+    }
+
+    fun onSaveInstanceState(outState: Bundle) {
         var mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY)
         if (mapViewBundle == null) {
             mapViewBundle = Bundle()
             outState.putBundle(MAP_VIEW_BUNDLE_KEY, mapViewBundle)
         }
         mapView?.onSaveInstanceState(mapViewBundle)
+    }
+
+    fun onStop() {
+        mapView?.onStop()
+    }
+
+    fun onDestroyMapView() {
+        mapPmView.presentationModel.mapReadiness.consumer.accept(false)
+        mapView?.onDestroy()
+        mapView = null
+        googleMap = null
+    }
+
+    fun onLowMemory() {
+        mapView?.onLowMemory()
+    }
+
+    fun onBindPm() {
+        // TODO
+    }
+
+    fun onUnbindPm() {
+        // TODO
     }
 
     private fun findMapView(view: View): MapView? {

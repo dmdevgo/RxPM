@@ -3,17 +3,14 @@ package me.dmdev.rxpm.map.delegate
 import android.os.Bundle
 import android.view.View
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.delegate.PmSupportFragmentDelegate
+import me.dmdev.rxpm.delegate.PmActivityDelegate
 import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.MapPmView
 
-/**
- * @author Dmitriy Gorbunov
- */
-class MapPmSupportFragmentDelegate<out PM>(private val mapPmView: MapPmView<PM>)
+class MapPmActivityDelegate<out PM>(private val mapPmView: MapPmView<PM>)
 where PM : PresentationModel, PM : MapPmExtension {
 
-    private val pmDelegate = PmSupportFragmentDelegate(mapPmView)
+    private val pmDelegate = PmActivityDelegate(mapPmView)
     private lateinit var mapPmDelegate: MapPmDelegate<PM>
 
     val presentationModel get() = pmDelegate.presentationModel
@@ -23,8 +20,8 @@ where PM : PresentationModel, PM : MapPmExtension {
         mapPmDelegate = MapPmDelegate(pmDelegate.presentationModel, mapPmView)
     }
 
-    fun onCreateView(view: View, savedInstanceState: Bundle?) {
-        mapPmDelegate.onCreateMapView(view, savedInstanceState)
+    fun onPostCreate(contentView: View, savedInstanceState: Bundle?) {
+        mapPmDelegate.onCreateMapView(contentView, savedInstanceState)
     }
 
     fun onStart() {
@@ -52,12 +49,9 @@ where PM : PresentationModel, PM : MapPmExtension {
         mapPmDelegate.onStop()
     }
 
-    fun onDestroyView() {
-        mapPmDelegate.onDestroyMapView()
-    }
-
     fun onDestroy() {
         pmDelegate.onDestroy()
+        mapPmDelegate.onDestroyMapView()
     }
 
     fun onLowMemory() {

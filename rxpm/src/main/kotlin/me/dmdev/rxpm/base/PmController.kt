@@ -14,7 +14,7 @@ import me.dmdev.rxpm.delegate.PmControllerDelegate
  * @author Dmitriy Gorbunov
  */
 abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : RestoreViewOnCreateController(args),
-                                                                                PmView<PM> {
+                                                                            PmView<PM> {
 
     @Suppress("LeakingThis")
     private val delegate: PmControllerDelegate<PM> = PmControllerDelegate(this)
