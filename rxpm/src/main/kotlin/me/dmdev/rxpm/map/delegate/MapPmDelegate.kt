@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.delegate.PmBinder
 import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.MapPmView
 
@@ -13,11 +14,24 @@ import me.dmdev.rxpm.map.MapPmView
  * @author Dmitriy Gorbunov
  */
 internal class MapPmDelegate<PM>(private val pm: PM,
-                                 private val mapPmView: MapPmView<PM>)
+                                 private val mapPmView: MapPmView<PM>,
+                                 pmBinder: PmBinder<PM>)
 where PM : PresentationModel, PM : MapPmExtension {
 
     companion object {
         private const val MAP_VIEW_BUNDLE_KEY = "map_view_bundle"
+    }
+
+    init {
+        pmBinder.listener = object : PmBinder.Callbacks {
+            override fun onBindPm() {
+                // TODO
+            }
+
+            override fun onUnbindPm() {
+                // TODO
+            }
+        }
     }
 
     private var mapView: MapView?
@@ -79,14 +93,6 @@ where PM : PresentationModel, PM : MapPmExtension {
 
     fun onLowMemory() {
         mapView?.onLowMemory()
-    }
-
-    fun onBindPm() {
-        // TODO
-    }
-
-    fun onUnbindPm() {
-        // TODO
     }
 
     private fun findMapView(view: View): MapView? {

@@ -20,7 +20,7 @@ where PM : PresentationModel, PM : MapPmExtension {
 
     fun onCreate() {
         pmDelegate.onCreate()
-        mapPmDelegate = MapPmDelegate(pmDelegate.presentationModel, mapPmView)
+        mapPmDelegate = MapPmDelegate(pmDelegate.presentationModel, mapPmView, pmDelegate.pmBinder)
     }
 
     fun onCreateView(view: View, savedViewState: Bundle?) {

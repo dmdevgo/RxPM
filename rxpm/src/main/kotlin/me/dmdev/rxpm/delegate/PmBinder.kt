@@ -12,20 +12,29 @@ internal class PmBinder<out PM : PresentationModel>(private val pm: PM,
     var binded = false
         private set
 
+    var listener: Callbacks? = null
+
     fun bind() {
         if (!binded) {
             pmView.onBindPresentationModel(pm)
             pm.lifecycleConsumer.accept(PresentationModel.Lifecycle.BINDED)
             binded = true
+            listener?.onBindPm()
         }
     }
 
     fun unbind() {
         if (binded) {
+            listener?.onUnbindPm()
             pm.lifecycleConsumer.accept(PresentationModel.Lifecycle.UNBINDED)
             pmView.onUnbindPresentationModel()
             pmView.compositeUnbind.clear()
             binded = false
         }
+    }
+
+    internal interface Callbacks {
+        fun onBindPm()
+        fun onUnbindPm()
     }
 }

@@ -10,7 +10,7 @@ import me.dmdev.rxpm.PresentationModel.Lifecycle
 class PmControllerDelegate<out PM : PresentationModel>(pmView: PmView<PM>) {
 
     val presentationModel:PM = pmView.providePresentationModel()
-    private val binder = PmBinder(presentationModel, pmView)
+    internal val pmBinder = PmBinder(presentationModel, pmView)
 
     fun onCreate() {
         presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)
@@ -21,11 +21,11 @@ class PmControllerDelegate<out PM : PresentationModel>(pmView: PmView<PM>) {
     }
 
     fun onAttach() {
-        binder.bind()
+        pmBinder.bind()
     }
 
     fun onDetach() {
-        binder.unbind()
+        pmBinder.unbind()
     }
 
     fun onDestroyView() {

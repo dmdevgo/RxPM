@@ -10,14 +10,14 @@ import me.jeevuz.outlast.predefined.FragmentOutlast
 /**
  * @author Dmitriy Gorbunov
  */
-class PmSupportFragmentDelegate<out PM : PresentationModel>(private val pmView: PmView<PM>) {
+class PmSupportFragmentDelegate<PM : PresentationModel>(private val pmView: PmView<PM>) {
 
     init {
         require(pmView is Fragment) {"This class can be used only with support Fragment PmView!"}
     }
 
     private lateinit var outlast: FragmentOutlast<PmWrapper<PM>>
-    private lateinit var binder: PmBinder<PM>
+    internal lateinit var pmBinder: PmBinder<PM>
 
     val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
@@ -28,22 +28,22 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val pmView: 
                                           },
                                   savedInstanceState)
         presentationModel // Create lazy presentation model now
-        binder = PmBinder(presentationModel, pmView)
+        pmBinder = PmBinder(presentationModel, pmView)
     }
 
     fun onStart() {
         outlast.onStart()
-        binder.bind()
+        pmBinder.bind()
     }
 
     fun onResume() {
         outlast.onResume()
-        binder.bind()
+        pmBinder.bind()
     }
 
     fun onSaveInstanceState(outState: Bundle) {
         outlast.onSaveInstanceState(outState)
-        binder.unbind()
+        pmBinder.unbind()
     }
 
     fun onPause() {
@@ -51,7 +51,7 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val pmView: 
     }
 
     fun onStop() {
-        binder.unbind()
+        pmBinder.unbind()
     }
 
     fun onDestroy() {
