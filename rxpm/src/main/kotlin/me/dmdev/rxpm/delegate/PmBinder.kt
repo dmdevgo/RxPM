@@ -9,27 +9,27 @@ import me.dmdev.rxpm.PresentationModel
 internal class PmBinder<out PM : PresentationModel>(private val pm: PM,
                                                     private val pmView: PmView<PM>) {
 
-    var binded = false
+    var viewBound = false
         private set
 
     var listener: Callbacks? = null
 
     fun bind() {
-        if (!binded) {
+        if (!viewBound) {
             pmView.onBindPresentationModel(pm)
             pm.lifecycleConsumer.accept(PresentationModel.Lifecycle.BINDED)
-            binded = true
+            viewBound = true
             listener?.onBindPm()
         }
     }
 
     fun unbind() {
-        if (binded) {
+        if (viewBound) {
             listener?.onUnbindPm()
             pm.lifecycleConsumer.accept(PresentationModel.Lifecycle.UNBINDED)
             pmView.onUnbindPresentationModel()
             pmView.compositeUnbind.clear()
-            binded = false
+            viewBound = false
         }
     }
 

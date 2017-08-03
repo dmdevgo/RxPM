@@ -15,21 +15,23 @@ import me.dmdev.rxpm.map.MapPmView
  */
 internal class MapPmDelegate<PM>(private val pm: PM,
                                  private val mapPmView: MapPmView<PM>,
-                                 pmBinder: PmBinder<PM>)
+                                 private val pmBinder: PmBinder<PM>)
 where PM : PresentationModel, PM : MapPmExtension {
 
     companion object {
         private const val MAP_VIEW_BUNDLE_KEY = "map_view_bundle"
     }
 
+    private var mapReady = false
+
     init {
         pmBinder.listener = object : PmBinder.Callbacks {
             override fun onBindPm() {
-                // TODO
+                tryBindMapViewToPm()
             }
 
             override fun onUnbindPm() {
-                // TODO
+                mapPmView.onUnbindMapPresentationModel()
             }
         }
     }
@@ -54,8 +56,8 @@ where PM : PresentationModel, PM : MapPmExtension {
         mapView?.onCreate(savedInstanceState?.getBundle(MAP_VIEW_BUNDLE_KEY))
         mapView?.getMapAsync {
             googleMap = it
-            mapPmView.onBindMapPresentationModel(pm, it)
-            pm.mapReadiness.consumer.accept(true)
+            mapReady = true
+            tryBindMapViewToPm()
         }
     }
 
@@ -87,12 +89,20 @@ where PM : PresentationModel, PM : MapPmExtension {
     fun onDestroyMapView() {
         mapPmView.presentationModel.mapReadiness.consumer.accept(false)
         mapView?.onDestroy()
+        mapReady = false
         mapView = null
         googleMap = null
     }
 
     fun onLowMemory() {
         mapView?.onLowMemory()
+    }
+
+    private fun tryBindMapViewToPm() {
+        if (mapReady && pmBinder.viewBound) {
+            mapPmView.onBindMapPresentationModel(pm, googleMap!!)
+            pm.mapReadiness.consumer.accept(true)
+        }
     }
 
     private fun findMapView(view: View): MapView? {
