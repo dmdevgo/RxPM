@@ -12,5 +12,4 @@ interface MapPmView<PM> : PmView<PM> where PM : PresentationModel, PM : MapPmExt
     var mapView: MapView?
     var googleMap: GoogleMap?
     fun onBindMapPresentationModel(pm: PM, googleMap: GoogleMap)
-    fun onUnbindMapPresentationModel() {}
 }

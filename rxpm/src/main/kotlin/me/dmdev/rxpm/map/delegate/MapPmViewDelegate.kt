@@ -13,9 +13,9 @@ import me.dmdev.rxpm.map.MapPmView
 /**
  * @author Dmitriy Gorbunov
  */
-internal class MapPmDelegate<PM>(private val pm: PM,
-                                 private val mapPmView: MapPmView<PM>,
-                                 private val pmBinder: PmBinder<PM>)
+internal class MapPmViewDelegate<PM>(private val pm: PM,
+                                     private val mapPmView: MapPmView<PM>,
+                                     private val pmBinder: PmBinder<PM>)
 where PM : PresentationModel, PM : MapPmExtension {
 
     companion object {
@@ -31,7 +31,7 @@ where PM : PresentationModel, PM : MapPmExtension {
             }
 
             override fun onUnbindPm() {
-                mapPmView.onUnbindMapPresentationModel()
+                // do nothing
             }
         }
     }
@@ -87,7 +87,7 @@ where PM : PresentationModel, PM : MapPmExtension {
     }
 
     fun onDestroyMapView() {
-        mapPmView.presentationModel.mapReadiness.consumer.accept(false)
+        mapPmView.presentationModel.mapReadyState.consumer.accept(false)
         mapView?.onDestroy()
         mapReady = false
         mapView = null
@@ -101,7 +101,7 @@ where PM : PresentationModel, PM : MapPmExtension {
     private fun tryBindMapViewToPm() {
         if (mapReady && pmBinder.viewBound) {
             mapPmView.onBindMapPresentationModel(pm, googleMap!!)
-            pm.mapReadiness.consumer.accept(true)
+            pm.mapReadyState.consumer.accept(true)
         }
     }
 

@@ -11,50 +11,50 @@ class MapPmActivityDelegate<out PM>(private val mapPmView: MapPmView<PM>)
 where PM : PresentationModel, PM : MapPmExtension {
 
     private val pmDelegate = PmActivityDelegate(mapPmView)
-    private lateinit var mapPmDelegate: MapPmDelegate<PM>
+    private lateinit var mapPmViewDelegate: MapPmViewDelegate<PM>
 
     val presentationModel get() = pmDelegate.presentationModel
 
     fun onCreate(savedInstanceState: Bundle?) {
         pmDelegate.onCreate(savedInstanceState)
-        mapPmDelegate = MapPmDelegate(pmDelegate.presentationModel, mapPmView, pmDelegate.pmBinder)
+        mapPmViewDelegate = MapPmViewDelegate(pmDelegate.presentationModel, mapPmView, pmDelegate.pmBinder)
     }
 
     fun onPostCreate(contentView: View, savedInstanceState: Bundle?) {
-        mapPmDelegate.onCreateMapView(contentView, savedInstanceState)
+        mapPmViewDelegate.onCreateMapView(contentView, savedInstanceState)
     }
 
     fun onStart() {
         pmDelegate.onStart()
-        mapPmDelegate.onStart()
+        mapPmViewDelegate.onStart()
     }
 
     fun onResume() {
         pmDelegate.onResume()
-        mapPmDelegate.onResume()
+        mapPmViewDelegate.onResume()
     }
 
     fun onPause() {
         pmDelegate.onPause()
-        mapPmDelegate.onPause()
+        mapPmViewDelegate.onPause()
     }
 
     fun onSaveInstanceState(outState: Bundle) {
         pmDelegate.onSaveInstanceState(outState)
-        mapPmDelegate.onSaveInstanceState(outState)
+        mapPmViewDelegate.onSaveInstanceState(outState)
     }
 
     fun onStop() {
         pmDelegate.onStop()
-        mapPmDelegate.onStop()
+        mapPmViewDelegate.onStop()
     }
 
     fun onDestroy() {
         pmDelegate.onDestroy()
-        mapPmDelegate.onDestroyMapView()
+        mapPmViewDelegate.onDestroyMapView()
     }
 
     fun onLowMemory() {
-        mapPmDelegate.onLowMemory()
+        mapPmViewDelegate.onLowMemory()
     }
 }

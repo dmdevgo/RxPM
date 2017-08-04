@@ -11,15 +11,15 @@ import me.dmdev.rxpm.bufferWhileIdle
  */
 interface MapPmExtension {
 
-    val mapReadiness: MapReadiness
+    val mapReadyState: MapReadyState
 
     fun <T> Observable<T>.bufferWhileMapUnbind(bufferSize: Int? = null): Observable<T> {
-        return this.bufferWhileIdle(mapReadiness.state.map { !it }, bufferSize)
+        return this.bufferWhileIdle(mapReadyState.observable.map { !it }, bufferSize)
     }
 
-    class MapReadiness {
+    class MapReadyState {
         private val ready = BehaviorRelay.createDefault(false)
         internal val consumer = ready.asConsumer()
-        val state = ready.asObservable()
+        val observable = ready.asObservable()
     }
 }
