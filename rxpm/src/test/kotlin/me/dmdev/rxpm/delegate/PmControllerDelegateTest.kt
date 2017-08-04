@@ -36,12 +36,9 @@ class PmControllerDelegateTest {
 
         val delegate = PmControllerDelegate(pmViewMock)
 
-        delegate.onCreate()
-
+        delegate.onCreateView()
         verify(pmViewMock).providePresentationModel()
         assertEquals(pm, delegate.presentationModel)
-
-        delegate.onCreateView()
 
         delegate.onAttach()
         verify(pmViewMock).onBindPresentationModel(pm)
@@ -64,7 +61,6 @@ class PmControllerDelegateTest {
 
         val delegate = PmControllerDelegate(pmViewMock)
 
-        delegate.onCreate()
         delegate.onCreateView()
         delegate.onAttach()
         delegate.onDetach()

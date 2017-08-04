@@ -18,21 +18,16 @@ abstract class MapController<PM>(args: Bundle? = null) : RestoreViewOnCreateCont
                                                          MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
-    @Suppress("LeakingThis")
-    private val delegate: MapPmControllerDelegate<PM> = MapPmControllerDelegate(this)
+    private val delegate by lazy { MapPmControllerDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 
     final override val presentationModel get() = delegate.presentationModel
 
-    init {
-        delegate.onCreate()
-    }
-
     final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
         val view = createView(inflater, container, savedViewState)
-        onInitView(view, savedViewState)
         delegate.onCreateView(view, savedViewState)
+        onInitView(view, savedViewState)
         return view
     }
 

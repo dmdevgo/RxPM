@@ -7,17 +7,23 @@ import me.dmdev.rxpm.PresentationModel.Lifecycle
 /**
  * @author Dmitriy Gorbunov
  */
-class PmControllerDelegate<out PM : PresentationModel>(pmView: PmView<PM>) {
+class PmControllerDelegate<PM : PresentationModel>(private val pmView: PmView<PM>) {
 
-    val presentationModel:PM = pmView.providePresentationModel()
-    internal val pmBinder = PmBinder(presentationModel, pmView)
+    internal lateinit var pmBinder: PmBinder<PM>
+    private var created = false
 
-    fun onCreate() {
+    val presentationModel: PM by lazy { pmView.providePresentationModel() }
+
+    private fun onCreate() {
         presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)
+        pmBinder = PmBinder(presentationModel, pmView)
     }
 
     fun onCreateView() {
-        // May be used in the future
+        if (!created) {
+            created = true
+            onCreate()
+        }
     }
 
     fun onAttach() {
