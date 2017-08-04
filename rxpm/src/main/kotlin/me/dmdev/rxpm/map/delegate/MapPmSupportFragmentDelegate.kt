@@ -14,13 +14,16 @@ class MapPmSupportFragmentDelegate<out PM>(private val mapPmView: MapPmView<PM>)
 where PM : PresentationModel, PM : MapPmExtension {
 
     private val pmDelegate = PmSupportFragmentDelegate(mapPmView)
-    private lateinit var mapPmViewDelegate: MapPmViewDelegate<PM>
+    private val mapPmViewDelegate by lazy {
+        MapPmViewDelegate(pmDelegate.presentationModel,
+                          mapPmView,
+                          pmDelegate.pmBinder)
+    }
 
     val presentationModel get() = pmDelegate.presentationModel
 
     fun onCreate(savedInstanceState: Bundle?) {
         pmDelegate.onCreate(savedInstanceState)
-        mapPmViewDelegate = MapPmViewDelegate(pmDelegate.presentationModel, mapPmView, pmDelegate.pmBinder)
     }
 
     fun onCreateView(view: View, savedInstanceState: Bundle?) {

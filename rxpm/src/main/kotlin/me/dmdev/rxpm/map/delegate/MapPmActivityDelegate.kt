@@ -11,13 +11,16 @@ class MapPmActivityDelegate<out PM>(private val mapPmView: MapPmView<PM>)
 where PM : PresentationModel, PM : MapPmExtension {
 
     private val pmDelegate = PmActivityDelegate(mapPmView)
-    private lateinit var mapPmViewDelegate: MapPmViewDelegate<PM>
+    private val mapPmViewDelegate by lazy {
+        MapPmViewDelegate(pmDelegate.presentationModel,
+                          mapPmView,
+                          pmDelegate.pmBinder)
+    }
 
     val presentationModel get() = pmDelegate.presentationModel
 
     fun onCreate(savedInstanceState: Bundle?) {
         pmDelegate.onCreate(savedInstanceState)
-        mapPmViewDelegate = MapPmViewDelegate(pmDelegate.presentationModel, mapPmView, pmDelegate.pmBinder)
     }
 
     fun onPostCreate(contentView: View, savedInstanceState: Bundle?) {
