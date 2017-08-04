@@ -8,9 +8,8 @@ import me.dmdev.rxpm.PresentationModel
 /**
  * @author Dmitriy Gorbunov
  */
-interface MapPmView<PM> : PmView<PM> where PM : PresentationModel, PM : MapPresentationModel {
+interface MapPmView<PM> : PmView<PM> where PM : PresentationModel, PM : MapPmExtension {
     var mapView: MapView?
     var googleMap: GoogleMap?
     fun onBindMapPresentationModel(pm: PM, googleMap: GoogleMap)
-    fun onUnbindMapPresentationModel() {}
 }

@@ -3,34 +3,56 @@ package me.dmdev.rxpm.map.delegate
 import android.os.Bundle
 import android.view.View
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.delegate.PmControllerDelegate
+import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.MapPmView
-import me.dmdev.rxpm.map.MapPresentationModel
 
 /**
  * @author Dmitriy Gorbunov
  */
-class MapPmControllerDelegate<PM>(mapPmView: MapPmView<PM>) : BaseMapDelegate<PM>(mapPmView)
-where PM : PresentationModel, PM : MapPresentationModel {
+class MapPmControllerDelegate<out PM>(private val mapPmView: MapPmView<PM>)
+where PM : PresentationModel, PM : MapPmExtension {
 
-    fun onInitView(view: View, savedViewState: Bundle?) {
-        onCreateMapView(view, savedViewState)
-        mapView?.onStart()
+    private val pmDelegate = PmControllerDelegate(mapPmView)
+    private lateinit var mapPmViewDelegate: MapPmViewDelegate<PM>
+
+    val presentationModel get() = pmDelegate.presentationModel
+
+    fun onCreate() {
+        pmDelegate.onCreate()
+        mapPmViewDelegate = MapPmViewDelegate(pmDelegate.presentationModel, mapPmView, pmDelegate.pmBinder)
+    }
+
+    fun onCreateView(view: View, savedViewState: Bundle?) {
+        mapPmViewDelegate.onCreateMapView(view, savedViewState)
+        mapPmViewDelegate.onStart()
     }
 
     fun onAttach() {
-        mapView?.onResume()
+        pmDelegate.onAttach()
+        mapPmViewDelegate.onResume()
     }
 
     fun onDetach() {
-        mapView?.onPause()
+        pmDelegate.onDetach()
+        mapPmViewDelegate.onPause()
     }
 
     fun onSaveViewState(outState: Bundle) {
-        saveInstanceState(outState)
+        mapPmViewDelegate.onSaveInstanceState(outState)
     }
 
     fun onDestroyView() {
-        mapView?.onStop()
-        onDestroyMapView()
+        pmDelegate.onDestroyView()
+        mapPmViewDelegate.onStop()
+        mapPmViewDelegate.onDestroyMapView()
+    }
+
+    fun onDestroy() {
+        pmDelegate.onDestroy()
+    }
+
+    fun onLowMemory() {
+        mapPmViewDelegate.onLowMemory()
     }
 }

@@ -4,21 +4,20 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.PresentationModel.Lifecycle
 import me.jeevuz.outlast.Outlasting
 import me.jeevuz.outlast.predefined.FragmentOutlast
 
 /**
  * @author Dmitriy Gorbunov
  */
-class PmSupportFragmentDelegate<out PM : PresentationModel>(private val pmView: PmView<PM>) {
+class PmSupportFragmentDelegate<PM : PresentationModel>(private val pmView: PmView<PM>) {
 
     init {
         require(pmView is Fragment) {"This class can be used only with support Fragment PmView!"}
     }
 
     private lateinit var outlast: FragmentOutlast<PmWrapper<PM>>
-    private var binded = false
+    internal lateinit var pmBinder: PmBinder<PM>
 
     val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
@@ -29,21 +28,22 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val pmView: 
                                           },
                                   savedInstanceState)
         presentationModel // Create lazy presentation model now
+        pmBinder = PmBinder(presentationModel, pmView)
     }
 
     fun onStart() {
         outlast.onStart()
-        bind()
+        pmBinder.bind()
     }
 
     fun onResume() {
         outlast.onResume()
-        bind()
+        pmBinder.bind()
     }
 
     fun onSaveInstanceState(outState: Bundle) {
         outlast.onSaveInstanceState(outState)
-        unbind()
+        pmBinder.unbind()
     }
 
     fun onPause() {
@@ -51,27 +51,10 @@ class PmSupportFragmentDelegate<out PM : PresentationModel>(private val pmView: 
     }
 
     fun onStop() {
-        unbind()
+        pmBinder.unbind()
     }
 
     fun onDestroy() {
         outlast.onDestroy()
-    }
-
-    private fun bind() {
-        if (!binded) {
-            pmView.onBindPresentationModel(presentationModel)
-            presentationModel.lifecycleConsumer.accept(Lifecycle.BINDED)
-            binded = true
-        }
-    }
-
-    private fun unbind() {
-        if (binded) {
-            presentationModel.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-            pmView.onUnbindPresentationModel()
-            pmView.compositeUnbind.clear()
-            binded = false
-        }
     }
 }
