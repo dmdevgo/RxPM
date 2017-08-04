@@ -12,7 +12,7 @@ import me.dmdev.rxpm.delegate.PmActivityDelegate
  */
 abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
 
-    private lateinit var delegate: PmActivityDelegate<PM>
+    private val delegate by lazy { PmActivityDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 
@@ -20,7 +20,6 @@ abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        delegate = PmActivityDelegate(this)
         delegate.onCreate(savedInstanceState)
     }
 

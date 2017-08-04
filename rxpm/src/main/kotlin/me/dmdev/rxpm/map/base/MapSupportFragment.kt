@@ -18,7 +18,7 @@ abstract class MapSupportFragment<PM> : Fragment(),
                                         MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
-    private lateinit var delegate: MapPmSupportFragmentDelegate<PM>
+    private val delegate by lazy { MapPmSupportFragmentDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 
@@ -26,7 +26,6 @@ where PM : PresentationModel, PM : MapPmExtension {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        delegate = MapPmSupportFragmentDelegate(this)
         delegate.onCreate(savedInstanceState)
     }
 

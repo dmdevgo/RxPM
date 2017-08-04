@@ -12,7 +12,7 @@ import me.dmdev.rxpm.delegate.PmSupportFragmentDelegate
  */
 abstract class PmSupportFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
 
-    private lateinit var delegate: PmSupportFragmentDelegate<PM>
+    private val delegate by lazy { PmSupportFragmentDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 
@@ -20,7 +20,6 @@ abstract class PmSupportFragment<PM : PresentationModel> : Fragment(), PmView<PM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        delegate = PmSupportFragmentDelegate(this)
         delegate.onCreate(savedInstanceState)
     }
 

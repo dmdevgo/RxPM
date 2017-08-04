@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.map.MapPmView
 import me.dmdev.rxpm.map.MapPmExtension
+import me.dmdev.rxpm.map.MapPmView
 import me.dmdev.rxpm.map.delegate.MapPmActivityDelegate
 
 /**
@@ -14,7 +14,7 @@ import me.dmdev.rxpm.map.delegate.MapPmActivityDelegate
 abstract class MapSupportActivity<PM> : AppCompatActivity(), MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
-    private lateinit var delegate: MapPmActivityDelegate<PM>
+    private val delegate by lazy { MapPmActivityDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 
@@ -22,7 +22,6 @@ where PM : PresentationModel, PM : MapPmExtension {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        delegate = MapPmActivityDelegate(this)
         delegate.onCreate(savedInstanceState)
     }
 
