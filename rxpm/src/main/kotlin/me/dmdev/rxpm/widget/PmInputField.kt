@@ -23,38 +23,39 @@ interface InputField {
     val textState: Observable<String>
     val enabledState: Observable<Boolean>
     val errorState: Observable<String>
-    val textChangeConsumer: Consumer<String>
+    val textChangesConsumer: Consumer<String>
 }
 
-class PmInputField : InputField {
+class PmInputField(
+        initialText: String = "",
+        initialEnabled: Boolean = true,
+        val formatter: (text: String) -> String = { it },
+        val validator: (text: String) -> String = { "" }
 
-    val text = BehaviorRelay.createDefault<String>("")!!
-    val enabled = BehaviorRelay.createDefault<Boolean>(true)!!
+) : InputField {
+
+    val text = BehaviorRelay.createDefault<String>(initialText)!!
+    val enabled = BehaviorRelay.createDefault<Boolean>(initialEnabled)!!
     val error = BehaviorRelay.create<String>()!!
-    private val change = PublishRelay.create<String>()
-    val textChanges = change.filter { it != text.value }!!
-
-    var mapper: (text: String) -> String = { it }
-    var validator: (text: String) -> String = { "" }
+    private val changes = PublishRelay.create<String>()
+    val textChanges = changes.filter { it != text.value }!!
 
     override val textState = text.asObservable()
     override val enabledState = enabled.asObservable()
     override val errorState = error.asObservable()
-    override val textChangeConsumer = change.asConsumer()
+    override val textChangesConsumer = changes.asConsumer()
 
     init {
-        textChanges
-                .subscribe { error.accept("") }
+        textChanges.subscribe { error.accept("") }
 
         textChanges
-                .map { mapper.invoke(it) }
+                .map { formatter.invoke(it) }
                 .subscribe(text)
     }
 
     fun validate() {
         error.accept(validator.invoke(text.value))
     }
-
 }
 
 fun TextInputLayout.bind(rxInputField: InputField): Disposable {
@@ -76,7 +77,7 @@ fun TextInputLayout.bind(rxInputField: InputField): Disposable {
                 rxInputField.errorState.subscribe { error ->
                     this@bind.error = if (error.isEmpty()) null else error
                 },
-                edit.textChanges().map { it.toString() }.subscribe(rxInputField.textChangeConsumer)
+                edit.textChanges().map { it.toString() }.subscribe(rxInputField.textChangesConsumer)
         )
     }
 }
