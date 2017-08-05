@@ -14,8 +14,8 @@ import me.dmdev.rxpm.map.delegate.MapPmControllerDelegate
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class MapController<PM>(args: Bundle? = null) : RestoreViewOnCreateController(args),
-                                                         MapPmView<PM>
+abstract class MapPmController<PM>(args: Bundle? = null) : RestoreViewOnCreateController(args),
+                                                           MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
     private val delegate by lazy { MapPmControllerDelegate(this) }

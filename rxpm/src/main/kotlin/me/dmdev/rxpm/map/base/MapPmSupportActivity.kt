@@ -1,24 +1,20 @@
 package me.dmdev.rxpm.map.base
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.MapPmView
-import me.dmdev.rxpm.map.delegate.MapPmSupportFragmentDelegate
+import me.dmdev.rxpm.map.delegate.MapPmActivityDelegate
 
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class MapSupportFragment<PM> : Fragment(),
-                                        MapPmView<PM>
+abstract class MapPmSupportActivity<PM> : AppCompatActivity(), MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
-    private val delegate by lazy { MapPmSupportFragmentDelegate(this) }
+    private val delegate by lazy { MapPmActivityDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 
@@ -29,10 +25,9 @@ where PM : PresentationModel, PM : MapPmExtension {
         delegate.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState).apply {
-            delegate.onCreateView(this!!, savedInstanceState)
-        }
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        delegate.onPostCreate(this.findViewById(android.R.id.content), savedInstanceState)
     }
 
     override fun onStart() {
@@ -60,9 +55,9 @@ where PM : PresentationModel, PM : MapPmExtension {
         delegate.onStop()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        delegate.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
+        delegate.onDestroy()
     }
 
     override fun onLowMemory() {
