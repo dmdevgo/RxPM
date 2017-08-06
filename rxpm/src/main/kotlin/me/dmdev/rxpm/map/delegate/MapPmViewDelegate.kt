@@ -87,7 +87,7 @@ where PM : PresentationModel, PM : MapPmExtension {
     }
 
     fun onDestroyMapView() {
-        pm.mapReadyState.consumer.accept(false)
+        if (mapReady) pm.mapReadyState.consumer.accept(false)
         mapView?.onDestroy()
         mapReady = false
         mapView = null
