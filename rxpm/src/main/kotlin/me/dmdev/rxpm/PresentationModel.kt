@@ -1,9 +1,11 @@
 package me.dmdev.rxpm
 
 import com.jakewharton.rxrelay2.BehaviorRelay
+import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 
 /**
  * @author Dmitriy Gorbunov
@@ -77,4 +79,33 @@ abstract class PresentationModel {
     enum class Lifecycle {
         CREATED, BINDED, UNBINDED, DESTROYED
     }
+
+    protected val <T> State<T>.consumer: Consumer<T> get() = relay
+    protected val <T> Action<T>.observable: Observable<T> get() = relay
+    protected val <T> Command<T>.consumer: Consumer<T> get() = relay
+
+    class State<T>(initialValue: T? = null) {
+        internal val relay =
+                if (initialValue != null) BehaviorRelay.createDefault<T>(initialValue)
+                else BehaviorRelay.create<T>()
+
+        val observable = relay.asObservable()
+        val value: T? get() = relay.value
+        fun hasValue() = relay.hasValue()
+    }
+
+    class Action<T> {
+        internal val relay = PublishRelay.create<T>()
+        val consumer: Consumer<T> = relay
+    }
+
+    inner class Command<T>(isIdle: Observable<Boolean>? = null,
+                           bufferSize: Int? = null) {
+        internal val relay = PublishRelay.create<T>()
+        val observable =
+                if (isIdle == null) relay.bufferWhileUnbind(bufferSize)
+                else relay.bufferWhileIdle(isIdle, bufferSize)
+    }
+
 }
+
