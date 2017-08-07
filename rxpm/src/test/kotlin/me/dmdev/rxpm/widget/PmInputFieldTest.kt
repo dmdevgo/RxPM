@@ -11,17 +11,17 @@ class PmInputFieldTest {
     @Test
     fun testFilterIfValueNotChanged() {
 
-        val input = PmInputField()
+        val input = InputField()
 
         val to = TestObserver<String>()
-        input.text.subscribe(to)
+        input.text.observable.subscribe(to)
 
-        input.textChangesConsumer.accept("a")
-        input.textChangesConsumer.accept("a")
-        input.textChangesConsumer.accept("ab")
-        input.textChangesConsumer.accept("ab")
-        input.textChangesConsumer.accept("abc")
-        input.textChangesConsumer.accept("abc")
+        input.textChanges.consumer.accept("a")
+        input.textChanges.consumer.accept("a")
+        input.textChanges.consumer.accept("ab")
+        input.textChanges.consumer.accept("ab")
+        input.textChanges.consumer.accept("abc")
+        input.textChanges.consumer.accept("abc")
 
         to.assertValues("", "a", "ab", "abc")
         to.assertNoErrors()
@@ -30,16 +30,16 @@ class PmInputFieldTest {
     @Test
     fun testMapper() {
 
-        val input = PmInputField(
+        val input = InputField(
                 formatter = { it.toUpperCase() }
         )
 
         val to = TestObserver<String>()
-        input.text.subscribe(to)
+        input.text.observable.subscribe(to)
 
-        input.textChangesConsumer.accept("a")
-        input.textChangesConsumer.accept("ab")
-        input.textChangesConsumer.accept("abc")
+        input.textChanges.consumer.accept("a")
+        input.textChanges.consumer.accept("ab")
+        input.textChanges.consumer.accept("abc")
 
         to.assertValues("", "A", "AB", "ABC")
         to.assertNoErrors()
@@ -49,7 +49,7 @@ class PmInputFieldTest {
     fun testValidator() {
 
         val IS_EMPTY_ERROR = "Is empty"
-        val input = PmInputField(
+        val input = InputField(
                 validator = {
                     if (it.isNotEmpty()) "" //is valid
                     else IS_EMPTY_ERROR // error message
@@ -57,11 +57,11 @@ class PmInputFieldTest {
         )
 
         val to = TestObserver<String>()
-        input.error.subscribe(to)
+        input.error.observable.subscribe(to)
 
-        input.textChangesConsumer.accept("")
+        input.textChanges.consumer.accept("")
         input.validate()
-        input.textChangesConsumer.accept("a")
+        input.textChanges.consumer.accept("a")
         input.validate()
 
         to.assertValues(IS_EMPTY_ERROR,
