@@ -14,11 +14,11 @@ import me.dmdev.rxpm.PresentationModel.State
 /**
  * @author Dmitriy Gorbunov
  */
-
 class InputField(initialText: String = "",
                  initialEnabled: Boolean = true,
                  val formatter: (text: String) -> String = { it },
-                 val validator: (text: String) -> String = { "" }) {
+                 val validator: (text: String) -> String = { "" },
+                 val hideErrorOnUserInput: Boolean = true) {
 
     val text = State(initialText)
     val enabled = State(initialEnabled)
@@ -31,7 +31,7 @@ class InputField(initialText: String = "",
                 .map { formatter.invoke(it) }
                 .subscribe {
                     text.relay.accept(it)
-                    error.relay.accept("") // hide error on user input
+                    if (hideErrorOnUserInput) error.relay.accept("")
                 }
     }
 
@@ -40,11 +40,11 @@ class InputField(initialText: String = "",
     }
 }
 
-fun TextInputLayout.bind(rxInputField: InputField): Disposable {
+fun TextInputLayout.bind(inputField: InputField): Disposable {
     val edit = editText!!
     return CompositeDisposable().apply {
         addAll(
-                rxInputField.text.observable.subscribe {
+                inputField.text.observable.subscribe {
                     val editable = edit.text
 
                     if (editable is Spanned) {
@@ -55,11 +55,11 @@ fun TextInputLayout.bind(rxInputField: InputField): Disposable {
                         editable.replace(0, editable.length, it)
                     }
                 },
-                rxInputField.enabled.observable.subscribe(edit.enabled()),
-                rxInputField.error.observable.subscribe { error ->
+                inputField.enabled.observable.subscribe(edit.enabled()),
+                inputField.error.observable.subscribe { error ->
                     this@bind.error = if (error.isEmpty()) null else error
                 },
-                edit.textChanges().map { it.toString() }.subscribe(rxInputField.textChanges.consumer)
+                edit.textChanges().map { it.toString() }.subscribe(inputField.textChanges.consumer)
         )
     }
 }
