@@ -2,7 +2,6 @@ package me.dmdev.rxpm
 
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
-import com.jakewharton.rxrelay2.ReplayRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -81,27 +80,17 @@ abstract class PresentationModel {
         CREATED, BINDED, UNBINDED, DESTROYED
     }
 
-    protected val <T> Property<T>.consumer: Consumer<T> get() = relay
-    protected val <T> Replay<T>.consumer: Consumer<T> get() = relay
+    protected val <T> State<T>.consumer: Consumer<T> get() = relay
     protected val <T> Action<T>.observable: Observable<T> get() = relay
     protected val <T> Command<T>.consumer: Consumer<T> get() = relay
 
-    class Property<T>(initialValue: T? = null) {
+    class State<T>(initialValue: T? = null) {
         internal val relay =
                 if (initialValue != null) BehaviorRelay.createDefault<T>(initialValue)
                 else BehaviorRelay.create<T>()
 
         val observable = relay.asObservable()
-        var value: T? = relay.value
-        fun hasValue() = relay.hasValue()
-    }
-
-    class Replay<T> {
-        internal val relay = ReplayRelay.create<T>()
-        val observable = relay.asObservable()
         val value: T? get() = relay.value
-        @Suppress("UNCHECKED_CAST")
-        val values: Array<T> get() = relay.values as Array<T>
         fun hasValue() = relay.hasValue()
     }
 
@@ -110,9 +99,13 @@ abstract class PresentationModel {
         val consumer: Consumer<T> = relay
     }
 
-    inner class Command<T> {
-        internal val relay = ReplayRelay.create<T>()
-        val observable = relay.bufferWhileUnbind()
+    inner class Command<T>(isIdle: Observable<Boolean>? = null,
+                           bufferSize: Int? = null) {
+        internal val relay = PublishRelay.create<T>()
+        val observable =
+                if (isIdle == null) relay.bufferWhileUnbind(bufferSize)
+                else relay.bufferWhileIdle(isIdle, bufferSize)
     }
+
 }
 
