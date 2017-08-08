@@ -1,9 +1,12 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package me.dmdev.rxpm.widget
 
 import android.support.design.widget.TextInputLayout
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
+import android.widget.EditText
 import com.jakewharton.rxbinding2.view.enabled
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.disposables.CompositeDisposable
@@ -40,13 +43,23 @@ class InputControl(initialText: String = "",
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun TextInputLayout.bind(inputControl: InputControl): Disposable {
     val edit = editText!!
     return CompositeDisposable().apply {
         addAll(
+                edit.bind(inputControl),
+                inputControl.error.observable.subscribe { error ->
+                    this@bind.error = if (error.isEmpty()) null else error
+                }
+        )
+    }
+}
+
+inline fun EditText.bind(inputControl: InputControl): Disposable {
+    return CompositeDisposable().apply {
+        addAll(
                 inputControl.text.observable.subscribe {
-                    val editable = edit.text
+                    val editable = text
 
                     if (editable is Spanned) {
                         val ss = SpannableString(it)
@@ -56,11 +69,8 @@ inline fun TextInputLayout.bind(inputControl: InputControl): Disposable {
                         editable.replace(0, editable.length, it)
                     }
                 },
-                inputControl.enabled.observable.subscribe(edit.enabled()),
-                inputControl.error.observable.subscribe { error ->
-                    this@bind.error = if (error.isEmpty()) null else error
-                },
-                edit.textChanges().map { it.toString() }.subscribe(inputControl.textChanges.consumer)
+                inputControl.enabled.observable.subscribe(enabled()),
+                textChanges().map { it.toString() }.subscribe(inputControl.textChanges.consumer)
         )
     }
 }
