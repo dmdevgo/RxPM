@@ -14,11 +14,11 @@ import me.dmdev.rxpm.PresentationModel.State
 /**
  * @author Dmitriy Gorbunov
  */
-class InputField(initialText: String = "",
-                 initialEnabled: Boolean = true,
-                 val formatter: (text: String) -> String = { it },
-                 val validator: (text: String) -> String = { "" },
-                 val hideErrorOnUserInput: Boolean = true) {
+class InputControl(initialText: String = "",
+                   initialEnabled: Boolean = true,
+                   val formatter: (text: String) -> String = { it },
+                   val validator: (text: String) -> String = { "" },
+                   val hideErrorOnUserInput: Boolean = true) {
 
     val text = State(initialText)
     val enabled = State(initialEnabled)
@@ -40,11 +40,12 @@ class InputField(initialText: String = "",
     }
 }
 
-fun TextInputLayout.bind(inputField: InputField): Disposable {
+@Suppress("NOTHING_TO_INLINE")
+inline fun TextInputLayout.bind(inputControl: InputControl): Disposable {
     val edit = editText!!
     return CompositeDisposable().apply {
         addAll(
-                inputField.text.observable.subscribe {
+                inputControl.text.observable.subscribe {
                     val editable = edit.text
 
                     if (editable is Spanned) {
@@ -55,11 +56,11 @@ fun TextInputLayout.bind(inputField: InputField): Disposable {
                         editable.replace(0, editable.length, it)
                     }
                 },
-                inputField.enabled.observable.subscribe(edit.enabled()),
-                inputField.error.observable.subscribe { error ->
+                inputControl.enabled.observable.subscribe(edit.enabled()),
+                inputControl.error.observable.subscribe { error ->
                     this@bind.error = if (error.isEmpty()) null else error
                 },
-                edit.textChanges().map { it.toString() }.subscribe(inputField.textChanges.consumer)
+                edit.textChanges().map { it.toString() }.subscribe(inputControl.textChanges.consumer)
         )
     }
 }

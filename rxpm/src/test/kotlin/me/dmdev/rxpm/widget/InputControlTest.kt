@@ -6,12 +6,12 @@ import org.junit.Test
 /**
  * @author Dmitriy Gorbunov
  */
-class PmInputFieldTest {
+class InputControlTest {
 
     @Test
     fun testFilterIfValueNotChanged() {
 
-        val input = InputField()
+        val input = InputControl()
 
         val to = TestObserver<String>()
         input.text.observable.subscribe(to)
@@ -28,9 +28,9 @@ class PmInputFieldTest {
     }
 
     @Test
-    fun testMapper() {
+    fun testFormatter() {
 
-        val input = InputField(
+        val input = InputControl(
                 formatter = { it.toUpperCase() }
         )
 
@@ -49,7 +49,7 @@ class PmInputFieldTest {
     fun testValidator() {
 
         val IS_EMPTY_ERROR = "Is empty"
-        val input = InputField(
+        val input = InputControl(
                 validator = {
                     if (it.isNotEmpty()) "" //is valid
                     else IS_EMPTY_ERROR // error message
