@@ -45,29 +45,4 @@ class InputControlTest {
         to.assertNoErrors()
     }
 
-    @Test
-    fun testValidator() {
-
-        val IS_EMPTY_ERROR = "Is empty"
-        val input = InputControl(
-                validator = {
-                    if (it.isNotEmpty()) "" //is valid
-                    else IS_EMPTY_ERROR // error message
-                }
-        )
-
-        val to = TestObserver<String>()
-        input.error.observable.subscribe(to)
-
-        input.textChanges.consumer.accept("")
-        input.validate()
-        input.textChanges.consumer.accept("a")
-        input.validate()
-
-        to.assertValues(IS_EMPTY_ERROR,
-                        "", // Clear the error if the user entered text
-                        "") // Is valid text
-        to.assertNoErrors()
-    }
-
 }
