@@ -20,7 +20,6 @@ import me.dmdev.rxpm.PresentationModel.State
 class InputControl(initialText: String = "",
                    initialEnabled: Boolean = true,
                    val formatter: (text: String) -> String = { it },
-                   val validator: (text: String) -> String? = { null },
                    val hideErrorOnUserInput: Boolean = true) {
 
     val text = State(initialText)
@@ -36,12 +35,6 @@ class InputControl(initialText: String = "",
                     text.relay.accept(it)
                     if (hideErrorOnUserInput) error.relay.accept("")
                 }
-    }
-
-    fun validate(): Boolean {
-        val errorText = validator.invoke(text.value!!)
-        error.relay.accept(errorText ?: "")
-        return errorText != null
     }
 }
 
