@@ -19,7 +19,7 @@ abstract class PresentationModel {
     private val unbind = BehaviorRelay.create<Boolean>()
 
     val lifecycleState = lifeсycle.asObservable()
-    val lifecycleConsumer = lifeсycle.asConsumer()
+    internal val lifecycleConsumer = lifeсycle.asConsumer()
 
     init {
         lifeсycle
