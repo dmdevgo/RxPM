@@ -4,6 +4,7 @@ import android.widget.CompoundButton
 import com.jakewharton.rxbinding2.view.enabled
 import com.jakewharton.rxbinding2.widget.checked
 import com.jakewharton.rxbinding2.widget.checkedChanges
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PresentationModel.Action
@@ -30,9 +31,13 @@ class CheckControl(initialChecked: Boolean = false,
 inline fun CompoundButton.bind(checkControl: CheckControl): Disposable {
     return CompositeDisposable().apply {
         addAll(
-                checkControl.checked.observable.subscribe(checked()),
+                checkControl.checked.observable
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(checked()),
                 checkedChanges().subscribe(checkControl.checkedChanges.consumer),
-                checkControl.enabled.observable.subscribe(enabled())
+                checkControl.enabled.observable
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(enabled())
         )
     }
 }

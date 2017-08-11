@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.widget.EditText
 import com.jakewharton.rxbinding2.view.enabled
 import com.jakewharton.rxbinding2.widget.textChanges
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PresentationModel.Action
@@ -53,7 +54,10 @@ inline fun TextInputLayout.bind(inputControl: InputControl): Disposable {
 inline fun EditText.bind(inputControl: InputControl): Disposable {
     return CompositeDisposable().apply {
         addAll(
-                inputControl.text.observable.subscribe {
+                inputControl.text.observable
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+
                     val editable = text
 
                     if (editable is Spanned) {
@@ -64,7 +68,9 @@ inline fun EditText.bind(inputControl: InputControl): Disposable {
                         editable.replace(0, editable.length, it)
                     }
                 },
-                inputControl.enabled.observable.subscribe(enabled()),
+                inputControl.enabled.observable
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(enabled()),
                 textChanges().map { it.toString() }.subscribe(inputControl.textChanges.consumer)
         )
     }

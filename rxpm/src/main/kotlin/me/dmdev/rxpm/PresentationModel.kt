@@ -6,6 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * @author Dmitriy Gorbunov
@@ -86,22 +87,31 @@ abstract class PresentationModel {
 
     class State<T>(initialValue: T? = null) {
         internal val relay =
-                if (initialValue != null) BehaviorRelay.createDefault<T>(initialValue)
-                else BehaviorRelay.create<T>()
+                if (initialValue != null) BehaviorRelay.createDefault<T>(initialValue).toSerialized()
+                else BehaviorRelay.create<T>().toSerialized()
+
+        private val cachedValue =
+                if (initialValue != null) AtomicReference<T>(initialValue)
+                else AtomicReference<T>()
 
         val observable = relay.asObservable()
-        val value: T? get() = relay.value
-        fun hasValue() = relay.hasValue()
+        val value: T? get() = cachedValue.get()
+
+        init {
+            relay.subscribe { cachedValue.set(it) }
+        }
+
+        fun hasValue() = cachedValue.get() != null
     }
 
     class Action<T> {
-        internal val relay = PublishRelay.create<T>()
-        val consumer: Consumer<T> = relay
+        internal val relay = PublishRelay.create<T>().toSerialized()
+        val consumer = relay.asConsumer()
     }
 
     inner class Command<T>(isIdle: Observable<Boolean>? = null,
                            bufferSize: Int? = null) {
-        internal val relay = PublishRelay.create<T>()
+        internal val relay = PublishRelay.create<T>().toSerialized()
         val observable =
                 if (isIdle == null) relay.bufferWhileUnbind(bufferSize)
                 else relay.bufferWhileIdle(isIdle, bufferSize)
