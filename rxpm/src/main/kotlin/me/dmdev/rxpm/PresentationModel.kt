@@ -91,11 +91,16 @@ abstract class PresentationModel {
                 else BehaviorRelay.create<T>().toSerialized()
 
         private val cachedValue =
-                if (initialValue != null) AtomicReference<T>(initialValue)
-                else AtomicReference<T>()
+                if (initialValue != null) AtomicReference<T?>(initialValue)
+                else AtomicReference<T?>()
 
         val observable = relay.asObservable()
-        val value: T? get() = cachedValue.get()
+        val value: T
+            get() {
+                return cachedValue.get() ?: throw UninitializedPropertyAccessException("Property value has not been initialized")
+            }
+
+        val valueOrNull: T? get() = cachedValue.get()
 
         init {
             relay.subscribe { cachedValue.set(it) }
