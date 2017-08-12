@@ -68,10 +68,15 @@ inline fun EditText.bind(inputControl: InputControl): Disposable {
                         editable.replace(0, editable.length, it)
                     }
                 },
+
                 inputControl.enabled.observable
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(enabled()),
-                textChanges().map { it.toString() }.subscribe(inputControl.textChanges.consumer)
+
+                textChanges()
+                        .skipInitialValue()
+                        .map { it.toString() }
+                        .subscribe(inputControl.textChanges.consumer)
         )
     }
 }

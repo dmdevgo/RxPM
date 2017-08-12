@@ -34,7 +34,11 @@ inline fun CompoundButton.bind(checkControl: CheckControl): Disposable {
                 checkControl.checked.observable
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(checked()),
-                checkedChanges().subscribe(checkControl.checkedChanges.consumer),
+
+                checkedChanges()
+                        .skipInitialValue()
+                        .subscribe(checkControl.checkedChanges.consumer),
+
                 checkControl.enabled.observable
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(enabled())
