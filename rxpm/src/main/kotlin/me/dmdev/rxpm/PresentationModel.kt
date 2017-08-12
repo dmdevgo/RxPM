@@ -85,7 +85,7 @@ abstract class PresentationModel {
     protected val <T> Action<T>.observable: Observable<T> get() = relay
     protected val <T> Command<T>.consumer: Consumer<T> get() = relay
 
-    class State<T>(initialValue: T? = null) {
+    inner class State<T>(initialValue: T? = null) {
         internal val relay =
                 if (initialValue != null) BehaviorRelay.createDefault<T>(initialValue).toSerialized()
                 else BehaviorRelay.create<T>().toSerialized()
@@ -109,7 +109,7 @@ abstract class PresentationModel {
         fun hasValue() = cachedValue.get() != null
     }
 
-    class Action<T> {
+    inner class Action<T> {
         internal val relay = PublishRelay.create<T>().toSerialized()
         val consumer = relay.asConsumer()
     }
