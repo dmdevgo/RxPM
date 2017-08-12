@@ -52,22 +52,25 @@ inline fun TextInputLayout.bind(inputControl: InputControl): Disposable {
 }
 
 inline fun EditText.bind(inputControl: InputControl): Disposable {
+
     return CompositeDisposable().apply {
+
+        var editing = false
         addAll(
                 inputControl.text.observable
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-
-                    val editable = text
-
-                    if (editable is Spanned) {
-                        val ss = SpannableString(it)
-                        TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
-                        editable.replace(0, editable.length, ss)
-                    } else {
-                        editable.replace(0, editable.length, it)
-                    }
-                },
+                            val editable = text
+                            editing = true
+                            if (editable is Spanned) {
+                                val ss = SpannableString(it)
+                                TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
+                                editable.replace(0, editable.length, ss)
+                            } else {
+                                editable.replace(0, editable.length, it)
+                            }
+                            editing = false
+                        },
 
                 inputControl.enabled.observable
                         .observeOn(AndroidSchedulers.mainThread())
@@ -75,6 +78,7 @@ inline fun EditText.bind(inputControl: InputControl): Disposable {
 
                 textChanges()
                         .skipInitialValue()
+                        .filter { !editing }
                         .map { it.toString() }
                         .subscribe(inputControl.textChanges.consumer)
         )
