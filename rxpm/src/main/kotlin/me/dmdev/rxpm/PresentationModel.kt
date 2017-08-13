@@ -13,6 +13,10 @@ import java.util.concurrent.atomic.AtomicReference
  */
 abstract class PresentationModel {
 
+    enum class Lifecycle {
+        CREATED, BINDED, UNBINDED, DESTROYED
+    }
+
     private val compositeDestroy = CompositeDisposable()
     private val compositeUnbind = CompositeDisposable()
 
@@ -77,9 +81,6 @@ abstract class PresentationModel {
         return this.bufferWhileIdle(unbind, bufferSize)
     }
 
-    enum class Lifecycle {
-        CREATED, BINDED, UNBINDED, DESTROYED
-    }
 
     protected val <T> State<T>.consumer: Consumer<T> get() = relay
     protected val <T> Action<T>.observable: Observable<T> get() = relay
@@ -97,7 +98,8 @@ abstract class PresentationModel {
         val observable = relay.asObservable()
         val value: T
             get() {
-                return cachedValue.get() ?: throw UninitializedPropertyAccessException("Property value has not been initialized")
+                return cachedValue.get() ?: throw UninitializedPropertyAccessException(
+                        "The State has no value yet. Use valueOrNull() or pass initialValue to the constructor.")
             }
 
         val valueOrNull: T? get() = cachedValue.get()
