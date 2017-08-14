@@ -34,7 +34,7 @@ where PM : PresentationModel, PM : MapPmExtension {
     abstract fun createView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View
 
     open fun onInitView(view: View, savedViewState: Bundle?) {
-        //override this for init views
+        // Override this to init views
     }
 
     override fun onAttach(view: View) {
@@ -62,7 +62,7 @@ where PM : PresentationModel, PM : MapPmExtension {
         delegate.onDestroy()
     }
 
-    // Call from outside
+    // Call this from outside
     fun onLowMemory() {
         delegate.onLowMemory()
     }

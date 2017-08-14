@@ -6,7 +6,7 @@ import me.dmdev.rxpm.PresentationModel
  * @author Dmitriy Gorbunov
  */
 open class MapPresentationModel : PresentationModel(),
-                             MapPmExtension {
+                                  MapPmExtension {
 
     override val mapReadyState = MapPmExtension.MapReadyState()
 }
