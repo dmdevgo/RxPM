@@ -25,7 +25,7 @@ interface PmView<PM : PresentationModel> {
     val presentationModel: PM
 
     /**
-     * Subscriptions list that will be cleared on unbind
+     * Subscriptions list that will be cleared on unbind.
      */
     val compositeUnbind: CompositeDisposable
 
@@ -73,28 +73,28 @@ interface PmView<PM : PresentationModel> {
     }
 
     /**
-     * Local extension to bind [InputControl] to [EditText], use it ONLY in [onBindPresentationModel]
+     * Local extension to bind [InputControl] to [EditText], use it ONLY in [onBindPresentationModel].
      */
     infix fun InputControl.bindTo(editText: EditText) {
         compositeUnbind.add(editText.bind(this))
     }
 
     /**
-     * Local extension to bind [InputControl] to [TextInputLayout], use it ONLY in [onBindPresentationModel]
+     * Local extension to bind [InputControl] to [TextInputLayout], use it ONLY in [onBindPresentationModel].
      */
     infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
         compositeUnbind.add(textInputLayout.bind(this))
     }
 
     /**
-     * Local extension to bind [CheckControl] to [CompoundButton], use it ONLY in [onBindPresentationModel]
+     * Local extension to bind [CheckControl] to [CompoundButton], use it ONLY in [onBindPresentationModel].
      */
     infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
         compositeUnbind.add(compoundButton.bind(this))
     }
 
     /**
-     * Local extension to bind [ClickControl] to [View], use it ONLY in [onBindPresentationModel]
+     * Local extension to bind [ClickControl] to [View], use it ONLY in [onBindPresentationModel].
      */
     infix fun ClickControl.bindTo(view: View) {
         compositeUnbind.add(view.bind(this))
@@ -115,7 +115,7 @@ interface PmView<PM : PresentationModel> {
     }
 
     /**
-     * Add this chain to the subscriptions list that will be cleared [on unbind][compositeUnbind]
+     * Add this chain to the subscriptions list that will be cleared [on unbind][compositeUnbind].
      */
     fun Disposable.untilUnbind() = compositeUnbind.add(this)
 }

@@ -32,7 +32,7 @@ abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : Rest
     abstract fun createView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View
 
     open fun onInitView(view: View, savedViewState: Bundle?) {
-        //override this for init views
+        // Override this to init views
     }
 
     override fun onAttach(view: View) {
