@@ -1,6 +1,8 @@
 package me.dmdev.rxpm.widget
 
+import com.nhaarman.mockito_kotlin.spy
 import io.reactivex.observers.TestObserver
+import me.dmdev.rxpm.PresentationModel
 import org.junit.Test
 
 /**
@@ -11,7 +13,8 @@ class CheckControlTest {
     @Test
     fun testFilterIfValueNotChanged() {
 
-        val checkbox = CheckControl()
+        val pm = spy<PresentationModel>()
+        val checkbox = pm.checkControl()
 
         val to = TestObserver<Boolean>()
         checkbox.checked.observable.subscribe(to)
