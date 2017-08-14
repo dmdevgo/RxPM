@@ -6,15 +6,19 @@ import com.jakewharton.rxbinding2.view.enabled
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import me.dmdev.rxpm.PresentationModel.Action
-import me.dmdev.rxpm.PresentationModel.State
+import me.dmdev.rxpm.PresentationModel
 
 /**
  * @author Dmitriy Gorbunov
  */
-class ClickControl(initialEnabled: Boolean = true) {
-    val enabled = State(initialEnabled)
-    val clicks = Action<Unit>()
+class ClickControl internal constructor(pm: PresentationModel,
+                                        initialEnabled: Boolean = true) {
+    val enabled = pm.State(initialEnabled)
+    val clicks = pm.Action<Unit>()
+}
+
+fun PresentationModel.clickControl(initialEnabled: Boolean = true): ClickControl {
+    return me.dmdev.rxpm.widget.ClickControl(this, initialEnabled)
 }
 
 @Suppress("NOTHING_TO_INLINE")

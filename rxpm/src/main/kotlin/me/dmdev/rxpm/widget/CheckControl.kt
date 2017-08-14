@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package me.dmdev.rxpm.widget
 
 import android.widget.CompoundButton
@@ -6,18 +8,18 @@ import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import me.dmdev.rxpm.PresentationModel.Action
-import me.dmdev.rxpm.PresentationModel.State
+import me.dmdev.rxpm.PresentationModel
 
 /**
  * @author Dmitriy Gorbunov
  */
-class CheckControl(initialChecked: Boolean = false,
-                   initialEnabled: Boolean = true) {
+class CheckControl internal constructor(pm: PresentationModel,
+                                        initialChecked: Boolean = false,
+                                        initialEnabled: Boolean = true) {
 
-    val checked = State(initialChecked)
-    val enabled = State(initialEnabled)
-    val checkedChanges = Action<Boolean>()
+    val checked = pm.State(initialChecked)
+    val enabled = pm.State(initialEnabled)
+    val checkedChanges = pm.Action<Boolean>()
 
     init {
         checkedChanges.relay
@@ -26,7 +28,11 @@ class CheckControl(initialChecked: Boolean = false,
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
+fun PresentationModel.checkControl(initialChecked: Boolean = false,
+                                   initialEnabled: Boolean = true): CheckControl {
+    return CheckControl(this, initialChecked, initialEnabled)
+}
+
 inline fun CompoundButton.bind(checkControl: CheckControl): Disposable {
     return CompositeDisposable().apply {
         var editing = false
