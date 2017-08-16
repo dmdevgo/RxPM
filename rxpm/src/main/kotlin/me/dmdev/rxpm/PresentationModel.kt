@@ -81,7 +81,6 @@ abstract class PresentationModel {
         return this.bufferWhileIdle(unbind, bufferSize)
     }
 
-
     protected val <T> State<T>.consumer: Consumer<T> get() = relay
     protected val <T> Action<T>.observable: Observable<T> get() = relay
     protected val <T> Command<T>.consumer: Consumer<T> get() = relay

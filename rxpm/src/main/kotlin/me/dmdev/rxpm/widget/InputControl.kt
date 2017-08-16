@@ -12,21 +12,21 @@ import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import me.dmdev.rxpm.PresentationModel.Action
-import me.dmdev.rxpm.PresentationModel.State
+import me.dmdev.rxpm.PresentationModel
 
 /**
  * @author Dmitriy Gorbunov
  */
-class InputControl(initialText: String = "",
-                   initialEnabled: Boolean = true,
-                   val formatter: (text: String) -> String = { it },
-                   val hideErrorOnUserInput: Boolean = true) {
+class InputControl internal constructor(pm: PresentationModel,
+                                        initialText: String,
+                                        initialEnabled: Boolean,
+                                        val formatter: (text: String) -> String,
+                                        val hideErrorOnUserInput: Boolean) {
 
-    val text = State(initialText)
-    val enabled = State(initialEnabled)
-    val error = State<String>()
-    val textChanges = Action<String>()
+    val text = pm.State(initialText)
+    val enabled = pm.State(initialEnabled)
+    val error = pm.State<String>()
+    val textChanges = pm.Action<String>()
 
     init {
         textChanges.relay
@@ -37,6 +37,13 @@ class InputControl(initialText: String = "",
                     if (hideErrorOnUserInput) error.relay.accept("")
                 }
     }
+}
+
+fun PresentationModel.inputControl(initialText: String = "",
+                                   initialEnabled: Boolean = true,
+                                   formatter: (text: String) -> String = { it },
+                                   hideErrorOnUserInput: Boolean = true): InputControl {
+    return InputControl(this, initialText, initialEnabled, formatter, hideErrorOnUserInput)
 }
 
 inline fun TextInputLayout.bind(inputControl: InputControl): Disposable {

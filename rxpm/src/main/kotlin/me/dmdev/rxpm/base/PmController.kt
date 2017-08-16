@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.RestoreViewOnCreateController
 import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.PmView
+import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.delegate.PmControllerDelegate
 
@@ -14,7 +14,7 @@ import me.dmdev.rxpm.delegate.PmControllerDelegate
  * @author Dmitriy Gorbunov
  */
 abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : RestoreViewOnCreateController(args),
-                                                                            PmView<PM> {
+                                                                            AndroidPmView<PM> {
 
     private val delegate by lazy { PmControllerDelegate(this) }
 

@@ -3,14 +3,14 @@ package me.dmdev.rxpm.base
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.PmView
+import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.delegate.PmSupportFragmentDelegate
 
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class PmSupportFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
+abstract class PmSupportFragment<PM : PresentationModel> : Fragment(), AndroidPmView<PM> {
 
     private val delegate by lazy { PmSupportFragmentDelegate(this) }
 

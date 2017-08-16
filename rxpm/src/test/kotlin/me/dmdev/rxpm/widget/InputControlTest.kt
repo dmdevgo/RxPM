@@ -1,6 +1,8 @@
 package me.dmdev.rxpm.widget
 
+import com.nhaarman.mockito_kotlin.spy
 import io.reactivex.observers.TestObserver
+import me.dmdev.rxpm.PresentationModel
 import org.junit.Test
 
 /**
@@ -11,7 +13,8 @@ class InputControlTest {
     @Test
     fun testFilterIfValueNotChanged() {
 
-        val input = InputControl()
+        val pm = spy<PresentationModel>()
+        val input = pm.inputControl()
 
         val to = TestObserver<String>()
         input.text.observable.subscribe(to)
@@ -30,7 +33,8 @@ class InputControlTest {
     @Test
     fun testFormatter() {
 
-        val input = InputControl(
+        val pm = spy<PresentationModel>()
+        val input = pm.inputControl(
                 formatter = { it.toUpperCase() }
         )
 

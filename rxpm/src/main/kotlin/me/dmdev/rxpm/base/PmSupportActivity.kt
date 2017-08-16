@@ -3,14 +3,14 @@ package me.dmdev.rxpm.base
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.PmView
+import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.delegate.PmActivityDelegate
 
 /**
  * @author Dmitriy Gorbunov
  */
-abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
+abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), AndroidPmView<PM> {
 
     private val delegate by lazy { PmActivityDelegate(this) }
 
