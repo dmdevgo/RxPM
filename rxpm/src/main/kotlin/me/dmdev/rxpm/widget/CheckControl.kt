@@ -1,5 +1,3 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package me.dmdev.rxpm.widget
 
 import android.widget.CompoundButton
@@ -14,8 +12,8 @@ import me.dmdev.rxpm.PresentationModel
  * @author Dmitriy Gorbunov
  */
 class CheckControl internal constructor(pm: PresentationModel,
-                                        initialChecked: Boolean = false,
-                                        initialEnabled: Boolean = true) {
+                                        initialChecked: Boolean,
+                                        initialEnabled: Boolean) {
 
     val checked = pm.State(initialChecked)
     val enabled = pm.State(initialEnabled)
@@ -33,6 +31,7 @@ fun PresentationModel.checkControl(initialChecked: Boolean = false,
     return CheckControl(this, initialChecked, initialEnabled)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun CompoundButton.bind(checkControl: CheckControl): Disposable {
     return CompositeDisposable().apply {
         var editing = false

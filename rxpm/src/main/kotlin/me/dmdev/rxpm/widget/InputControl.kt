@@ -18,10 +18,10 @@ import me.dmdev.rxpm.PresentationModel
  * @author Dmitriy Gorbunov
  */
 class InputControl internal constructor(pm: PresentationModel,
-                                        initialText: String = "",
-                                        initialEnabled: Boolean = true,
-                                        val formatter: (text: String) -> String = { it },
-                                        val hideErrorOnUserInput: Boolean = true) {
+                                        initialText: String,
+                                        initialEnabled: Boolean,
+                                        val formatter: (text: String) -> String,
+                                        val hideErrorOnUserInput: Boolean) {
 
     val text = pm.State(initialText)
     val enabled = pm.State(initialEnabled)

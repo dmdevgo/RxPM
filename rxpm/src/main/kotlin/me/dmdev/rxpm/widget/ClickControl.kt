@@ -12,7 +12,7 @@ import me.dmdev.rxpm.PresentationModel
  * @author Dmitriy Gorbunov
  */
 class ClickControl internal constructor(pm: PresentationModel,
-                                        initialEnabled: Boolean = true) {
+                                        initialEnabled: Boolean) {
     val enabled = pm.State(initialEnabled)
     val clicks = pm.Action<Unit>()
 }
