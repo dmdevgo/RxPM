@@ -20,8 +20,8 @@ import me.dmdev.rxpm.PresentationModel
 class InputControl internal constructor(pm: PresentationModel,
                                         initialText: String,
                                         initialEnabled: Boolean,
-                                        val formatter: (text: String) -> String,
-                                        val hideErrorOnUserInput: Boolean) {
+                                        formatter: (text: String) -> String,
+                                        hideErrorOnUserInput: Boolean) {
 
     val text = pm.State(initialText)
     val enabled = pm.State(initialEnabled)
@@ -68,15 +68,17 @@ inline fun EditText.bind(inputControl: InputControl): Disposable {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
                             val editable = text
-                            editing = true
-                            if (editable is Spanned) {
-                                val ss = SpannableString(it)
-                                TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
-                                editable.replace(0, editable.length, ss)
-                            } else {
-                                editable.replace(0, editable.length, it)
+                            if(!it.contentEquals(editable)) {
+                                editing = true
+                                if (editable is Spanned) {
+                                    val ss = SpannableString(it)
+                                    TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
+                                    editable.replace(0, editable.length, ss)
+                                } else {
+                                    editable.replace(0, editable.length, it)
+                                }
+                                editing = false
                             }
-                            editing = false
                         },
 
                 inputControl.enabled.observable
