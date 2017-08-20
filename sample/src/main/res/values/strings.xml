@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">RxPM</string>
+
+    <!-- Auth by phone Screen -->
+    <string name="auth_by_phone_screen_text">Please confirm your country code and enter your phone number.</string>
+    <string name="auth_by_phone_screen_title">Your phone</string>
+
 </resources>

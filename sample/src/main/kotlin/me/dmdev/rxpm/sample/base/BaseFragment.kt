@@ -1,4 +1,4 @@
-package me.dmdev.rxpm.sample.ui.base
+package me.dmdev.rxpm.sample.base
 
 import android.os.Bundle
 import android.support.annotation.LayoutRes

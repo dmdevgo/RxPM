@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
 
@@ -10,6 +11,7 @@ android {
         applicationId "me.dmdev.rxpm.sample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        vectorDrawables.useSupportLibrary = true
         versionCode 1
         versionName "1.0"
     }
@@ -26,6 +28,7 @@ dependencies {
     compile project(':rxpm')
 
     compile rootProject.ext.supportAppCompat
+    compile rootProject.ext.supportDesign
     compile rootProject.ext.timber
 
 }
