@@ -18,7 +18,7 @@
                 android:text="@string/auth_by_phone_screen_title"/>
 
             <ImageView
-                android:id="@+id/actionButton"
+                android:id="@+id/doneButton"
                 style="@style/ActionButton"
                 app:srcCompat="@drawable/ic_check_white_24dp"/>
 

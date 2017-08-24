@@ -31,4 +31,6 @@ dependencies {
     compile rootProject.ext.supportDesign
     compile rootProject.ext.timber
 
+    compile 'com.googlecode.libphonenumber:libphonenumber:8.7.1'
+
 }
