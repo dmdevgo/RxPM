@@ -14,3 +14,6 @@ fun FragmentManager.openScreen(fragment: Fragment, addToBackStack: Boolean = tru
             .also { if (addToBackStack) it.addToBackStack(null) }
             .commit()
 }
+
+val FragmentManager.currentScreen: Fragment?
+    get() = this.findFragmentById(R.id.container)

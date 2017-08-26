@@ -3,14 +3,14 @@ package me.dmdev.rxpm.sample.ui.auth.phone
 import com.google.i18n.phonenumbers.NumberParseException
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
-import me.dmdev.rxpm.sample.base.BasePresentationModel
+import me.dmdev.rxpm.sample.base.ScreenPresentationModel
 import me.dmdev.rxpm.sample.extansions.onlyDigits
 import me.dmdev.rxpm.sample.util.Country
 import me.dmdev.rxpm.sample.util.PhoneUtil
 import me.dmdev.rxpm.widget.clickControl
 import me.dmdev.rxpm.widget.inputControl
 
-class AuthByPhonePm : BasePresentationModel() {
+class AuthByPhonePm : ScreenPresentationModel() {
 
     private val phoneUtil = PhoneUtil()
 
