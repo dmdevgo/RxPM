@@ -14,7 +14,7 @@ interface PmView<PM : PresentationModel> {
     val presentationModel: PM
 
     /**
-     * Subscriptions list that will be cleared on unbind.
+     * [CompositeDisposable] that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED].
      */
     val compositeUnbind: CompositeDisposable
 
@@ -36,7 +36,8 @@ interface PmView<PM : PresentationModel> {
     }
 
     /**
-     * Add this chain to the subscriptions list that will be cleared [on unbind][compositeUnbind].
+     * Add this [Disposable] to the [CompositeDisposable][compositeUnbind]
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED].
      */
     fun Disposable.untilUnbind() = compositeUnbind.add(this)
 }

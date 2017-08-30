@@ -19,7 +19,8 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
 
     /**
      * Local extension to subscribe to the observable and add it to the subscriptions list
-     * that will be CLEARED [ON UNBIND][compositeUnbind], so use it ONLY in [onBindPresentationModel].
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
      */
     infix fun <T> Observable<T>.bindTo(consumer: Consumer<in T>) {
         compositeUnbind.add(
@@ -31,7 +32,8 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
 
     /**
      * Local extension to subscribe to the observable and add it to the subscriptions list
-     * that will be CLEARED [ON UNBIND][compositeUnbind], so use it ONLY in [onBindPresentationModel].
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
      */
     infix fun <T> Observable<T>.bindTo(consumer: (T) -> Unit) {
         compositeUnbind.add(
@@ -42,35 +44,35 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     }
 
     /**
-     * Local extension to bind [InputControl] to [EditText], use it ONLY in [onBindPresentationModel].
+     * Local extension to bind the [InputControl] to the [EditText][editText], use it ONLY in [onBindPresentationModel].
      */
     infix fun InputControl.bindTo(editText: EditText) {
         compositeUnbind.add(editText.bind(this))
     }
 
     /**
-     * Local extension to bind [InputControl] to [TextInputLayout], use it ONLY in [onBindPresentationModel].
+     * Local extension to bind the [InputControl] to the [TextInputLayout][textInputLayout], use it ONLY in [onBindPresentationModel].
      */
     infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
         compositeUnbind.add(textInputLayout.bind(this))
     }
 
     /**
-     * Local extension to bind [CheckControl] to [CompoundButton], use it ONLY in [onBindPresentationModel].
+     * Local extension to bind the [CheckControl] to the [CompoundButton][compoundButton], use it ONLY in [onBindPresentationModel].
      */
     infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
         compositeUnbind.add(compoundButton.bind(this))
     }
 
     /**
-     * Local extension to bind [ClickControl] to [View], use it ONLY in [onBindPresentationModel].
+     * Local extension to bind the [ClickControl] to the [View][view], use it ONLY in [onBindPresentationModel].
      */
     infix fun ClickControl.bindTo(view: View) {
         compositeUnbind.add(view.bind(this))
     }
 
     /**
-     * Local extension to pass the empty value to the [Consumer].
+     * Local extension to pass an empty value to the [Consumer].
      */
     infix fun passTo(consumer: Consumer<Unit>) {
         consumer.accept(Unit)
