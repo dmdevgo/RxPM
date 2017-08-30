@@ -18,7 +18,7 @@ interface MapPmExtension {
         return this.bufferWhileIdle(mapReadyState.observable.map { !it }, bufferSize)
     }
 
-    fun <T> PresentationModel.MapCommand(bufferSize: Int? = null): PresentationModel.Command<T> {
+    fun <T> PresentationModel.mapCommand(bufferSize: Int? = null): PresentationModel.Command<T> {
         return Command(mapReadyState.observable.map { !it }, bufferSize)
     }
 
