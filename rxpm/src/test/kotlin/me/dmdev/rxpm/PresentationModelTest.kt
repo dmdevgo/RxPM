@@ -80,9 +80,10 @@ class PresentationModelTest {
 
         pm.commands.subscribe { commands.add(it) }
 
+        pm.relay.accept(1)
+
         pm.lifecycleConsumer.accept(Lifecycle.CREATED)
 
-        pm.relay.accept(1)
         pm.relay.accept(2)
 
         Assert.assertArrayEquals(intArrayOf(), commands.toIntArray())

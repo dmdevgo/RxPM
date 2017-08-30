@@ -21,7 +21,7 @@ abstract class PresentationModel {
     private val compositeUnbind = CompositeDisposable()
 
     private val lifeсycle = BehaviorRelay.create<Lifecycle>()
-    private val unbind = BehaviorRelay.create<Boolean>()
+    private val unbind = BehaviorRelay.createDefault<Boolean>(true)
 
     val lifecycleState = lifeсycle.asObservable()
     internal val lifecycleConsumer = lifeсycle.asConsumer()
@@ -45,14 +45,14 @@ abstract class PresentationModel {
                 }
 
         lifeсycle
-                .map {
+                .takeUntil { it == Lifecycle.DESTROYED }
+                .subscribe {
                     when (it) {
-                        Lifecycle.BINDED -> false
-                        else -> true
+                        Lifecycle.BINDED -> unbind.accept(false)
+                        Lifecycle.UNBINDED -> unbind.accept(true)
+                        else -> {}
                     }
                 }
-                .subscribe(unbind)
-                .untilDestroy()
     }
 
     protected open fun onCreate() {}
