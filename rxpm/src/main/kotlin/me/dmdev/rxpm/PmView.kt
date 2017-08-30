@@ -36,7 +36,7 @@ interface PmView<PM : PresentationModel> {
     }
 
     /**
-     * Add this [Disposable] to the [CompositeDisposable][compositeUnbind]
+     * Local extension to add this [Disposable] to the [CompositeDisposable][compositeUnbind]
      * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED].
      */
     fun Disposable.untilUnbind() = compositeUnbind.add(this)
