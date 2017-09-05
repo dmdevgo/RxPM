@@ -13,6 +13,7 @@ import me.dmdev.rxpm.widget.InputControl
 import me.dmdev.rxpm.widget.bind
 
 /**
+ * Extends [PmView] by adding several useful extensions.
  * @author Dmitriy Gorbunov
  */
 interface AndroidPmView<PM : PresentationModel> : PmView<PM> {

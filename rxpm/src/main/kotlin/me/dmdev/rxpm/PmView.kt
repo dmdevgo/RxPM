@@ -4,6 +4,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
 /**
+ * Interface that need to be implemented by the View part of the RxPM pattern.
+ * Has a few useful callbacks and extensions.
  * @author Dmitriy Gorbunov
  */
 interface PmView<PM : PresentationModel> {
