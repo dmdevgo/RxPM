@@ -22,7 +22,7 @@ fun PresentationModel.clickControl(initialEnabled: Boolean = true): ClickControl
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun View.bind(clickControl: ClickControl): Disposable {
+inline internal fun View.bind(clickControl: ClickControl): Disposable {
     return CompositeDisposable().apply {
         addAll(
                 clickControl.enabled.observable

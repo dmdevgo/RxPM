@@ -46,7 +46,7 @@ fun PresentationModel.inputControl(initialText: String = "",
     return InputControl(this, initialText, initialEnabled, formatter, hideErrorOnUserInput)
 }
 
-inline fun TextInputLayout.bind(inputControl: InputControl): Disposable {
+inline internal fun TextInputLayout.bind(inputControl: InputControl): Disposable {
     val edit = editText!!
     return CompositeDisposable().apply {
         addAll(
@@ -58,7 +58,7 @@ inline fun TextInputLayout.bind(inputControl: InputControl): Disposable {
     }
 }
 
-inline fun EditText.bind(inputControl: InputControl): Disposable {
+inline internal fun EditText.bind(inputControl: InputControl): Disposable {
 
     return CompositeDisposable().apply {
 

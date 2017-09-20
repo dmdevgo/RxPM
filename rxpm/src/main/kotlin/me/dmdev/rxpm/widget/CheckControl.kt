@@ -32,7 +32,7 @@ fun PresentationModel.checkControl(initialChecked: Boolean = false,
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun CompoundButton.bind(checkControl: CheckControl): Disposable {
+inline internal fun CompoundButton.bind(checkControl: CheckControl): Disposable {
     return CompositeDisposable().apply {
         var editing = false
         addAll(
