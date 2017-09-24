@@ -1,11 +1,14 @@
 package me.dmdev.rxpm.sample.ui.auth.phone
 
+import com.jakewharton.rxbinding2.view.clicks
 import kotlinx.android.synthetic.main.screen_auth_by_phone.*
 import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.base.Screen
-import java.util.*
+import me.dmdev.rxpm.sample.util.Country
 
-
+/**
+ * @author Dmitriy Gorbunov
+ */
 
 class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
 
@@ -19,7 +22,15 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
         pm.phoneNumber.bindTo(editPhoneNumberLayout)
         pm.doneButton.bindTo(doneButton)
         pm.chosenCountry.observable.bindTo {
-            countryName.text = Locale("en", it.region).getDisplayCountry(Locale.ENGLISH)
+            countryName.text = it.name
         }
+
+        countryName.clicks().bindTo(pm.countryClicks.consumer)
+
     }
+
+    fun chosenCountry(country: Country) {
+        presentationModel.chooseCountryAction.consumer.accept(country)
+    }
+
 }

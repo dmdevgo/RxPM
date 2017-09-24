@@ -16,6 +16,11 @@
         <item name="android:background">@color/primary</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:orientation">horizontal</item>
+        <item name="android:theme">@style/ToolbarThemeOverlay</item>
+    </style>
+
+    <style name="ToolbarThemeOverlay" parent="AppTheme">
+        <item name="colorAccent">@color/white</item>
     </style>
 
     <style name="AppToolbarTitle">

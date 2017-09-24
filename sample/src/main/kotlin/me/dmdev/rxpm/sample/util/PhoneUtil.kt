@@ -69,4 +69,8 @@ class PhoneUtil {
     }
 
     fun getCountryForRegion(region: String) = countriesMap[region] ?: Country.UNKNOWN
+
+    fun countries(): List<Country> {
+        return countriesMap.values.toList()
+    }
 }

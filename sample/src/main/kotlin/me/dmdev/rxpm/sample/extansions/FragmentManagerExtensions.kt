@@ -10,7 +10,7 @@ import me.dmdev.rxpm.sample.R
 
 fun FragmentManager.openScreen(fragment: Fragment, addToBackStack: Boolean = true) {
     beginTransaction()
-            .replace(R.id.container, fragment)
+            .replace(R.id.container, fragment, fragment.javaClass.name)
             .also { if (addToBackStack) it.addToBackStack(null) }
             .commit()
 }

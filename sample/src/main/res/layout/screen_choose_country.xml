@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout style="@style/AppLinearToolbar">
+
+        <ImageView
+            android:id="@+id/upButton"
+            style="@style/ActionButton"
+            app:srcCompat="@drawable/ic_arrow_back_white_24dp"/>
+
+        <TextView
+            android:id="@+id/toolbarTitle"
+            style="@style/AppToolbarTitle"
+            android:text="@string/choose_country_screen_title"/>
+
+        <EditText
+            android:id="@+id/searchQuery"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:background="@null"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint_text_light"
+            android:hint="@string/choose_country_search_hint"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/clearButton"
+            style="@style/ActionButton"
+            app:srcCompat="@drawable/ic_close_white_24dp"/>
+
+        <ImageView
+            android:id="@+id/searchButton"
+            style="@style/ActionButton"
+            app:srcCompat="@drawable/ic_search_white_24dp"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+</LinearLayout>

@@ -5,4 +5,8 @@
     <string name="auth_by_phone_screen_text">Please confirm your country code and enter your phone number.</string>
     <string name="auth_by_phone_screen_title">Your phone</string>
 
+    <!-- Choose Country -->
+    <string name="choose_country_screen_title">Choose a country</string>
+    <string name="choose_country_search_hint">Search</string>
+
 </resources>

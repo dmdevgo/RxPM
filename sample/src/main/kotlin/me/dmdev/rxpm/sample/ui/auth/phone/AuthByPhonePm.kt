@@ -3,12 +3,17 @@ package me.dmdev.rxpm.sample.ui.auth.phone
 import com.google.i18n.phonenumbers.NumberParseException
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
+import me.dmdev.rxpm.sample.ChooseCountryMessage
 import me.dmdev.rxpm.sample.base.ScreenPresentationModel
 import me.dmdev.rxpm.sample.extansions.onlyDigits
 import me.dmdev.rxpm.sample.util.Country
 import me.dmdev.rxpm.sample.util.PhoneUtil
 import me.dmdev.rxpm.widget.clickControl
 import me.dmdev.rxpm.widget.inputControl
+
+/**
+ * @author Dmitriy Gorbunov
+ */
 
 class AuthByPhonePm : ScreenPresentationModel() {
 
@@ -17,6 +22,7 @@ class AuthByPhonePm : ScreenPresentationModel() {
     val chosenCountry = State<Country>()
     val phoneNumber = inputControl()
     val countryCode = inputControl(
+            initialText = "+7",
             formatter = {
                 val code = "+${it.onlyDigits().take(5)}"
                 if (code.length > 5) {
@@ -35,6 +41,8 @@ class AuthByPhonePm : ScreenPresentationModel() {
     )
 
     val doneButton = clickControl(initialEnabled = false)
+    val countryClicks = Action<Unit>()
+    val chooseCountryAction = Action<Country>()
 
     override fun onCreate() {
         super.onCreate()
@@ -64,6 +72,20 @@ class AuthByPhonePm : ScreenPresentationModel() {
                                      phoneUtil.isValidPhone(country, number)
                                  })
                 .subscribe(doneButton.enabled.consumer)
+                .untilDestroy()
+
+        countryClicks.observable
+                .subscribe {
+                    sendMessage(ChooseCountryMessage())
+                }
+                .untilDestroy()
+
+        chooseCountryAction.observable
+                .subscribe {
+                    countryCode.textChanges.consumer.accept("+${it.countryCallingCode}")
+                    chosenCountry.consumer.accept(it)
+                    phoneNumber.requestFocus.consumer.accept(Unit)
+                }
                 .untilDestroy()
     }
 

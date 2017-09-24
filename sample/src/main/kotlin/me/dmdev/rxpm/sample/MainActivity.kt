@@ -6,6 +6,11 @@ import me.dmdev.rxpm.sample.base.BackHandler
 import me.dmdev.rxpm.sample.extansions.currentScreen
 import me.dmdev.rxpm.sample.extansions.openScreen
 import me.dmdev.rxpm.sample.ui.auth.phone.AuthByPhoneScreen
+import me.dmdev.rxpm.sample.ui.country.ChooseCountryScreen
+
+/**
+ * @author Dmitriy Gorbunov
+ */
 
 class MainActivity : AppCompatActivity(), PmMessageHandler {
 
@@ -34,8 +39,16 @@ class MainActivity : AppCompatActivity(), PmMessageHandler {
         when (message) {
             is UpMessage,
             is BackMessage -> super.onBackPressed()
+
+            is ChooseCountryMessage -> supportFragmentManager.openScreen(ChooseCountryScreen())
+
+            is CountryChosenMessage -> {
+                (supportFragmentManager.findFragmentByTag(AuthByPhoneScreen::class.java.name)
+                        as? AuthByPhoneScreen)?.chosenCountry(message.country)
+
+                super.onBackPressed()
+            }
         }
         return true
     }
 }
-

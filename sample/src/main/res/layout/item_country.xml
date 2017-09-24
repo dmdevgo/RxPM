@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="48dp"
+              android:background="?attr/selectableItemBackground"
+              android:orientation="horizontal"
+              tools:ignore="RtlHardcoded">
+
+    <TextView
+        android:id="@+id/countryName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|left"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        tools:text="Russia"/>
+
+    <TextView
+        android:id="@+id/countryCode"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="16dp"
+        android:gravity="center_vertical|right"
+        android:textColor="@color/accent"
+        android:textSize="16sp"
+        tools:text="+7"/>
+
+</LinearLayout>

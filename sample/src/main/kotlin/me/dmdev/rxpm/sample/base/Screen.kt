@@ -17,7 +17,7 @@ abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(),
                                                       PmMessageHandler,
                                                       BackHandler {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(getScreenLayout(), container, false)
     }
 
@@ -26,7 +26,7 @@ abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(),
     }
 
     override fun handleBack(): Boolean {
-        presentationModel.backAction.accept(Unit)
+        presentationModel.backAction.consumer.accept(Unit)
         return true
     }
 
