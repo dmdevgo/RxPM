@@ -8,7 +8,7 @@
     <LinearLayout style="@style/AppLinearToolbar">
 
         <ImageView
-            android:id="@+id/upButton"
+            android:id="@+id/navButton"
             style="@style/ActionButton"
             app:srcCompat="@drawable/ic_arrow_back_white_24dp"/>
 
@@ -20,13 +20,15 @@
         <EditText
             android:id="@+id/searchQuery"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_weight="1"
-            android:maxLines="1"
             android:background="@null"
-            android:textColor="@color/white"
-            android:textColorHint="@color/hint_text_light"
             android:hint="@string/choose_country_search_hint"
-            android:layout_height="wrap_content"/>
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint_text_light"/>
 
         <ImageView
             android:id="@+id/clearButton"

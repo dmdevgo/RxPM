@@ -12,7 +12,7 @@ import me.dmdev.rxpm.sample.util.Country
 
 class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
 
-    override fun getScreenLayout() = R.layout.screen_auth_by_phone
+    override val screenLayout = R.layout.screen_auth_by_phone
 
     override fun providePresentationModel() = AuthByPhonePm()
 

@@ -23,7 +23,7 @@ fun View.showKeyboard() {
     val function = {
         if (requestFocus()) {
             val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+            imm.showSoftInput(this, 0)
         }
     }
 

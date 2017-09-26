@@ -1,24 +1,25 @@
 package me.dmdev.rxpm.sample.base
 
 import android.os.Bundle
-import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import me.dmdev.rxpm.base.PmSupportFragment
-import me.dmdev.rxpm.sample.PmMessage
-import me.dmdev.rxpm.sample.PmMessageHandler
+import me.dmdev.rxpm.sample.NavigationMessage
+import me.dmdev.rxpm.sample.NavigationMessageHandler
 
 /**
  * @author Dmitriy Gorbunov
  */
 abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(),
-                                                      PmMessageHandler,
+                                                      NavigationMessageHandler,
                                                       BackHandler {
 
+    abstract val screenLayout: Int
+
     final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(getScreenLayout(), container, false)
+        return inflater.inflate(screenLayout, container, false)
     }
 
     override fun onBindPresentationModel(pm: PM) {
@@ -30,24 +31,21 @@ abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(),
         return true
     }
 
-    override fun handleMessage(message: PmMessage) = false
+    override fun handleMessage(message: NavigationMessage) = false
 
-    private fun dispatchMessage(message: PmMessage) {
+    private fun dispatchMessage(message: NavigationMessage) {
 
         var handler: Fragment? = this
         do {
-            if (handler is PmMessageHandler && handler.handleMessage(message)) {
+            if (handler is NavigationMessageHandler && handler.handleMessage(message)) {
                 return
             }
             handler = handler?.parentFragment
         } while (handler != null)
 
         val ac = activity
-        if (ac is PmMessageHandler) {
+        if (ac is NavigationMessageHandler) {
             ac.handleMessage(message)
         }
     }
-
-    @LayoutRes protected abstract fun getScreenLayout(): Int
-
 }

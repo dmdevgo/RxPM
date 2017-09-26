@@ -1,6 +1,5 @@
 package me.dmdev.rxpm.sample.ui.country
 
-import io.reactivex.Observable
 import me.dmdev.rxpm.sample.CountryChosenMessage
 import me.dmdev.rxpm.sample.base.ScreenPresentationModel
 import me.dmdev.rxpm.sample.ui.country.ChooseCountryPm.Mode.SEARCH_CLOSED
@@ -22,7 +21,6 @@ class ChooseCountryPm : ScreenPresentationModel() {
     val mode = State(SEARCH_CLOSED)
     val searchQuery = inputControl()
 
-    override val upAction = Action<Unit>()
     override val backAction = Action<Unit>()
 
     val clearAction = Action<Unit>()
@@ -47,7 +45,7 @@ class ChooseCountryPm : ScreenPresentationModel() {
                 }
                 .untilDestroy()
 
-        Observable.merge(backAction.observable, upAction.observable)
+        backAction.observable
                 .subscribe {
                     if (mode.value == SEARCH_OPENED) {
                         mode.consumer.accept(SEARCH_CLOSED)

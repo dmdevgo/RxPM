@@ -12,7 +12,7 @@ import me.dmdev.rxpm.sample.ui.country.ChooseCountryScreen
  * @author Dmitriy Gorbunov
  */
 
-class MainActivity : AppCompatActivity(), PmMessageHandler {
+class MainActivity : AppCompatActivity(), NavigationMessageHandler {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), PmMessageHandler {
         }
     }
 
-    override fun handleMessage(message: PmMessage): Boolean {
+    override fun handleMessage(message: NavigationMessage): Boolean {
         when (message) {
             is UpMessage,
             is BackMessage -> super.onBackPressed()

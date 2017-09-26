@@ -21,7 +21,7 @@ class ChooseCountryScreen : Screen<ChooseCountryPm>() {
         presentationModel.countryClicks.consumer.accept(country)
     }
 
-    override fun getScreenLayout() = R.layout.screen_choose_country
+    override val screenLayout = R.layout.screen_choose_country
 
     override fun providePresentationModel() = ChooseCountryPm()
 
@@ -58,6 +58,6 @@ class ChooseCountryScreen : Screen<ChooseCountryPm>() {
 
         searchButton.clicks().bindTo(pm.openSearchAction.consumer)
         clearButton.clicks().bindTo(pm.clearAction.consumer)
-        upButton.clicks().bindTo(pm.upAction.consumer)
+        navButton.clicks().bindTo(pm.backAction.consumer)
     }
 }
