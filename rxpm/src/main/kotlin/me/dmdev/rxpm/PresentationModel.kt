@@ -54,7 +54,8 @@ abstract class PresentationModel {
                     when (it) {
                         Lifecycle.BINDED -> unbind.accept(false)
                         Lifecycle.UNBINDED -> unbind.accept(true)
-                        else -> {}
+                        else -> {
+                        }
                     }
                 }
     }
@@ -126,10 +127,39 @@ abstract class PresentationModel {
     }
 
     // TODO: Add the javadocs fot the State, Command and Action.
+    /**
+     * Consumer of the [State].
+     * Accessible only from a [PresentationModel].
+     *
+     * Use to subscribe the state to some [Observable] source.
+     */
     protected val <T> State<T>.consumer: Consumer<T> get() = relay
+
+    /**
+     * Observable of the [Action].
+     * Accessible only from a [PresentationModel].
+     *
+     * Use to subscribe to this [Action]s source.
+     */
     protected val <T> Action<T>.observable: Observable<T> get() = relay
+
+    /**
+     * Consumer of the [Command].
+     * Accessible only from a [PresentationModel].
+     *
+     * Use to subscribe the command to some [Observable] source.
+     */
     protected val <T> Command<T>.consumer: Consumer<T> get() = relay
 
+    /**
+     * Reactive property for the [view's][PmView] state.
+     * Can be observed and changed in reactive manner with it's [observable] and [consumer].
+     *
+     * Use to represent a view state, e.g. some widget's text.
+     *
+     * @see Action
+     * @see Command
+     */
     inner class State<T>(initialValue: T? = null) {
         internal val relay =
                 if (initialValue != null) BehaviorRelay.createDefault<T>(initialValue).toSerialized()
@@ -139,30 +169,76 @@ abstract class PresentationModel {
                 if (initialValue != null) AtomicReference<T?>(initialValue)
                 else AtomicReference<T?>()
 
+        /**
+         * Observable of this [State].
+         */
         val observable = relay.asObservable()
+
+        /**
+         * Returns a current value.
+         * @throws UninitializedPropertyAccessException if there is no value and [State] was created without `initialValue`.
+         */
         val value: T
             get() {
                 return cachedValue.get() ?: throw UninitializedPropertyAccessException(
                         "The State has no value yet. Use valueOrNull() or pass initialValue to the constructor.")
             }
 
+        /**
+         * Returns a current value or null.
+         */
         val valueOrNull: T? get() = cachedValue.get()
 
         init {
             relay.subscribe { cachedValue.set(it) }
         }
 
+        /**
+         * Returns true if the [State] has any value.
+         */
         fun hasValue() = cachedValue.get() != null
     }
 
+    /**
+     * Reactive property for the actions from the [view][PmView].
+     * Can be changed and observed in reactive manner with it's [consumer] and [observable].
+     *
+     * Use to send actions of the view, e.g. some widget's clicks.
+     *
+     * @see State
+     * @see Command
+     */
     inner class Action<T> {
         internal val relay = PublishRelay.create<T>().toSerialized()
+
+        /**
+         * Consumer of the [Action][Action].
+         */
         val consumer = relay.asConsumer()
     }
 
+    /**
+     * Reactive property for the commands to the [view][PmView].
+     * Can be observed and changed in reactive manner with it's [observable] and [consumer].
+     *
+     * Use to represent a command to the view, e.g. toast or dialog showing.
+     *
+     * @param isIdle observable, that shows when `command` need to buffer the values (while isIdle value is true).
+     * Buffered values will be delivered later (when isIdle emits false).
+     * By default (when null is passed) it will buffer while the [view][PmView] is unbind from the [PresentationModel].
+     *
+     * @param bufferSize how many values should be kept in buffer. Null means no restrictions.
+     *
+     * @see Action
+     * @see Command
+     */
     inner class Command<T>(isIdle: Observable<Boolean>? = null,
                            bufferSize: Int? = null) {
         internal val relay = PublishRelay.create<T>().toSerialized()
+
+        /**
+         * Observable of this [Command].
+         */
         val observable =
                 if (isIdle == null) relay.bufferWhileUnbind(bufferSize)
                 else relay.bufferWhileIdle(isIdle, bufferSize)
