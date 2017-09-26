@@ -2,17 +2,17 @@ package me.dmdev.rxpm.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import me.dmdev.rxpm.sample.base.BackHandler
-import me.dmdev.rxpm.sample.extansions.currentScreen
-import me.dmdev.rxpm.sample.extansions.openScreen
-import me.dmdev.rxpm.sample.ui.auth.phone.AuthByPhoneScreen
+import me.dmdev.rxpm.sample.extensions.currentScreen
+import me.dmdev.rxpm.sample.extensions.openScreen
+import me.dmdev.rxpm.sample.ui.base.BackHandler
 import me.dmdev.rxpm.sample.ui.country.ChooseCountryScreen
+import me.dmdev.rxpm.sample.ui.phone.AuthByPhoneScreen
 
 /**
  * @author Dmitriy Gorbunov
  */
 
-class MainActivity : AppCompatActivity(), NavigationMessageHandler {
+class AppActivity : AppCompatActivity(), NavigationMessageHandler {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

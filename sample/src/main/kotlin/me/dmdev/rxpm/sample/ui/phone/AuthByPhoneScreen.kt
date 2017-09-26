@@ -1,9 +1,10 @@
-package me.dmdev.rxpm.sample.ui.auth.phone
+package me.dmdev.rxpm.sample.ui.phone
 
 import com.jakewharton.rxbinding2.view.clicks
 import kotlinx.android.synthetic.main.screen_auth_by_phone.*
+import me.dmdev.rxpm.sample.App
 import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.base.Screen
+import me.dmdev.rxpm.sample.ui.base.Screen
 import me.dmdev.rxpm.sample.util.Country
 
 /**
@@ -14,7 +15,7 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
 
     override val screenLayout = R.layout.screen_auth_by_phone
 
-    override fun providePresentationModel() = AuthByPhonePm()
+    override fun providePresentationModel() = AuthByPhonePm(App.component.phoneUtil())
 
     override fun onBindPresentationModel(pm: AuthByPhonePm) {
         super.onBindPresentationModel(pm)

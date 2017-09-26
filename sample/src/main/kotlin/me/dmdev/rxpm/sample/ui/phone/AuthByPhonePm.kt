@@ -1,11 +1,11 @@
-package me.dmdev.rxpm.sample.ui.auth.phone
+package me.dmdev.rxpm.sample.ui.phone
 
 import com.google.i18n.phonenumbers.NumberParseException
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import me.dmdev.rxpm.sample.ChooseCountryMessage
-import me.dmdev.rxpm.sample.base.ScreenPresentationModel
-import me.dmdev.rxpm.sample.extansions.onlyDigits
+import me.dmdev.rxpm.sample.extensions.onlyDigits
+import me.dmdev.rxpm.sample.ui.base.ScreenPresentationModel
 import me.dmdev.rxpm.sample.util.Country
 import me.dmdev.rxpm.sample.util.PhoneUtil
 import me.dmdev.rxpm.widget.clickControl
@@ -15,9 +15,7 @@ import me.dmdev.rxpm.widget.inputControl
  * @author Dmitriy Gorbunov
  */
 
-class AuthByPhonePm : ScreenPresentationModel() {
-
-    private val phoneUtil = PhoneUtil()
+class AuthByPhonePm(private val phoneUtil: PhoneUtil) : ScreenPresentationModel() {
 
     val chosenCountry = State<Country>()
     val phoneNumber = inputControl()

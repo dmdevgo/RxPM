@@ -1,4 +1,4 @@
-package me.dmdev.rxpm.sample.base
+package me.dmdev.rxpm.sample.ui.base
 
 /**
  * @author Dmitriy Gorbunov

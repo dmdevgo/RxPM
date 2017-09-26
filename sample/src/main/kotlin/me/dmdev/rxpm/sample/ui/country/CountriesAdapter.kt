@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_country.view.*
 import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.extansions.inflate
+import me.dmdev.rxpm.sample.extensions.inflate
 import me.dmdev.rxpm.sample.util.Country
 
 /**

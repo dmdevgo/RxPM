@@ -5,11 +5,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.jakewharton.rxbinding2.view.clicks
 import kotlinx.android.synthetic.main.screen_choose_country.*
+import me.dmdev.rxpm.sample.App
 import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.base.Screen
-import me.dmdev.rxpm.sample.extansions.hideKeyboard
-import me.dmdev.rxpm.sample.extansions.showKeyboard
-import me.dmdev.rxpm.sample.extansions.visible
+import me.dmdev.rxpm.sample.extensions.hideKeyboard
+import me.dmdev.rxpm.sample.extensions.showKeyboard
+import me.dmdev.rxpm.sample.extensions.visible
+import me.dmdev.rxpm.sample.ui.base.Screen
 import me.dmdev.rxpm.sample.ui.country.ChooseCountryPm.Mode
 
 /**
@@ -23,7 +24,7 @@ class ChooseCountryScreen : Screen<ChooseCountryPm>() {
 
     override val screenLayout = R.layout.screen_choose_country
 
-    override fun providePresentationModel() = ChooseCountryPm()
+    override fun providePresentationModel() = ChooseCountryPm(App.component.phoneUtil())
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

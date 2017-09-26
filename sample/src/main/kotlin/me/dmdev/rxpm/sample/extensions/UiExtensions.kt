@@ -1,4 +1,4 @@
-package me.dmdev.rxpm.sample.extansions
+package me.dmdev.rxpm.sample.extensions
 
 import android.content.Context
 import android.support.annotation.LayoutRes

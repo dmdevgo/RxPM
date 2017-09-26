@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
 
@@ -21,6 +22,10 @@ android {
     }
 }
 
+ext {
+    daggerVersion = "2.11"
+}
+
 dependencies {
 
     compile rootProject.ext.kotlinStdlib
@@ -30,6 +35,11 @@ dependencies {
     compile rootProject.ext.supportAppCompat
     compile rootProject.ext.supportDesign
     compile rootProject.ext.timber
+
+    //dagger 2
+    compile "com.google.dagger:dagger:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    provided 'javax.annotation:jsr250-api:1.0'
 
     compile 'com.googlecode.libphonenumber:libphonenumber:8.7.1'
 

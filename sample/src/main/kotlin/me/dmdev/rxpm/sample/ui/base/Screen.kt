@@ -1,4 +1,4 @@
-package me.dmdev.rxpm.sample.base
+package me.dmdev.rxpm.sample.ui.base
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

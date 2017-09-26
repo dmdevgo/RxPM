@@ -1,4 +1,4 @@
-package me.dmdev.rxpm.sample.extansions
+package me.dmdev.rxpm.sample.extensions
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager

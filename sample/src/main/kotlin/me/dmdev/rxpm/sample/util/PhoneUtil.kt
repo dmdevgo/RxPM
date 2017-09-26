@@ -3,7 +3,7 @@ package me.dmdev.rxpm.sample.util
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
-import me.dmdev.rxpm.sample.extansions.onlyDigits
+import me.dmdev.rxpm.sample.extensions.onlyDigits
 import java.util.*
 
 /**
