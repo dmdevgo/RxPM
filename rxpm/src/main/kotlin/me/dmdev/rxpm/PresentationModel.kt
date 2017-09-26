@@ -126,7 +126,6 @@ abstract class PresentationModel {
         return this.bufferWhileIdle(unbind, bufferSize)
     }
 
-    // TODO: Add the javadocs fot the State, Command and Action.
     /**
      * Consumer of the [State].
      * Accessible only from a [PresentationModel].
