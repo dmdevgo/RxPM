@@ -33,7 +33,6 @@ abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : Rest
     final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
         val view = createView(inflater, container, savedViewState)
         delegate.onCreateView()
-        onInitView(view, savedViewState)
         return view
     }
 
@@ -41,10 +40,6 @@ abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : Rest
      * Replaces the [onCreateView] that the library hides for internal use.
      */
     abstract fun createView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View
-
-    open fun onInitView(view: View, savedViewState: Bundle?) {
-        // Override this to init views
-    }
 
     override fun onAttach(view: View) {
         super.onAttach(view)
