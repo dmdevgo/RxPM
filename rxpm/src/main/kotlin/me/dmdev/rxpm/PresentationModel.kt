@@ -153,7 +153,8 @@ abstract class PresentationModel {
      * Reactive property for the [view's][PmView] state.
      * Can be observed and changed in reactive manner with it's [observable] and [consumer].
      *
-     * Use to represent a view state, e.g. some widget's text.
+     * Use to represent a view state. It can be something simple, like some widget's text, or complex,
+     * like inProgress or data.
      *
      * @see Action
      * @see Command
