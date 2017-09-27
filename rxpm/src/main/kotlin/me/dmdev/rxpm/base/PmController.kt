@@ -11,6 +11,14 @@ import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.delegate.PmControllerDelegate
 
 /**
+ * Predefined [Conductor's Controller][RestoreViewOnCreateController] implementing the [PmView][AndroidPmView].
+ *
+ * Just override the [providePresentationModel] and [onBindPresentationModel] methods and you are good to go.
+ *
+ * If extending is not possible you can implement [AndroidPmView],
+ * create a [PmControllerDelegate] and pass the lifecycle callbacks to it.
+ * See this class's source code for the example.
+ *
  * @author Dmitriy Gorbunov
  */
 abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : RestoreViewOnCreateController(args),
@@ -29,6 +37,9 @@ abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : Rest
         return view
     }
 
+    /**
+     * Replaces the [onCreateView] that the library hides for internal use.
+     */
     abstract fun createView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View
 
     open fun onInitView(view: View, savedViewState: Bundle?) {
