@@ -30,7 +30,7 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
 
     }
 
-    fun chosenCountry(country: Country) {
+    fun onCountryChosen(country: Country) {
         presentationModel.chooseCountryAction.consumer.accept(country)
     }
 

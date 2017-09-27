@@ -2,7 +2,9 @@ package me.dmdev.rxpm.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import me.dmdev.rxpm.sample.extensions.back
 import me.dmdev.rxpm.sample.extensions.currentScreen
+import me.dmdev.rxpm.sample.extensions.findScreen
 import me.dmdev.rxpm.sample.extensions.openScreen
 import me.dmdev.rxpm.sample.ui.base.BackHandler
 import me.dmdev.rxpm.sample.ui.country.ChooseCountryScreen
@@ -36,17 +38,16 @@ class AppActivity : AppCompatActivity(), NavigationMessageHandler {
     }
 
     override fun handleMessage(message: NavigationMessage): Boolean {
+        val sfm = supportFragmentManager
         when (message) {
             is UpMessage,
             is BackMessage -> super.onBackPressed()
 
-            is ChooseCountryMessage -> supportFragmentManager.openScreen(ChooseCountryScreen())
+            is ChooseCountryMessage -> sfm.openScreen(ChooseCountryScreen())
 
             is CountryChosenMessage -> {
-                (supportFragmentManager.findFragmentByTag(AuthByPhoneScreen::class.java.name)
-                        as? AuthByPhoneScreen)?.chosenCountry(message.country)
-
-                super.onBackPressed()
+                sfm.findScreen<AuthByPhoneScreen>()?.onCountryChosen(message.country)
+                sfm.back()
             }
         }
         return true
