@@ -2,6 +2,7 @@
 
 package me.dmdev.rxpm.sample.extensions
 
+import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import me.dmdev.rxpm.sample.R
@@ -10,9 +11,11 @@ import me.dmdev.rxpm.sample.R
  * @author Dmitriy Gorbunov
  */
 
-inline fun FragmentManager.openScreen(fragment: Fragment, addToBackStack: Boolean = true) {
+inline fun FragmentManager.openScreen(fragment: Fragment,
+                                      tag: String = fragment.javaClass.name,
+                                      addToBackStack: Boolean = true) {
     beginTransaction()
-            .replace(R.id.container, fragment, fragment.javaClass.name)
+            .replace(R.id.container, fragment, tag)
             .also { if (addToBackStack) it.addToBackStack(null) }
             .commit()
 }
@@ -24,6 +27,14 @@ inline fun FragmentManager.back() {
     popBackStackImmediate()
 }
 
-inline fun <reified T > FragmentManager.findScreen(): T? {
+inline fun <reified T> FragmentManager.findScreen(): T? {
     return findFragmentByTag(T::class.java.name) as? T
+}
+
+inline fun FragmentManager.showDialog(dialog: DialogFragment,
+                                      tag: String = dialog.javaClass.name) {
+    executePendingTransactions()
+    findScreen<DialogFragment>()?.dismiss()
+    dialog.show(this, tag)
+    executePendingTransactions()
 }

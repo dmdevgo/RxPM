@@ -10,6 +10,7 @@ import me.dmdev.rxpm.sample.NavigationMessage
 abstract class ScreenPresentationModel : PresentationModel() {
 
     val messages = Command<NavigationMessage>()
+    val errors = Command<String>()
 
     private val backActionDefault = Action<Unit>()
 
@@ -25,5 +26,9 @@ abstract class ScreenPresentationModel : PresentationModel() {
 
     protected fun sendMessage(message: NavigationMessage) {
         messages.consumer.accept(message)
+    }
+
+    protected fun showError(error: String?) {
+        errors.consumer.accept(error ?: "Unknown error")
     }
 }

@@ -5,9 +5,12 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.reactivex.functions.Consumer
 import me.dmdev.rxpm.base.PmSupportFragment
 import me.dmdev.rxpm.sample.NavigationMessage
 import me.dmdev.rxpm.sample.NavigationMessageHandler
+import me.dmdev.rxpm.sample.extensions.findScreen
+import me.dmdev.rxpm.sample.extensions.showDialog
 
 /**
  * @author Dmitriy Gorbunov
@@ -24,6 +27,14 @@ abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(),
 
     override fun onBindPresentationModel(pm: PM) {
         pm.messages.observable.bindTo { dispatchMessage(it) }
+        pm.errors.observable.bindTo { showError(it) }
+    }
+
+    private fun showError(errorMessage: String) {
+        childFragmentManager.showDialog(
+                MessageDialog.newInstance(errorMessage),
+                tag = "error_message"
+        )
     }
 
     override fun handleBack(): Boolean {
@@ -46,6 +57,16 @@ abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(),
         val ac = activity
         if (ac is NavigationMessageHandler) {
             ac.handleMessage(message)
+        }
+    }
+
+    val progressConsumer = Consumer<Boolean> {
+        if (it) {
+            childFragmentManager.showDialog(ProgressDialog())
+        } else {
+            childFragmentManager
+                    .findScreen<ProgressDialog>()
+                    ?.dismiss()
         }
     }
 }

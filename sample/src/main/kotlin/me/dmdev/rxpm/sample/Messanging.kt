@@ -17,3 +17,4 @@ class BackMessage : NavigationMessage
 
 class ChooseCountryMessage : NavigationMessage
 class CountryChosenMessage(val country: Country) : NavigationMessage
+class PhoneSentSuccessfullyMessage(val phone: String) : NavigationMessage
