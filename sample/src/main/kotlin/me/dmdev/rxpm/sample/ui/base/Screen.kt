@@ -42,13 +42,13 @@ abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(),
         return true
     }
 
-    override fun handleMessage(message: NavigationMessage) = false
+    override fun handleNavigationMessage(message: NavigationMessage) = false
 
     private fun dispatchMessage(message: NavigationMessage) {
 
         var handler: Fragment? = this
         do {
-            if (handler is NavigationMessageHandler && handler.handleMessage(message)) {
+            if (handler is NavigationMessageHandler && handler.handleNavigationMessage(message)) {
                 return
             }
             handler = handler?.parentFragment
@@ -56,7 +56,7 @@ abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(),
 
         val ac = activity
         if (ac is NavigationMessageHandler) {
-            ac.handleMessage(message)
+            ac.handleNavigationMessage(message)
         }
     }
 

@@ -42,7 +42,7 @@ class ServerApiSimulator(private val context: Context) : ServerApi {
                 .delay(DELAY_IN_SECONDS, TimeUnit.SECONDS)
                 .doOnSuccess {
                     if (this.code != code) {
-                        throw WrongConfirmationCode()
+                        throw WrongConfirmationCode("Wrong confirmation code")
                     } else {
                         maybeServerError()
                     }
@@ -76,12 +76,11 @@ class ServerApiSimulator(private val context: Context) : ServerApi {
     private fun showNotification(code: String) {
 
         notificationManager
-                .notify(1111,
+                .notify(123,
                         NotificationCompat.Builder(context)
                                 .setContentTitle("RxPM Sample")
                                 .setContentText("Confirmation code $code")
                                 .setSmallIcon(R.mipmap.ic_launcher)
-                                .setPriority(NotificationCompat.PRIORITY_MAX)
                                 .setDefaults(NotificationCompat.DEFAULT_SOUND
                                                      or NotificationCompat.DEFAULT_LIGHTS)
                                 .build()

@@ -31,6 +31,12 @@ inline fun <reified T> FragmentManager.findScreen(): T? {
     return findFragmentByTag(T::class.java.name) as? T
 }
 
+inline fun FragmentManager.clearBackStack() {
+    for (i in 0..backStackEntryCount ) {
+        popBackStackImmediate()
+    }
+}
+
 inline fun FragmentManager.showDialog(dialog: DialogFragment,
                                       tag: String = dialog.javaClass.name) {
     executePendingTransactions()

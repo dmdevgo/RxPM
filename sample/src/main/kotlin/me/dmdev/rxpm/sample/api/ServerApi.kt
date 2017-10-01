@@ -12,7 +12,7 @@ interface ServerApi {
     fun logout(token: String): Completable
 }
 
-class WrongConfirmationCode : Throwable()
+class WrongConfirmationCode(message: String) : Throwable(message)
 class ServerError(message: String) : Throwable(message)
 
 class TokenResponse(val token: String)

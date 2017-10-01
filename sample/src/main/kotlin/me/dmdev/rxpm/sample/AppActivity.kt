@@ -2,12 +2,11 @@ package me.dmdev.rxpm.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import me.dmdev.rxpm.sample.extensions.back
-import me.dmdev.rxpm.sample.extensions.currentScreen
-import me.dmdev.rxpm.sample.extensions.findScreen
-import me.dmdev.rxpm.sample.extensions.openScreen
+import me.dmdev.rxpm.sample.extensions.*
 import me.dmdev.rxpm.sample.ui.base.BackHandler
+import me.dmdev.rxpm.sample.ui.confirmation.CodeConfirmationScreen
 import me.dmdev.rxpm.sample.ui.country.ChooseCountryScreen
+import me.dmdev.rxpm.sample.ui.main.MainScreen
 import me.dmdev.rxpm.sample.ui.phone.AuthByPhoneScreen
 
 /**
@@ -31,13 +30,11 @@ class AppActivity : AppCompatActivity(), NavigationMessageHandler {
         }
 
         if (supportFragmentManager.backStackEntryCount == 0) {
-            finish()
-        } else {
             super.onBackPressed()
         }
     }
 
-    override fun handleMessage(message: NavigationMessage): Boolean {
+    override fun handleNavigationMessage(message: NavigationMessage): Boolean {
         val sfm = supportFragmentManager
         when (message) {
             is UpMessage,
@@ -48,6 +45,15 @@ class AppActivity : AppCompatActivity(), NavigationMessageHandler {
             is CountryChosenMessage -> {
                 sfm.findScreen<AuthByPhoneScreen>()?.onCountryChosen(message.country)
                 sfm.back()
+            }
+
+            is PhoneSentSuccessfullyMessage -> sfm.openScreen(
+                    CodeConfirmationScreen.newInstance(message.phone)
+            )
+
+            is PhoneConfirmedMessage -> {
+                sfm.clearBackStack()
+                sfm.openScreen(MainScreen(), addToBackStack = false)
             }
         }
         return true
