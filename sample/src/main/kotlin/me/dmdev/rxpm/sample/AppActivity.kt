@@ -55,6 +55,11 @@ class AppActivity : AppCompatActivity(), NavigationMessageHandler {
                 sfm.clearBackStack()
                 sfm.openScreen(MainScreen(), addToBackStack = false)
             }
+
+            is LogoutCompletedMessage -> {
+                sfm.clearBackStack()
+                sfm.openScreen(AuthByPhoneScreen(), addToBackStack = false)
+            }
         }
         return true
     }

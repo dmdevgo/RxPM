@@ -48,6 +48,12 @@ class CodeConfirmationPm(
                 .retry()
                 .subscribe()
                 .untilDestroy()
+
+        code.text.observable
+                .map { it.length == CODE_LENGTH }
+                .subscribe(doneButton.enabled.consumer)
+                .untilDestroy()
+
     }
 
     private fun validateForm(): Boolean {
