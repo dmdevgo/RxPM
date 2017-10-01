@@ -14,7 +14,7 @@
 
         <TextView
             style="@style/AppToolbarTitle"
-            android:text="@string/code_confirmation__screen_title"/>
+            android:text="@string/code_confirmation_screen_title"/>
 
         <ImageView
             android:id="@+id/doneButton"
@@ -27,7 +27,9 @@
         android:id="@+id/codeEditLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp">
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="32dp">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/codeEdit"
@@ -38,5 +40,14 @@
             android:inputType="phone"/>
 
     </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/code_confirmation_screen_text"/>
 
 </LinearLayout>

@@ -28,11 +28,13 @@
             android:hint="@string/choose_country_search_hint"
             android:maxLines="1"
             android:textColor="@color/white"
-            android:textColorHint="@color/hint_text_light"/>
+            android:textColorHint="@color/hint_text_light"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/clearButton"
             style="@style/ActionButton"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_close_white_24dp"/>
 
         <ImageView

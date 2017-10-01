@@ -7,7 +7,6 @@ import me.dmdev.rxpm.sample.api.ServerApi
 import me.dmdev.rxpm.sample.api.ServerApiSimulator
 import me.dmdev.rxpm.sample.model.AuthModel
 import me.dmdev.rxpm.sample.model.TokenStorage
-import me.dmdev.rxpm.sample.util.NetworkHelper
 import me.dmdev.rxpm.sample.util.PhoneUtil
 import me.dmdev.rxpm.sample.util.ResourceProvider
 import javax.inject.Singleton
@@ -18,10 +17,6 @@ class AppModule(private val context: Context) {
     @Provides
     @Singleton
     fun provideResourceProvider() = ResourceProvider(context)
-
-    @Provides
-    @Singleton
-    fun provideNetworkHelper() = NetworkHelper(context)
 
     @Provides
     @Singleton

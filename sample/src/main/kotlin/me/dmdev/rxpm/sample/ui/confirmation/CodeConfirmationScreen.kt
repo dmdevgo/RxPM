@@ -7,6 +7,7 @@ import com.jakewharton.rxbinding2.widget.editorActions
 import kotlinx.android.synthetic.main.screen_code_confirmation.*
 import me.dmdev.rxpm.sample.App
 import me.dmdev.rxpm.sample.R
+import me.dmdev.rxpm.sample.extensions.showKeyboard
 import me.dmdev.rxpm.sample.ui.base.Screen
 
 /**
@@ -42,6 +43,11 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
                 .map { Unit }
                 .bindTo(pm.doneButton.clicks.consumer)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        codeEdit.showKeyboard()
     }
 
 }
