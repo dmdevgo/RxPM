@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Parent class for any Presentation Model.
+ *
  * @author Dmitriy Gorbunov
  */
 abstract class PresentationModel {
