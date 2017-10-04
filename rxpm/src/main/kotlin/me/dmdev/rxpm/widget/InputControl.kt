@@ -27,6 +27,7 @@ class InputControl internal constructor(pm: PresentationModel,
     val enabled = pm.State(initialEnabled)
     val error = pm.State<String>()
     val textChanges = pm.Action<String>()
+    val requestFocus = pm.Command<Unit>()
 
     init {
         textChanges.relay
@@ -80,6 +81,10 @@ inline internal fun EditText.bind(inputControl: InputControl): Disposable {
                                 editing = false
                             }
                         },
+
+                inputControl.requestFocus.observable
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { requestFocus() },
 
                 inputControl.enabled.observable
                         .observeOn(AndroidSchedulers.mainThread())
