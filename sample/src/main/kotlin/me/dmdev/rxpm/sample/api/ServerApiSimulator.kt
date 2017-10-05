@@ -1,13 +1,16 @@
 package me.dmdev.rxpm.sample.api
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.support.v7.app.NotificationCompat
+import android.os.Build
+import android.support.v4.app.NotificationCompat
 import io.reactivex.Completable
 import io.reactivex.Single
 import me.dmdev.rxpm.sample.R
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 /**
  * @author Dmitriy Gorbunov
@@ -16,6 +19,7 @@ class ServerApiSimulator(private val context: Context) : ServerApi {
 
     companion object {
         private const val DELAY_IN_SECONDS = 3L
+        private const val NOTIFICATION_ID = 112
     }
 
     private val notificationManager =
@@ -47,6 +51,9 @@ class ServerApiSimulator(private val context: Context) : ServerApi {
                         maybeServerError()
                     }
                 }
+                .doOnSuccess {
+                    notificationManager.cancel(NOTIFICATION_ID)
+                }
     }
 
     override fun logout(token: String): Completable {
@@ -60,7 +67,7 @@ class ServerApiSimulator(private val context: Context) : ServerApi {
     }
 
     private fun maybeServerError() {
-        if (random.nextInt(100) >= 70) {
+        if (random.nextInt(100) >= 80) {
             throw ServerError("Service is unavailable. Please try again.")
         }
     }
@@ -75,9 +82,18 @@ class ServerApiSimulator(private val context: Context) : ServerApi {
 
     private fun showNotification(code: String) {
 
+        val channelId = "rxpm_sample_channel"
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channelId,
+                                              "RxPM sample channel",
+                                              NotificationManager.IMPORTANCE_DEFAULT)
+            notificationManager.createNotificationChannel(channel)
+        }
+
         notificationManager
-                .notify(123,
-                        NotificationCompat.Builder(context)
+                .notify(NOTIFICATION_ID,
+                        NotificationCompat.Builder(context, channelId)
                                 .setContentTitle("RxPM Sample")
                                 .setContentText("Confirmation code $code")
                                 .setSmallIcon(R.mipmap.ic_launcher)
