@@ -39,32 +39,31 @@ android {
 }
 
 dependencies {
-    // Kotlin
-    compile rootProject.ext.kotlinStdlib
 
     // For default implementations
-    provided rootProject.ext.supportAppCompat
-    provided rootProject.ext.supportDesign
-    provided rootProject.ext.conductor
-    provided rootProject.ext.googleMaps
+    compileOnly rootProject.ext.supportAppCompat
+    compileOnly rootProject.ext.supportDesign
+    compileOnly rootProject.ext.conductor
+    compileOnly rootProject.ext.googleMaps
 
     // Rx
-    compile rootProject.ext.rxJava2
-    compile rootProject.ext.rxRelay2
-    compile rootProject.ext.rxAndroid2
+    api rootProject.ext.rxJava2
+    implementation rootProject.ext.rxRelay2
+    implementation rootProject.ext.rxAndroid2
 
     // RxBindings
-    compile rootProject.ext.rxBindingKotlin
-    compile(rootProject.ext.rxBindingSupportV4Kotlin) {
+    implementation rootProject.ext.rxBindingKotlin
+    implementation(rootProject.ext.rxBindingSupportV4Kotlin) {
         exclude module: 'support-core-ui'
     }
 
     // Persistent PM
-    compile rootProject.ext.outlast
+    implementation rootProject.ext.outlast
 
     // For tests
     testCompile rootProject.junitKotlin
     testCompile rootProject.mockitoKotlin
+    testCompile rootProject.ext.supportAppCompat
 }
 
 ext {
