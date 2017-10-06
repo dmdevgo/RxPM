@@ -240,8 +240,11 @@ abstract class PresentationModel {
          * Observable of this [Command].
          */
         val observable =
-                if (isIdle == null) relay.bufferWhileUnbind(bufferSize)
-                else relay.bufferWhileIdle(isIdle, bufferSize)
+                if (bufferSize == 0) { relay.asObservable() }
+                else {
+                    if (isIdle == null) relay.bufferWhileUnbind(bufferSize)
+                    else relay.bufferWhileIdle(isIdle, bufferSize)
+                }
     }
 
 }
