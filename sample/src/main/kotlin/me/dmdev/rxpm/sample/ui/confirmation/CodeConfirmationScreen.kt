@@ -28,8 +28,8 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
 
     override fun providePresentationModel()
             = CodeConfirmationPm(arguments.getString(ARG_PHONE),
-                                 App.component.resourceProvider(),
-                                 App.component.authModel())
+                                 App.component.resourceProvider,
+                                 App.component.authModel)
 
     override fun onBindPresentationModel(pm: CodeConfirmationPm) {
         super.onBindPresentationModel(pm)

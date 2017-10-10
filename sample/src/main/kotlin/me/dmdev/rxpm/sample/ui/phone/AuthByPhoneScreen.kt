@@ -19,9 +19,9 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
     override val screenLayout = R.layout.screen_auth_by_phone
 
     override fun providePresentationModel()
-            = AuthByPhonePm(App.component.phoneUtil(),
-                            App.component.resourceProvider(),
-                            App.component.authModel())
+            = AuthByPhonePm(App.component.phoneUtil,
+                            App.component.resourceProvider,
+                            App.component.authModel)
 
     override fun onBindPresentationModel(pm: AuthByPhonePm) {
         super.onBindPresentationModel(pm)

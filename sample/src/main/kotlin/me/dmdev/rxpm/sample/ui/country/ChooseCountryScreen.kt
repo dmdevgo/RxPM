@@ -24,7 +24,7 @@ class ChooseCountryScreen : Screen<ChooseCountryPm>() {
 
     override val screenLayout = R.layout.screen_choose_country
 
-    override fun providePresentationModel() = ChooseCountryPm(App.component.phoneUtil())
+    override fun providePresentationModel() = ChooseCountryPm(App.component.phoneUtil)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

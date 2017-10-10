@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
 
 android {
 
@@ -43,11 +42,6 @@ dependencies {
     implementation(rootProject.ext.rxBindingSupportV4Kotlin) {
         exclude module: 'support-core-ui'
     }
-
-    //dagger 2
-    implementation "com.google.dagger:dagger:$daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    compileOnly 'javax.annotation:jsr250-api:1.0'
 
     implementation "com.jakewharton.timber:timber:4.5.1"
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.8.2'

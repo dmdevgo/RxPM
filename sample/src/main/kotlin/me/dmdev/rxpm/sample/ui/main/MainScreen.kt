@@ -13,8 +13,7 @@ class MainScreen : Screen<MainPm>() {
 
     override val screenLayout = R.layout.screen_main
 
-    override fun providePresentationModel()
-            = MainPm(App.component.authModel())
+    override fun providePresentationModel() = MainPm(App.component.authModel)
 
     override fun onBindPresentationModel(pm: MainPm) {
         super.onBindPresentationModel(pm)
