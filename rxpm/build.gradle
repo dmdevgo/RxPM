@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
     }
 }
 
@@ -61,13 +61,13 @@ dependencies {
     implementation rootProject.ext.outlast
 
     // For tests
-    testCompile rootProject.junitKotlin
-    testCompile rootProject.mockitoKotlin
-    testCompile rootProject.ext.supportAppCompat
+    testImplementation rootProject.junitKotlin
+    testImplementation rootProject.mockitoKotlin
+    testImplementation rootProject.ext.supportAppCompat
 }
 
 ext {
-    libraryVersion = '0.1'
+    libraryVersion = '0.5'
     publishedGroupId = 'me.dmdev.rxpm'
 }
 
@@ -79,26 +79,12 @@ version = libraryVersion
 apply from: 'androidmaven.gradle'
 apply from: 'bintray.gradle'
 
-// Tasks for sources and javadocs jars
+// Tasks for sources
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
 
-//Disable Javadoc tasks
-tasks.withType(Javadoc).all { enabled = false }
-
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
 artifacts {
-    archives javadocJar
     archives sourcesJar
 }
