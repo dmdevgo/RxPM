@@ -15,6 +15,17 @@ import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PresentationModel
 
 /**
+ * Helps to bind a group of properties of an input field widget to a [presentation model][PresentationModel]
+ * and also breaks the loop of two-way data binding to make the work with the input easier.
+ *
+ * You can bind this to an [EditText] or an [TextInputLayout] using the familiar `bindTo` methods
+ * in the [PresentationModel].
+ *
+ * Instantiate this using the [inputControl] extension function of the presentation model.
+ *
+ * @see CheckControl
+ * @see ClickControl
+ *
  * @author Dmitriy Gorbunov
  */
 class InputControl internal constructor(pm: PresentationModel,
@@ -23,10 +34,29 @@ class InputControl internal constructor(pm: PresentationModel,
                                         formatter: (text: String) -> String,
                                         hideErrorOnUserInput: Boolean) {
 
+    /**
+     * The input field text [state][PresentationModel.State].
+     */
     val text = pm.State(initialText)
+
+    /**
+     * The input field enabled [state][PresentationModel.State].
+     */
     val enabled = pm.State(initialEnabled)
+
+    /**
+     * The input field error [state][PresentationModel.State].
+     */
     val error = pm.State<String>()
+
+    /**
+     * The input field text changes [events][PresentationModel.Action].
+     */
     val textChanges = pm.Action<String>()
+
+    /**
+     * The [command][PresentationModel.Command] to request focus for the input field.
+     */
     val requestFocus = pm.Command<Unit>()
 
     init {
@@ -40,6 +70,14 @@ class InputControl internal constructor(pm: PresentationModel,
     }
 }
 
+/**
+ * Creates the [InputControl].
+ *
+ * @param initialText initial text of the input field.
+ * @param initialEnabled is input field initially enabled.
+ * @param formatter formats the user input. The default does nothing.
+ * @param hideErrorOnUserInput hide the error if user entered something.
+ */
 fun PresentationModel.inputControl(initialText: String = "",
                                    initialEnabled: Boolean = true,
                                    formatter: (text: String) -> String = { it },
