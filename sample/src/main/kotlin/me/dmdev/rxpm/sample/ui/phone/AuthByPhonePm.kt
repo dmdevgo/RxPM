@@ -37,7 +37,7 @@ class AuthByPhonePm(
                 if (code.length > 5) {
                     try {
                         val number = phoneUtil.parsePhone(code)
-                        phoneNumber.requestFocus.consumer.accept(Unit)
+                        phoneNumberFocus.consumer.accept(Unit)
                         phoneNumber.textChanges.consumer.accept(number.nationalNumber.toString())
                         "+${number.countryCode}"
                     } catch (e: NumberParseException) {
@@ -50,6 +50,7 @@ class AuthByPhonePm(
     )
 
     val inProgress = State(false)
+    val phoneNumberFocus = Command<Unit>(bufferSize = 1)
 
     val doneButton = clickControl(initialEnabled = false)
     val countryClicks = Action<Unit>()
@@ -95,7 +96,7 @@ class AuthByPhonePm(
                 .subscribe {
                     countryCode.textChanges.consumer.accept("+${it.countryCallingCode}")
                     chosenCountry.consumer.accept(it)
-                    phoneNumber.requestFocus.consumer.accept(Unit)
+                    phoneNumberFocus.consumer.accept(Unit)
                 }
                 .untilDestroy()
 

@@ -34,6 +34,8 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
 
         pm.inProgress.observable bindTo progressConsumer
 
+        pm.phoneNumberFocus.observable.bindTo { phoneNumberEdit.requestFocus() }
+
         countryName.clicks().bindTo(pm.countryClicks.consumer)
 
         phoneNumberEdit.editorActions()
