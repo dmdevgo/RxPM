@@ -54,11 +54,6 @@ class InputControl internal constructor(pm: PresentationModel,
      */
     val textChanges = pm.Action<String>()
 
-    /**
-     * The [command][PresentationModel.Command] to request focus for the input field.
-     */
-    val requestFocus = pm.Command<Unit>()
-
     init {
         textChanges.relay
                 .filter { it != text.value }
@@ -119,10 +114,6 @@ inline internal fun EditText.bind(inputControl: InputControl): Disposable {
                                 editing = false
                             }
                         },
-
-                inputControl.requestFocus.observable
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe { requestFocus() },
 
                 inputControl.enabled.observable
                         .observeOn(AndroidSchedulers.mainThread())
