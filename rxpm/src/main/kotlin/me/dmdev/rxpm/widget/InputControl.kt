@@ -12,6 +12,7 @@ import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
 
 /**
@@ -19,7 +20,7 @@ import me.dmdev.rxpm.PresentationModel
  * and also breaks the loop of two-way data binding to make the work with the input easier.
  *
  * You can bind this to an [EditText] or an [TextInputLayout] using the familiar `bindTo` methods
- * in the [PresentationModel].
+ * in the [AndroidPmView].
  *
  * Instantiate this using the [inputControl] extension function of the presentation model.
  *

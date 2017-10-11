@@ -6,13 +6,14 @@ import com.jakewharton.rxbinding2.view.enabled
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
 
 /**
  * Helps to bind a group of properties of any clickable widget to a [presentation model][PresentationModel].
  *
  * You can bind this to any [View] subclass using the familiar `bindTo` method
- * in the [PresentationModel].
+ * in the [AndroidPmView].
  *
  * Instantiate this using the [clickControl] extension function of the presentation model.
  *

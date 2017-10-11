@@ -6,6 +6,7 @@ import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
 
 /**
@@ -13,7 +14,7 @@ import me.dmdev.rxpm.PresentationModel
  * and also breaks the loop of two-way data binding to make the work with the check easier.
  *
  * You can bind this to any [CompoundButton] subclass using the familiar `bindTo` method
- * in the [PresentationModel].
+ * in the [AndroidPmView].
  *
  * Instantiate this using the [checkControl] extension function of the presentation model.
  *
