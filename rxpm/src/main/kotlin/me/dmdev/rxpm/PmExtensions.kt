@@ -4,6 +4,7 @@ package me.dmdev.rxpm
 
 import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
@@ -36,8 +37,16 @@ inline fun <T> Relay<T>.asConsumer(): Consumer<T> {
 inline fun <T> Single<T>.bindProgress(progressConsumer: Consumer<Boolean>): Single<T> {
     return this
             .doOnSubscribe { progressConsumer.accept(true) }
-            .doOnSuccess { progressConsumer.accept(false) }
-            .doOnError { progressConsumer.accept(false) }
+            .doFinally { progressConsumer.accept(false) }
+}
+
+/**
+ * Convenience to bind the [progress][progressConsumer] to the [Maybe].
+ */
+inline fun <T> Maybe<T>.bindProgress(progressConsumer: Consumer<Boolean>): Maybe<T> {
+    return this
+            .doOnSubscribe { progressConsumer.accept(true) }
+            .doFinally { progressConsumer.accept(false) }
 }
 
 /**
@@ -46,7 +55,7 @@ inline fun <T> Single<T>.bindProgress(progressConsumer: Consumer<Boolean>): Sing
 inline fun Completable.bindProgress(progressConsumer: Consumer<Boolean>): Completable {
     return this
             .doOnSubscribe { progressConsumer.accept(true) }
-            .doOnTerminate { progressConsumer.accept(false) }
+            .doFinally { progressConsumer.accept(false) }
 }
 
 /**
