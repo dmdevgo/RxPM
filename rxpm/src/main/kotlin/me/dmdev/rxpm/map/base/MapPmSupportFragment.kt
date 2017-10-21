@@ -12,6 +12,14 @@ import me.dmdev.rxpm.map.MapPmView
 import me.dmdev.rxpm.map.delegate.MapPmSupportFragmentDelegate
 
 /**
+ * Predefined [Fragment] implementing the [MapPmView].
+ *
+ * Just override the [providePresentationModel] and [onBindPresentationModel] methods and you are good to go.
+ *
+ * If extending is not possible you can implement [MapPmView],
+ * create a [MapPmSupportFragmentDelegate] and pass the lifecycle callbacks to it.
+ * See this class's source code for the example.
+ *
  * @author Dmitriy Gorbunov
  */
 abstract class MapPmSupportFragment<PM> : Fragment(),

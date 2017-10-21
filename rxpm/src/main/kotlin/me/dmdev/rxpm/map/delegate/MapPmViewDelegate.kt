@@ -109,7 +109,7 @@ where PM : PresentationModel, PM : MapPmExtension {
         if (view is MapView) {
             return view
         } else if (view is ViewGroup) {
-            (0..view.childCount - 1)
+            (0 until view.childCount)
                     .map { findMapView(view.getChildAt(it)) }
                     .filterIsInstance<MapView>()
                     .forEach { return it }
