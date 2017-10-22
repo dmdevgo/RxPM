@@ -3,6 +3,7 @@ package me.dmdev.rxpm
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import org.junit.Assert
@@ -38,6 +39,63 @@ class PmExtensionsTest {
         progress.subscribe(toProgress)
 
         Single.error<Int>(error)
+                .bindProgress(progress)
+                .subscribe(to)
+
+        to.assertNotComplete()
+        to.assertError(error)
+
+        toProgress.assertValues(false, true, false)
+        toProgress.assertNoErrors()
+    }
+
+    @Test
+    fun testMaybeBindProgress() {
+        val progress = BehaviorRelay.createDefault<Boolean>(false)
+        val to = TestObserver<Int>()
+        val toProgress = TestObserver<Boolean>()
+
+        progress.subscribe(toProgress)
+
+        Maybe.just(1)
+                .bindProgress(progress)
+                .subscribe(to)
+
+        to.assertResult(1)
+
+        toProgress.assertValues(false, true, false)
+        toProgress.assertNoErrors()
+    }
+
+    @Test
+    fun testMaybeEmptyBindProgress() {
+        val progress = BehaviorRelay.createDefault<Boolean>(false)
+        val to = TestObserver<Int>()
+        val toProgress = TestObserver<Boolean>()
+
+        progress.subscribe(toProgress)
+
+        Maybe.empty<Int>()
+                .bindProgress(progress)
+                .subscribe(to)
+
+        to.assertComplete()
+        to.assertNoValues()
+
+        toProgress.assertValues(false, true, false)
+        toProgress.assertNoErrors()
+    }
+
+    @Test
+    fun testMaybeBindProgressOnFailure() {
+        val progress = BehaviorRelay.createDefault<Boolean>(false)
+        val to = TestObserver<Int>()
+        val toProgress = TestObserver<Boolean>()
+        val error = IllegalArgumentException()
+
+        progress.subscribe(toProgress)
+
+        Maybe.error<Int>(error)
                 .bindProgress(progress)
                 .subscribe(to)
 
