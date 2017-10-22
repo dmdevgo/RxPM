@@ -7,8 +7,9 @@ import me.dmdev.rxpm.asConsumer
 import me.dmdev.rxpm.asObservable
 
 /**
- * This interface contains extensions for [PresentationModel] that bind to the [MapPmView].
- * See [MapPresentationModel] for how to use it.
+ * This interface contains additions for [PresentationModel] that binds to the [MapPmView].
+ *
+ * You also can subclass [MapPresentationModel] that already implemented this.
  *
  * @author Dmitriy Gorbunov
  */
@@ -20,7 +21,9 @@ interface MapPmExtension {
     val mapReadyState: MapReadyState
 
     /**
-     * Returns a [command][PresentationModel.Command] that will collect values until the [view][MapPmView] binds to the [map][GoogleMap].
+     * Returns a [command][PresentationModel.Command] that will buffer the values
+     * until the [view][MapPmView] will be bound to the [map][GoogleMap].
+     *
      * Use to represent a command to the [MapPmView], e.g. pin moves or zoom changes.
      *
      * @param bufferSize how many values should be kept in buffer. Null means no restrictions.
@@ -30,14 +33,14 @@ interface MapPmExtension {
     }
 
     /**
-     * This class stores the state of [map][GoogleMap] readiness.
+     * This class represents the state of [map][GoogleMap] readiness.
      */
     class MapReadyState {
         private val ready = BehaviorRelay.createDefault(false)
         internal val consumer get() = ready.asConsumer()
 
         /**
-         * Observable of the state of [map][GoogleMap] readiness.
+         * Observable of the [map][GoogleMap] readiness state.
          */
         val observable get() = ready.asObservable()
     }

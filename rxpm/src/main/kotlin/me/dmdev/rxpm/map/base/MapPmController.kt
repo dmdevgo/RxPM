@@ -18,8 +18,8 @@ import me.dmdev.rxpm.map.delegate.MapPmControllerDelegate
  * Just override the [providePresentationModel], [onBindPresentationModel]
  * and [onBindMapPresentationModel] methods and you are good to go.
  *
- * You also need to call the [onLowMemory][onLowMemory] yourself,
- * because the base [controller][Controller] does not have this callback.
+ * You also need to call the [onLowMemory] method yourself,
+ * because the base [controller][Controller] does not have corresponding callback.
  * See https://github.com/bluelinelabs/Conductor/issues/59
  *
  * If extending is not possible you can implement [MapPmView],
@@ -75,9 +75,10 @@ where PM : PresentationModel, PM : MapPmExtension {
     }
 
     /**
-     * The base [controller][Controller] does not have a onLowMemory callback.
+     * [MapView] wants this to be called.
+     * You need to call this method yourself because
+     * the base [controller][Controller] does not have corresponding callback.
      * See https://github.com/bluelinelabs/Conductor/issues/59
-     * Call this method yourself from outside.
      */
     fun onLowMemory() {
         delegate.onLowMemory()
