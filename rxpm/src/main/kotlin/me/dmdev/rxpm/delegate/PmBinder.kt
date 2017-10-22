@@ -3,9 +3,6 @@ package me.dmdev.rxpm.delegate
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 
-/**
- * @author Dmitriy Gorbunov
- */
 internal class PmBinder<out PM : PresentationModel>(private val pm: PM,
                                                     private val pmView: PmView<PM>) {
 

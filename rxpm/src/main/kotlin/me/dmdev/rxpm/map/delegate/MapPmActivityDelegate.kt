@@ -17,8 +17,6 @@ import me.dmdev.rxpm.map.base.MapPmSupportActivity
  *
  * Users of this class must forward all the life cycle methods from the containing Activity
  * to the corresponding ones in this class.
- *
- * @author Dmitriy Gorbunov
  */
 class MapPmActivityDelegate<out PM>(private val mapPmView: MapPmView<PM>)
 where PM : PresentationModel, PM : MapPmExtension {

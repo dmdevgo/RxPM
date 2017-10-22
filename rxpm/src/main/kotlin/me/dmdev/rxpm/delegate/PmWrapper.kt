@@ -4,9 +4,7 @@ import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.PresentationModel.Lifecycle
 import me.jeevuz.outlast.Outlasting
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 internal class PmWrapper<out PM : PresentationModel>(val presentationModel: PM) : Outlasting {
 
     override fun onCreate() {

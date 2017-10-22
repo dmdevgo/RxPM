@@ -16,8 +16,6 @@ import me.jeevuz.outlast.predefined.FragmentOutlast
  *
  * Users of this class must forward all the life cycle methods from the containing Fragment
  * to the corresponding ones in this class.
- *
- * @author Dmitriy Gorbunov
  */
 class PmSupportFragmentDelegate<PM : PresentationModel>(private val pmView: PmView<PM>) {
 

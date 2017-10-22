@@ -18,8 +18,6 @@ import me.dmdev.rxpm.delegate.PmControllerDelegate
  * If extending is not possible you can implement [AndroidPmView],
  * create a [PmControllerDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
- *
- * @author Dmitriy Gorbunov
  */
 abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : RestoreViewOnCreateController(args),
                                                                             AndroidPmView<PM> {

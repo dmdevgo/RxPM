@@ -7,9 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import me.dmdev.rxpm.sample.R
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 
 inline fun FragmentManager.openScreen(fragment: Fragment,
                                       tag: String = fragment.javaClass.name,

@@ -2,9 +2,7 @@ package me.dmdev.rxpm.sample.model
 
 import java.util.concurrent.atomic.AtomicReference
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 class TokenStorage {
 
     private var tokenRef = AtomicReference<String>("")

@@ -14,8 +14,6 @@ import me.dmdev.rxpm.base.PmController
  *
  * Users of this class must forward all the life cycle methods from the containing Controller
  * to the corresponding ones in this class.
- *
- * @author Dmitriy Gorbunov
  */
 class PmControllerDelegate<PM : PresentationModel>(private val pmView: PmView<PM>) {
 

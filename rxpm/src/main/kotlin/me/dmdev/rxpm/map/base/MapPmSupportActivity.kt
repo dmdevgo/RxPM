@@ -17,8 +17,6 @@ import me.dmdev.rxpm.map.delegate.MapPmActivityDelegate
  * If extending is not possible you can implement [MapPmView],
  * create a [MapPmActivityDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
- *
- * @author Dmitriy Gorbunov
  */
 abstract class MapPmSupportActivity<PM> : AppCompatActivity(), MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {

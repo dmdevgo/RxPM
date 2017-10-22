@@ -10,8 +10,6 @@ import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Parent class for any Presentation Model.
- *
- * @author Dmitriy Gorbunov
  */
 abstract class PresentationModel {
 
@@ -22,17 +20,17 @@ abstract class PresentationModel {
     private val compositeDestroy = CompositeDisposable()
     private val compositeUnbind = CompositeDisposable()
 
-    private val lifeсycle = BehaviorRelay.create<Lifecycle>()
+    private val lifeсyсle = BehaviorRelay.create<Lifecycle>()
     private val unbind = BehaviorRelay.createDefault<Boolean>(true)
 
     /**
      * The [lifecycle][Lifecycle] state of this presentation model.
      */
-    val lifecycleState = lifeсycle.asObservable()
-    internal val lifecycleConsumer = lifeсycle.asConsumer()
+    val lifecycleState = lifeсyсle.asObservable()
+    internal val lifecycleConsumer = lifeсyсle.asConsumer()
 
     init {
-        lifeсycle
+        lifeсyсle
                 .takeUntil { it == Lifecycle.DESTROYED }
                 .subscribe {
                     when (it) {
@@ -49,7 +47,7 @@ abstract class PresentationModel {
                     }
                 }
 
-        lifeсycle
+        lifeсyсle
                 .takeUntil { it == Lifecycle.DESTROYED }
                 .subscribe {
                     when (it) {
@@ -112,7 +110,7 @@ abstract class PresentationModel {
      * Binds `this` [PresentationModel]'s (child) lifecycle to the enclosing presentation model's (parent) lifecycle.
      */
     protected fun PresentationModel.bindLifecycle() {
-        this@PresentationModel.lifeсycle
+        this@PresentationModel.lifeсyсle
                 .subscribe(this.lifecycleConsumer)
                 .untilDestroy()
     }

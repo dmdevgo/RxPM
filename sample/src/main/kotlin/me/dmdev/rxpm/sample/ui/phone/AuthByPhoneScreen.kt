@@ -10,9 +10,7 @@ import me.dmdev.rxpm.sample.extensions.showKeyboard
 import me.dmdev.rxpm.sample.ui.base.Screen
 import me.dmdev.rxpm.sample.util.Country
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 
 class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
 

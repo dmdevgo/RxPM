@@ -7,8 +7,6 @@ import me.dmdev.rxpm.PresentationModel
 
 /**
  * Interface that need to be implemented by the View that contains a [MapView].
- *
- * @author Dmitriy Gorbunov
  */
 interface MapPmView<PM> : AndroidPmView<PM> where PM : PresentationModel, PM : MapPmExtension {
 

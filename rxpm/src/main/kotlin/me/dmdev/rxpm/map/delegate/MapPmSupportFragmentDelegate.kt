@@ -17,8 +17,6 @@ import me.dmdev.rxpm.map.base.MapPmSupportFragment
  *
  * Users of this class must forward all the life cycle methods from the containing Fragment
  * to the corresponding ones in this class.
- *
- * @author Dmitriy Gorbunov
  */
 class MapPmSupportFragmentDelegate<out PM>(private val mapPmView: MapPmView<PM>)
 where PM : PresentationModel, PM : MapPmExtension {

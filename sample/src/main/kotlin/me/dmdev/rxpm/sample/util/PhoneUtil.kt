@@ -6,9 +6,7 @@ import com.google.i18n.phonenumbers.Phonenumber
 import me.dmdev.rxpm.sample.extensions.onlyDigits
 import java.util.*
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 class PhoneUtil {
 
     private val countriesMap = HashMap<String, Country>()

@@ -4,9 +4,7 @@ import android.app.Application
 
 import timber.log.Timber
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 class App : Application() {
 
     companion object {

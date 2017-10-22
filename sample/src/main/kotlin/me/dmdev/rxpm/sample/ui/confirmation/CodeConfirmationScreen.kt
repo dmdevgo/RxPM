@@ -10,9 +10,7 @@ import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.extensions.showKeyboard
 import me.dmdev.rxpm.sample.ui.base.Screen
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
 
     companion object {

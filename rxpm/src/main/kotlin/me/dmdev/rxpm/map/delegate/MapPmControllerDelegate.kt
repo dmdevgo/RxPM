@@ -17,8 +17,6 @@ import me.dmdev.rxpm.map.base.MapPmController
  *
  * Users of this class must forward all the life cycle methods from the containing Controller
  * to the corresponding ones in this class.
- *
- * @author Dmitriy Gorbunov
  */
 class MapPmControllerDelegate<out PM>(private val mapPmView: MapPmView<PM>)
 where PM : PresentationModel, PM : MapPmExtension {

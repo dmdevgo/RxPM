@@ -19,8 +19,6 @@ import me.dmdev.rxpm.PresentationModel
  *
  * @see InputControl
  * @see CheckControl
- *
- * @author Dmitriy Gorbunov
  */
 class ClickControl internal constructor(pm: PresentationModel,
                                         initialEnabled: Boolean) {

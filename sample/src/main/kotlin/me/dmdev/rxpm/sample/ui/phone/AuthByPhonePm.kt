@@ -18,9 +18,7 @@ import me.dmdev.rxpm.skipWhileInProgress
 import me.dmdev.rxpm.widget.clickControl
 import me.dmdev.rxpm.widget.inputControl
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 
 class AuthByPhonePm(
         private val phoneUtil: PhoneUtil,

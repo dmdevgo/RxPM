@@ -10,8 +10,6 @@ import me.dmdev.rxpm.asObservable
  * This interface contains additions for [PresentationModel] that binds to the [MapPmView].
  *
  * You also can subclass [MapPresentationModel] that already implemented this.
- *
- * @author Dmitriy Gorbunov
  */
 interface MapPmExtension {
 

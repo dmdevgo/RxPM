@@ -5,9 +5,6 @@ import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PresentationModel
 import org.junit.Test
 
-/**
- * @author Dmitriy Gorbunov
- */
 class CheckControlTest {
 
     @Test

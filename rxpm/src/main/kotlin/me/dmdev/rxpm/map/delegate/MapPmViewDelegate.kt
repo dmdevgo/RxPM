@@ -10,9 +10,7 @@ import me.dmdev.rxpm.delegate.PmBinder
 import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.MapPmView
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 internal class MapPmViewDelegate<PM>(private val pm: PM,
                                      private val mapPmView: MapPmView<PM>,
                                      private val pmBinder: PmBinder<PM>)

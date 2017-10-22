@@ -5,9 +5,7 @@ import io.reactivex.schedulers.Schedulers
 import me.dmdev.rxpm.sample.api.ServerApi
 import me.dmdev.rxpm.sample.extensions.onlyDigits
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 class AuthModel(private val api: ServerApi,
                 private val tokenStorage: TokenStorage) {
 

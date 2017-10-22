@@ -9,9 +9,7 @@ import me.dmdev.rxpm.sample.ui.country.ChooseCountryScreen
 import me.dmdev.rxpm.sample.ui.main.MainScreen
 import me.dmdev.rxpm.sample.ui.phone.AuthByPhoneScreen
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 
 class AppActivity : AppCompatActivity(), NavigationMessageHandler {
 

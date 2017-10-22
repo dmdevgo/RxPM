@@ -12,9 +12,7 @@ import me.dmdev.rxpm.sample.NavigationMessageHandler
 import me.dmdev.rxpm.sample.extensions.findScreen
 import me.dmdev.rxpm.sample.extensions.showDialog
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(),
                                                       NavigationMessageHandler,
                                                       BackHandler {

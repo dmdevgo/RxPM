@@ -15,8 +15,6 @@ import me.dmdev.rxpm.delegate.PmActivityDelegate
  * If extending is not possible you can implement [AndroidPmView],
  * create a [PmActivityDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
- *
- * @author Dmitriy Gorbunov
  */
 abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), AndroidPmView<PM> {
 

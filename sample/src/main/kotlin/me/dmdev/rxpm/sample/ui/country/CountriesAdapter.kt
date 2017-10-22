@@ -8,9 +8,7 @@ import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.extensions.inflate
 import me.dmdev.rxpm.sample.util.Country
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 class CountriesAdapter(
         private var countries: List<Country>?,
         private val itemClickListener: (country: Country) -> Unit

@@ -16,8 +16,6 @@ import me.jeevuz.outlast.predefined.ActivityOutlast
  *
  * Users of this class must forward all the life cycle methods from the containing Activity
  * to the corresponding ones in this class.
- *
- * @author Dmitriy Gorbunov
  */
 class PmActivityDelegate<PM : PresentationModel>(private val pmView: PmView<PM>) {
 

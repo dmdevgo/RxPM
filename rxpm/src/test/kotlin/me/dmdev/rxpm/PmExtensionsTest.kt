@@ -8,9 +8,6 @@ import io.reactivex.observers.TestObserver
 import org.junit.Assert
 import org.junit.Test
 
-/**
- * @author Dmitriy Gorbunov
- */
 class PmExtensionsTest {
 
     @Test

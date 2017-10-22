@@ -6,9 +6,7 @@ import me.dmdev.rxpm.sample.App
 import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.ui.base.Screen
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 class MainScreen : Screen<MainPm>() {
 
     override val screenLayout = R.layout.screen_main

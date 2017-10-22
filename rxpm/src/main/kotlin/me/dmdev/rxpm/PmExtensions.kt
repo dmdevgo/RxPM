@@ -11,9 +11,6 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import io.reactivex.functions.Function
 
-/**
- * @author Dmitriy Gorbunov
- */
 
 /**
  * Convenience to get this [Relay] as an [Observable].

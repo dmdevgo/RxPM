@@ -4,9 +4,7 @@ import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.sample.BackMessage
 import me.dmdev.rxpm.sample.NavigationMessage
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 abstract class ScreenPresentationModel : PresentationModel() {
 
     val messages = Command<NavigationMessage>()

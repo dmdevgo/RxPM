@@ -15,9 +15,6 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-/**
- * @author Dmitriy Gorbunov
- */
 class PmSupportFragmentDelegateTest {
 
     lateinit var pm: PresentationModel

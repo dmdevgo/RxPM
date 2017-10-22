@@ -9,9 +9,7 @@ import me.dmdev.rxpm.sample.util.PhoneUtil
 import me.dmdev.rxpm.widget.inputControl
 import java.util.concurrent.TimeUnit
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 
 class ChooseCountryPm(private val phoneUtil: PhoneUtil) : ScreenPresentationModel() {
 

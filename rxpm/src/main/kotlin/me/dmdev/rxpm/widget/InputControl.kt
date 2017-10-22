@@ -26,8 +26,6 @@ import me.dmdev.rxpm.PresentationModel
  *
  * @see CheckControl
  * @see ClickControl
- *
- * @author Dmitriy Gorbunov
  */
 class InputControl internal constructor(pm: PresentationModel,
                                         initialText: String,

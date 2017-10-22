@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RestoreViewOnCreateController
+import com.google.android.gms.maps.MapView
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.map.MapPmExtension
@@ -25,8 +26,6 @@ import me.dmdev.rxpm.map.delegate.MapPmControllerDelegate
  * If extending is not possible you can implement [MapPmView],
  * create a [MapPmControllerDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
- *
- * @author Dmitriy Gorbunov
  */
 abstract class MapPmController<PM>(args: Bundle? = null) : RestoreViewOnCreateController(args),
                                                            MapPmView<PM>

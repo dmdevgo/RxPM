@@ -13,9 +13,7 @@ import me.dmdev.rxpm.sample.extensions.visible
 import me.dmdev.rxpm.sample.ui.base.Screen
 import me.dmdev.rxpm.sample.ui.country.ChooseCountryPm.Mode
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 class ChooseCountryScreen : Screen<ChooseCountryPm>() {
 
     private val countriesAdapter = CountriesAdapter(null) { country ->

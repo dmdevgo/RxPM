@@ -6,9 +6,7 @@ import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import me.dmdev.rxpm.sample.R
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 
 class MessageDialog : DialogFragment() {
 

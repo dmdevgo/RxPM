@@ -6,9 +6,7 @@ import android.support.v4.app.DialogFragment
 import android.widget.ProgressBar
 import me.dmdev.rxpm.sample.R
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 class ProgressDialog : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -8,10 +8,6 @@ import me.dmdev.rxpm.sample.model.TokenStorage
 import me.dmdev.rxpm.sample.util.PhoneUtil
 import me.dmdev.rxpm.sample.util.ResourceProvider
 
-/**
- * @author Dmitriy Gorbunov
- */
-
 class AppComponent(private val context: Application) {
 
     val resourceProvider by lazy { ResourceProvider(context) }

@@ -12,9 +12,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-/**
- * @author Dmitriy Gorbunov
- */
+
 class ServerApiSimulator(private val context: Context) : ServerApi {
 
     companion object {
