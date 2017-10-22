@@ -1,5 +1,7 @@
 apply plugin: 'com.github.dcendents.android-maven'
 
+group = publishedGroupId
+
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters
@@ -7,7 +9,7 @@ install {
             project {
                 packaging 'aar'
                 groupId publishedGroupId
-                artifactId 'rxpm'
+                artifactId artifactId
             }
         }
     }

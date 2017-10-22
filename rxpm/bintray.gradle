@@ -1,5 +1,7 @@
 apply plugin: 'com.jfrog.bintray'
 
+version = libraryVersion
+
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
@@ -11,10 +13,10 @@ bintray {
     configurations = ['archives']
 
     pkg {
-        repo = 'maven'
-        name = 'RxPM'
-        licenses = ['MIT']
-        vcsUrl = 'https://github.com/dmdevgo/RxPM.git'
+        repo = bintrayRepo
+        name = bintrayName
+        licenses = allLicenses
+        vcsUrl = gitUrl
         publish = true
     }
 }

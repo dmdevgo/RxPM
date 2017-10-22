@@ -67,19 +67,20 @@ dependencies {
 }
 
 ext {
-    libraryVersion = '0.5'
+    bintrayRepo = 'maven'
+    bintrayName = 'RxPM'
     publishedGroupId = 'me.dmdev.rxpm'
+    artifact = 'rxpm'
+    libraryVersion = '1.0'
+    gitUrl = 'https://github.com/dmdevgo/RxPM'
+    allLicenses = ['MIT']
 }
-
-group = publishedGroupId
-version = libraryVersion
 
 // Configuration of the library uploading to the Bintray
 // Note: Call 'bintrayUpload' task (it will execute 'install' task first)
 apply from: 'androidmaven.gradle'
 apply from: 'bintray.gradle'
 
-// Tasks for sources
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
