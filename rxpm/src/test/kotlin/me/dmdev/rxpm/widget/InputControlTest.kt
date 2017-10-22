@@ -1,16 +1,16 @@
 package me.dmdev.rxpm.widget
 
-import com.nhaarman.mockito_kotlin.spy
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PresentationModel
 import org.junit.Test
+import org.mockito.Mockito
 
 class InputControlTest {
 
     @Test
     fun testFilterIfValueNotChanged() {
 
-        val pm = spy<PresentationModel>()
+        val pm = Mockito.spy(PresentationModel::class.java)
         val input = pm.inputControl()
 
         val to = TestObserver<String>()
@@ -30,7 +30,7 @@ class InputControlTest {
     @Test
     fun testFormatter() {
 
-        val pm = spy<PresentationModel>()
+        val pm = Mockito.spy(PresentationModel::class.java)
         val input = pm.inputControl(
                 formatter = { it.toUpperCase() }
         )

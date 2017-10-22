@@ -1,61 +1,56 @@
 package me.dmdev.rxpm.delegate
 
-import android.app.Activity
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
-import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmSupportActivity
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
+import org.mockito.Spy
+import org.mockito.junit.MockitoJUnitRunner
 import kotlin.test.assertEquals
 
-
+@RunWith(MockitoJUnitRunner::class)
 class PmSupportActivityDelegateTest {
 
-    lateinit var pm: PresentationModel
-    lateinit var compositeDisposableMock: CompositeDisposable
-    lateinit var pmViewMock: PmView<PresentationModel>
-    lateinit var activityMock: Activity
+    @Spy lateinit var pm: PresentationModel
+    @Mock lateinit var compositeDisposableMock: CompositeDisposable
+    @Mock lateinit var activityMock: PmSupportActivity<PresentationModel>
 
     @Before
     fun initTest() {
-        pm = spy()
-        compositeDisposableMock = mock()
-
-        pmViewMock = mock<PmSupportActivity<PresentationModel>>()
-        whenever(pmViewMock.compositeUnbind).thenReturn(compositeDisposableMock)
-        whenever(pmViewMock.providePresentationModel()).thenReturn(pm)
-
-        activityMock = pmViewMock as Activity
+        MockitoAnnotations.initMocks(this)
+        Mockito.`when`(activityMock.compositeUnbind).thenReturn(compositeDisposableMock)
+        Mockito.`when`(activityMock.providePresentationModel()).thenReturn(pm)
     }
 
     @Test
     fun testViewLifeCycle() {
 
-        val delegate = PmActivityDelegate(pmViewMock)
+        val delegate = PmActivityDelegate(activityMock)
 
         delegate.onCreate(null)
 
-        verify(pmViewMock).providePresentationModel()
+        verify(activityMock).providePresentationModel()
         assertEquals(pm, delegate.presentationModel)
 
         delegate.onStart()
-        verify(pmViewMock).onBindPresentationModel(pm)
+        verify(activityMock).onBindPresentationModel(pm)
 
         delegate.onResume()
         delegate.onPause()
 
         delegate.onStop()
 
-        verify(pmViewMock).onUnbindPresentationModel()
+        verify(activityMock).onUnbindPresentationModel()
         verify(compositeDisposableMock).clear()
 
-        whenever(activityMock.isFinishing).thenReturn(true)
+        Mockito.`when`(activityMock.isFinishing).thenReturn(true)
         delegate.onDestroy()
     }
 
@@ -65,14 +60,14 @@ class PmSupportActivityDelegateTest {
         val testObserver = TestObserver<PresentationModel.Lifecycle>()
         pm.lifecycleState.subscribe(testObserver)
 
-        val delegate = PmActivityDelegate(pmViewMock)
+        val delegate = PmActivityDelegate(activityMock)
 
         delegate.onCreate(null)
         delegate.onStart()
         delegate.onResume()
         delegate.onPause()
         delegate.onStop()
-        whenever(activityMock.isFinishing).thenReturn(true)
+        Mockito.`when`(activityMock.isFinishing).thenReturn(true)
         delegate.onDestroy()
 
         testObserver.assertValues(PresentationModel.Lifecycle.CREATED,

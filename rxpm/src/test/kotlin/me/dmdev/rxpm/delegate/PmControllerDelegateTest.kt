@@ -1,31 +1,32 @@
 package me.dmdev.rxpm.delegate
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
+import org.mockito.Spy
+import org.mockito.junit.MockitoJUnitRunner
 import kotlin.test.assertEquals
 
+@RunWith(MockitoJUnitRunner::class)
 class PmControllerDelegateTest {
 
-    lateinit var pm: PresentationModel
-    lateinit var compositeDisposableMock: CompositeDisposable
-    lateinit var pmViewMock: PmView<PresentationModel>
+    @Spy lateinit var pm: PresentationModel
+    @Mock lateinit var compositeDisposableMock: CompositeDisposable
+    @Mock lateinit var pmViewMock: PmView<PresentationModel>
 
     @Before
     fun initTest() {
-        pm = spy()
-        compositeDisposableMock = mock()
-
-        pmViewMock = mock()
-        whenever(pmViewMock.compositeUnbind).thenReturn(compositeDisposableMock)
-        whenever(pmViewMock.providePresentationModel()).thenReturn(pm)
+        MockitoAnnotations.initMocks(this)
+        Mockito.`when`(pmViewMock.compositeUnbind).thenReturn(compositeDisposableMock)
+        Mockito.`when`(pmViewMock.providePresentationModel()).thenReturn(pm)
     }
 
     @Test
