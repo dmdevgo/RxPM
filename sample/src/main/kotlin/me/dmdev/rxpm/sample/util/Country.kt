@@ -3,14 +3,14 @@ package me.dmdev.rxpm.sample.util
 import java.util.*
 
 
-
 class Country(val region: String, val countryCallingCode: Int) {
 
-    val name = Locale("en", region).getDisplayCountry(Locale.ENGLISH)
-
     companion object {
-        val UNKNOWN_REGION = "ZZ"
-        val INVALID_COUNTRY_CODE = 0
+        private val UNKNOWN_REGION = "ZZ"
+        private val INVALID_COUNTRY_CODE = 0
         val UNKNOWN = Country(UNKNOWN_REGION, INVALID_COUNTRY_CODE)
     }
+
+    val name = Locale("en", region).getDisplayCountry(Locale.ENGLISH)!!
+
 }

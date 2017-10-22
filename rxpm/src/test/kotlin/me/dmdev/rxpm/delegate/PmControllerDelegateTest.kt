@@ -20,10 +20,10 @@ class PmControllerDelegateTest {
 
     @Before
     fun initTest() {
-        pm = spy<PresentationModel>()
-        compositeDisposableMock = mock<CompositeDisposable>()
+        pm = spy()
+        compositeDisposableMock = mock()
 
-        pmViewMock = mock<PmView<PresentationModel>>()
+        pmViewMock = mock()
         whenever(pmViewMock.compositeUnbind).thenReturn(compositeDisposableMock)
         whenever(pmViewMock.providePresentationModel()).thenReturn(pm)
     }

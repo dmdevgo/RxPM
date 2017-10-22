@@ -25,14 +25,14 @@ class PmSupportFragmentDelegateTest {
 
     @Before
     fun initTest() {
-        pm = spy<PresentationModel>()
-        compositeDisposableMock = mock<CompositeDisposable>()
+        pm = spy()
+        compositeDisposableMock = mock()
 
         pmViewMock = mock<PmSupportFragment<PresentationModel>>()
         whenever(pmViewMock.compositeUnbind).thenReturn(compositeDisposableMock)
         whenever(pmViewMock.providePresentationModel()).thenReturn(pm)
 
-        activityMock = mock<FragmentActivity>()
+        activityMock = mock()
         fragmentMock = pmViewMock as Fragment
         whenever(fragmentMock.activity).thenReturn(activityMock)
     }

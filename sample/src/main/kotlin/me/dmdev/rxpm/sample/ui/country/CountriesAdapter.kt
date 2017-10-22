@@ -1,5 +1,6 @@
 package me.dmdev.rxpm.sample.ui.country
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +40,7 @@ class CountriesAdapter(
             }
         }
 
+        @SuppressLint("SetTextI18n")
         fun bind(country: Country) {
             this.country = country
             itemView.countryName.text = country.name

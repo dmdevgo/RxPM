@@ -1,5 +1,6 @@
 package me.dmdev.rxpm.sample
 
+import android.annotation.SuppressLint
 import android.app.Application
 
 import timber.log.Timber
@@ -8,6 +9,7 @@ import timber.log.Timber
 class App : Application() {
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         lateinit var component: AppComponent
             private set
     }

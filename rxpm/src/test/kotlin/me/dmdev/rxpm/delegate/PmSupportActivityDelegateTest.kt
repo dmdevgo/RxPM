@@ -24,8 +24,8 @@ class PmSupportActivityDelegateTest {
 
     @Before
     fun initTest() {
-        pm = spy<PresentationModel>()
-        compositeDisposableMock = mock<CompositeDisposable>()
+        pm = spy()
+        compositeDisposableMock = mock()
 
         pmViewMock = mock<PmSupportActivity<PresentationModel>>()
         whenever(pmViewMock.compositeUnbind).thenReturn(compositeDisposableMock)

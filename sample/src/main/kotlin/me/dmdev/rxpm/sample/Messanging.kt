@@ -16,4 +16,4 @@ class ChooseCountryMessage : NavigationMessage
 class CountryChosenMessage(val country: Country) : NavigationMessage
 class PhoneSentSuccessfullyMessage(val phone: String) : NavigationMessage
 class PhoneConfirmedMessage : NavigationMessage
-class LogoutCompletedMessage(): NavigationMessage
+class LogoutCompletedMessage : NavigationMessage
