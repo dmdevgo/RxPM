@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="primary">#607D8B</color>
+    <color name="primary_dark">#455A64</color>
+    <color name="primary_light">#CFD8DC</color>
+    <color name="accent">#FF9800</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="window_background">#f4f4f4</color>
+
+    <color name="black">#000000</color>
+    <color name="black_translucent_30">#4D000000</color>
+    <color name="black_translucent_50">#80000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Material colors -->
+    <color name="dark">#000000</color>
+    <color name="primary_text_dark">#DE000000</color>
+    <color name="secondary_text_dark">#8A000000</color>
+    <color name="icons_dark">@color/secondary_text_dark</color>
+    <color name="hint_text_dark">#61000000</color>
+    <color name="disabled_dark">@color/hint_text_dark</color>
+    <color name="dividers_dark">#1F000000</color>
+
+    <color name="light">#FFFFFF</color>
+    <color name="primary_text_light">#DEFFFFFF</color>
+    <color name="secondary_text_light">#8AFFFFFF</color>
+    <color name="icons_light">@color/secondary_text_light</color>
+    <color name="hint_text_light">#61FFFFFF</color>
+    <color name="disabled_light">@color/hint_text_light</color>
+    <color name="dividers_light">#1FFFFFFF</color>
+
 </resources>

@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+    }
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
@@ -10,6 +20,13 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'consumer-proguard-rules.txt'
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -17,23 +34,58 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
     }
 }
 
 dependencies {
 
-    testCompile rootProject.junit
-    testCompile rootProject.mockito
+    // For default implementations
+    compileOnly rootProject.ext.supportAppCompat
+    compileOnly rootProject.ext.supportDesign
+    compileOnly rootProject.ext.conductor
+    compileOnly rootProject.ext.googleMaps
 
-    compile rootProject.ext.kotlinStdlib
+    // Rx
+    api rootProject.ext.rxJava2
+    implementation rootProject.ext.rxRelay2
+    implementation rootProject.ext.rxAndroid2
 
-    provided rootProject.ext.supportAppCompat
-    provided rootProject.ext.conductor
+    // RxBindings
+    implementation rootProject.ext.rxBindingKotlin
+    implementation(rootProject.ext.rxBindingSupportV4Kotlin) {
+        exclude module: 'support-core-ui'
+    }
 
-    //Rx
-    compile rootProject.ext.rxJava2
-    compile rootProject.ext.rxRelay2
-    compile rootProject.ext.rxAndroid2
+    // Persistent PM
+    implementation rootProject.ext.outlast
 
-    compile rootProject.ext.outlast
+    // For tests
+    testImplementation rootProject.junitKotlin
+    testImplementation rootProject.mockito
+    testImplementation rootProject.ext.supportAppCompat
+}
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'RxPM'
+    publishedGroupId = 'me.dmdev.rxpm'
+    artifact = 'rxpm'
+    libraryVersion = '1.0'
+    gitUrl = 'https://github.com/dmdevgo/RxPM'
+    allLicenses = ['MIT']
+}
+
+// Configuration of the library uploading to the Bintray
+// Note: Call 'bintrayUpload' task (it will execute 'install' task first)
+apply from: 'androidmaven.gradle'
+apply from: 'bintray.gradle'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
 }

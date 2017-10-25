@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">RxPM</string>
+
+    <string name="ok_button">OK</string>
+
+    <!-- Auth by phone Screen -->
+    <string name="auth_by_phone_screen_text">Please confirm your country code and enter your phone number.</string>
+    <string name="auth_by_phone_screen_title">@string/app_name</string>
+    <string name="enter_phone_number">Enter phone number</string>
+    <string name="invalid_phone_number">Invalid phone number</string>
+
+    <!-- Choose Country -->
+    <string name="choose_country_screen_title">Choose a country</string>
+    <string name="choose_country_search_hint">Search</string>
+
+    <!-- Code Confirmation -->
+    <string name="code_confirmation_screen_text">Please enter confirmation code from the notification.</string>
+    <string name="code_confirmation_screen_title">@string/app_name</string>
+    <string name="code_confirmation_hint">Code</string>
+    <string name="enter_confirmation_code">Enter confirmation code</string>
+    <string name="invalid_confirmation_code">Enter four digits</string>
+
 </resources>

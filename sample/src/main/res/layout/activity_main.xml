@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
+    android:id="@+id/container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="me.dmdev.rxpm.sample.MainActivity">
-
-    <fragment
-        android:id="@+id/mainFragment"
-        android:name="me.dmdev.rxpm.sample.MainFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-</FrameLayout>
+    tools:context="me.dmdev.rxpm.sample.AppActivity"/>
