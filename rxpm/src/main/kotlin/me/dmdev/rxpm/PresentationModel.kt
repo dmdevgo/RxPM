@@ -6,6 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
+import me.dmdev.rxpm.navigation.NavigationMessage
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -22,6 +23,11 @@ abstract class PresentationModel {
 
     private val lifecycle = BehaviorRelay.create<Lifecycle>()
     private val unbind = BehaviorRelay.createDefault<Boolean>(true)
+
+    /**
+     * @since 1.1
+     */
+    val navigationMessages = Command<NavigationMessage>()
 
     /**
      * The [lifecycle][Lifecycle] state of this presentation model.

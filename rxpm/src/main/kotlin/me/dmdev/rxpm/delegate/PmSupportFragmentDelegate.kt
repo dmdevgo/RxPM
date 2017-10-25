@@ -2,9 +2,11 @@ package me.dmdev.rxpm.delegate
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmSupportFragment
+import me.dmdev.rxpm.navigation.SupportFragmentNavigationMessageDispatcher
 import me.jeevuz.outlast.Outlasting
 import me.jeevuz.outlast.predefined.FragmentOutlast
 
@@ -17,14 +19,13 @@ import me.jeevuz.outlast.predefined.FragmentOutlast
  * Users of this class must forward all the life cycle methods from the containing Fragment
  * to the corresponding ones in this class.
  */
-class PmSupportFragmentDelegate<PM : PresentationModel>(private val pmView: PmView<PM>) {
-
-    init {
-        require(pmView is Fragment) {"This class can be used only with support Fragment PmView!"}
-    }
+class PmSupportFragmentDelegate<PM, F>(private val pmView: F)
+where PM : PresentationModel, F : Fragment, F : PmView<PM> {
 
     private lateinit var outlast: FragmentOutlast<PmWrapper<PM>>
     internal lateinit var pmBinder: PmBinder<PM>
+    private var navigationMessagesDisposable: Disposable? = null
+    private val navigationMessageDispatcher = SupportFragmentNavigationMessageDispatcher(pmView)
 
     val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
@@ -32,13 +33,16 @@ class PmSupportFragmentDelegate<PM : PresentationModel>(private val pmView: PmVi
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
-        outlast = FragmentOutlast(pmView as Fragment,
+        outlast = FragmentOutlast(pmView,
                                   Outlasting.Creator<PmWrapper<PM>> {
-                                              PmWrapper(pmView.providePresentationModel())
-                                          },
+                                      PmWrapper(pmView.providePresentationModel())
+                                  },
                                   savedInstanceState)
         presentationModel // Create lazy presentation model now
         pmBinder = PmBinder(presentationModel, pmView)
+        navigationMessagesDisposable = presentationModel.navigationMessages.observable.subscribe {
+            navigationMessageDispatcher.dispatch(it)
+        }
     }
 
     /**
@@ -83,6 +87,7 @@ class PmSupportFragmentDelegate<PM : PresentationModel>(private val pmView: PmVi
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onDestroy() {
+        navigationMessagesDisposable?.dispose()
         outlast.onDestroy()
     }
 }

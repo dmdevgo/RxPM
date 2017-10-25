@@ -2,9 +2,11 @@ package me.dmdev.rxpm.delegate
 
 import android.app.Activity
 import android.os.Bundle
+import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmSupportActivity
+import me.dmdev.rxpm.navigation.ActivityNavigationMessageDispatcher
 import me.jeevuz.outlast.Outlasting
 import me.jeevuz.outlast.predefined.ActivityOutlast
 
@@ -17,14 +19,13 @@ import me.jeevuz.outlast.predefined.ActivityOutlast
  * Users of this class must forward all the life cycle methods from the containing Activity
  * to the corresponding ones in this class.
  */
-class PmActivityDelegate<PM : PresentationModel>(private val pmView: PmView<PM>) {
-
-    init {
-        require(pmView is Activity) {"This class can be used only with Activity PmView!"}
-    }
+class PmActivityDelegate<PM, A>(private val pmView: A)
+where PM : PresentationModel, A : Activity, A : PmView<PM> {
 
     private lateinit var outlast: ActivityOutlast<PmWrapper<PM>>
     internal lateinit var pmBinder: PmBinder<PM>
+    private var navigationMessagesDisposable: Disposable? = null
+    private val navigationMessagesDispatcher = ActivityNavigationMessageDispatcher(pmView)
 
     val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
 
@@ -32,13 +33,16 @@ class PmActivityDelegate<PM : PresentationModel>(private val pmView: PmView<PM>)
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
-        outlast = ActivityOutlast(pmView as Activity,
+        outlast = ActivityOutlast(pmView,
                                   Outlasting.Creator<PmWrapper<PM>> {
-                                              PmWrapper(pmView.providePresentationModel())
-                                          },
+                                      PmWrapper(pmView.providePresentationModel())
+                                  },
                                   savedInstanceState)
         presentationModel // Create lazy presentation model now
         pmBinder = PmBinder(presentationModel, pmView)
+        navigationMessagesDisposable = presentationModel.navigationMessages.observable.subscribe {
+            navigationMessagesDispatcher.dispatch(it)
+        }
     }
 
     /**
@@ -83,6 +87,7 @@ class PmActivityDelegate<PM : PresentationModel>(private val pmView: PmView<PM>)
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onDestroy() {
+        navigationMessagesDisposable?.dispose()
         outlast.onDestroy()
     }
 }
