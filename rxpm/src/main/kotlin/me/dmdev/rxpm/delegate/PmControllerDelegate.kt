@@ -22,7 +22,8 @@ where PM : PresentationModel, C : Controller, C : PmView<PM> {
 
     internal lateinit var pmBinder: PmBinder<PM>
     private var created = false
-    private var navigationMessagesDisposable: Disposable? = null
+
+    private lateinit var navigationMessagesDisposable: Disposable
     private val navigationMessageDispatcher = ControllerNavigationMessageDispatcher(pmView)
 
     val presentationModel: PM by lazy { pmView.providePresentationModel() }
@@ -70,7 +71,7 @@ where PM : PresentationModel, C : Controller, C : PmView<PM> {
      * You must call this method from the containing [Controller]'s corresponding method.
      */
     fun onDestroy() {
-        navigationMessagesDisposable?.dispose()
+        navigationMessagesDisposable.dispose()
         presentationModel.lifecycleConsumer.accept(Lifecycle.DESTROYED)
     }
 }

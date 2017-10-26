@@ -1,23 +1,20 @@
 package me.dmdev.rxpm.navigation
 
-/**
- * @since 1.1
- */
-internal abstract class NavigationMessageDispatcher(private val from: Any) {
+internal abstract class NavigationMessageDispatcher(private val firstNode: Any) {
 
     fun dispatch(message: NavigationMessage) {
 
-        var any: Any? = from
+        var node: Any? = firstNode
 
         do {
-            if (any is NavigationMessageHandler && any.handleNavigationMessage(message)) {
+            if (node is NavigationMessageHandler && node.handleNavigationMessage(message)) {
                 return
             }
-            any = getParent(any)
-        } while (any != null)
+            node = getParent(node)
+        } while (node != null)
 
-        throw NotHandledNavigationMessage("")
+        throw NotHandledNavigationMessageException()
     }
 
-    abstract fun getParent(any: Any?): Any?
+    abstract fun getParent(node: Any?): Any?
 }

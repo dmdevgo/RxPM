@@ -7,6 +7,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import me.dmdev.rxpm.navigation.NavigationMessage
+import me.dmdev.rxpm.navigation.NavigationMessageHandler
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -25,6 +26,7 @@ abstract class PresentationModel {
     private val unbind = BehaviorRelay.createDefault<Boolean>(true)
 
     /**
+     * Command to send [navigation message][NavigationMessage] to the [NavigationMessageHandler].
      * @since 1.1
      */
     val navigationMessages = Command<NavigationMessage>()

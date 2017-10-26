@@ -24,7 +24,8 @@ where PM : PresentationModel, F : Fragment, F : PmView<PM> {
 
     private lateinit var outlast: FragmentOutlast<PmWrapper<PM>>
     internal lateinit var pmBinder: PmBinder<PM>
-    private var navigationMessagesDisposable: Disposable? = null
+
+    private lateinit var navigationMessagesDisposable: Disposable
     private val navigationMessageDispatcher = SupportFragmentNavigationMessageDispatcher(pmView)
 
     val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
@@ -87,7 +88,7 @@ where PM : PresentationModel, F : Fragment, F : PmView<PM> {
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onDestroy() {
-        navigationMessagesDisposable?.dispose()
+        navigationMessagesDisposable.dispose()
         outlast.onDestroy()
     }
 }

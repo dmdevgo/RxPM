@@ -21,7 +21,6 @@ class NavigationMessageDispatcherTest {
         MockitoAnnotations.initMocks(this)
         Mockito.`when`(handledNavigator.handleNavigationMessage(testMessage)).thenReturn(true)
         Mockito.`when`(notHandledNavigator.handleNavigationMessage(testMessage)).thenReturn(false)
-        Mockito.`when`(unreachableNavigator.handleNavigationMessage(testMessage)).thenReturn(false)
     }
 
     @Test
@@ -31,7 +30,7 @@ class NavigationMessageDispatcherTest {
 
             var k = 0
 
-            override fun getParent(any: Any?): Any? {
+            override fun getParent(node: Any?): Any? {
 
                 val result: Any? = when (k) {
                     0 -> Unit
@@ -53,14 +52,14 @@ class NavigationMessageDispatcherTest {
 
     }
 
-    @Test(expected = NotHandledNavigationMessage::class)
+    @Test(expected = NotHandledNavigationMessageException::class)
     fun testNotHandledMessage() {
 
         val dispatcher = object : NavigationMessageDispatcher(Unit) {
 
             var k = 0
 
-            override fun getParent(any: Any?): Any? {
+            override fun getParent(node: Any?): Any? {
 
                 val result: Any? = when (k) {
                     0 -> Unit
