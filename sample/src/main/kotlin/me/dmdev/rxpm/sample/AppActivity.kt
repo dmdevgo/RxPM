@@ -2,13 +2,14 @@ package me.dmdev.rxpm.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import me.dmdev.rxpm.navigation.NavigationMessage
+import me.dmdev.rxpm.navigation.NavigationMessageHandler
 import me.dmdev.rxpm.sample.extensions.*
 import me.dmdev.rxpm.sample.ui.base.BackHandler
 import me.dmdev.rxpm.sample.ui.confirmation.CodeConfirmationScreen
 import me.dmdev.rxpm.sample.ui.country.ChooseCountryScreen
 import me.dmdev.rxpm.sample.ui.main.MainScreen
 import me.dmdev.rxpm.sample.ui.phone.AuthByPhoneScreen
-
 
 
 class AppActivity : AppCompatActivity(), NavigationMessageHandler {
@@ -33,9 +34,11 @@ class AppActivity : AppCompatActivity(), NavigationMessageHandler {
     }
 
     override fun handleNavigationMessage(message: NavigationMessage): Boolean {
+
         val sfm = supportFragmentManager
+
         when (message) {
-            is UpMessage,
+
             is BackMessage -> super.onBackPressed()
 
             is ChooseCountryMessage -> sfm.openScreen(ChooseCountryScreen())
@@ -59,6 +62,7 @@ class AppActivity : AppCompatActivity(), NavigationMessageHandler {
                 sfm.openScreen(AuthByPhoneScreen(), addToBackStack = false)
             }
         }
+
         return true
     }
 }

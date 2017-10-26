@@ -61,8 +61,7 @@ abstract class PresentationModel {
                     when (it) {
                         Lifecycle.BINDED -> unbind.accept(false)
                         Lifecycle.UNBINDED -> unbind.accept(true)
-                        else -> {
-                        }
+                        else -> {}
                     }
                 }
     }
