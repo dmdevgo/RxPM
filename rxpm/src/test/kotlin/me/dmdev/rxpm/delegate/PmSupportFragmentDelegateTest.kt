@@ -60,7 +60,7 @@ class PmSupportFragmentDelegateTest {
     fun testPresentationModelLifeCycle() {
 
         val testObserver = TestObserver<PresentationModel.Lifecycle>()
-        pm.lifecycleState.subscribe(testObserver)
+        pm.lifecycleObservable.subscribe(testObserver)
 
         val delegate = PmSupportFragmentDelegate(fragmentMock)
 

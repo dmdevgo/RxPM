@@ -55,7 +55,7 @@ class PmControllerDelegateTest {
     fun testPresentationModelLifeCycle() {
 
         val testObserver = TestObserver<PresentationModel.Lifecycle>()
-        pm.lifecycleState.subscribe(testObserver)
+        pm.lifecycleObservable.subscribe(testObserver)
 
         val delegate = PmControllerDelegate(pmViewMock)
 

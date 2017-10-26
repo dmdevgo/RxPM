@@ -34,7 +34,7 @@ abstract class PresentationModel {
     /**
      * The [lifecycle][Lifecycle] state of this presentation model.
      */
-    val lifecycleState = lifecycle.asObservable()
+    val lifecycleObservable = lifecycle.asObservable()
     internal val lifecycleConsumer = lifecycle.asConsumer()
 
     init {
@@ -61,7 +61,8 @@ abstract class PresentationModel {
                     when (it) {
                         Lifecycle.BINDED -> unbind.accept(false)
                         Lifecycle.UNBINDED -> unbind.accept(true)
-                        else -> {}
+                        else -> {
+                        }
                     }
                 }
     }
@@ -246,8 +247,9 @@ abstract class PresentationModel {
          * Observable of this [Command].
          */
         val observable =
-                if (bufferSize == 0) { relay.asObservable() }
-                else {
+                if (bufferSize == 0) {
+                    relay.asObservable()
+                } else {
                     if (isIdle == null) relay.bufferWhileUnbind(bufferSize)
                     else relay.bufferWhileIdle(isIdle, bufferSize)
                 }
