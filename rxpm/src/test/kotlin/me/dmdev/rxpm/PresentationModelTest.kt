@@ -16,7 +16,7 @@ class PresentationModelTest {
         val testPm = TestPm(callbacks)
         val to = TestObserver<Lifecycle>()
 
-        testPm.lifecycleState.subscribe(to)
+        testPm.lifecycleObservable.subscribe(to)
 
         testPm.lifecycleConsumer.accept(Lifecycle.CREATED)
         testPm.lifecycleConsumer.accept(Lifecycle.BINDED)
@@ -45,7 +45,7 @@ class PresentationModelTest {
         val testChildPm = TestChildPm(childPm)
         val to = TestObserver<Lifecycle>()
 
-        testChildPm.lifecycleState.subscribe(to)
+        testChildPm.lifecycleObservable.subscribe(to)
 
         testChildPm.lifecycleConsumer.accept(Lifecycle.CREATED)
         testChildPm.lifecycleConsumer.accept(Lifecycle.BINDED)

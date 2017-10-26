@@ -63,6 +63,7 @@ dependencies {
     // For tests
     testImplementation rootProject.junitKotlin
     testImplementation rootProject.mockito
+    testImplementation rootProject.conductor
     testImplementation rootProject.ext.supportAppCompat
 }
 

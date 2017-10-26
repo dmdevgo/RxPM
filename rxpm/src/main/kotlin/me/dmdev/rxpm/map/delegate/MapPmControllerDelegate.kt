@@ -18,8 +18,8 @@ import me.dmdev.rxpm.map.base.MapPmController
  * Users of this class must forward all the life cycle methods from the containing Controller
  * to the corresponding ones in this class.
  */
-class MapPmControllerDelegate<out PM>(private val mapPmView: MapPmView<PM>)
-where PM : PresentationModel, PM : MapPmExtension {
+class MapPmControllerDelegate<PM, C>(private val mapPmView: C)
+where PM : PresentationModel, PM : MapPmExtension, C : Controller, C : MapPmView<PM> {
 
     private val pmDelegate = PmControllerDelegate(mapPmView)
     private val mapPmViewDelegate by lazy {
