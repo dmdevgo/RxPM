@@ -41,6 +41,7 @@ abstract class PresentationModel {
         lifecycle
                 .takeUntil { it == Lifecycle.DESTROYED }
                 .subscribe {
+                    @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
                     when (it) {
                         Lifecycle.CREATED -> onCreate()
                         Lifecycle.BINDED -> onBind()
@@ -168,12 +169,18 @@ abstract class PresentationModel {
      */
     inner class State<T>(initialValue: T? = null) {
         internal val relay =
-                if (initialValue != null) BehaviorRelay.createDefault<T>(initialValue).toSerialized()
-                else BehaviorRelay.create<T>().toSerialized()
+                if (initialValue != null) {
+                    BehaviorRelay.createDefault<T>(initialValue).toSerialized()
+                } else {
+                    BehaviorRelay.create<T>().toSerialized()
+                }
 
         private val cachedValue =
-                if (initialValue != null) AtomicReference<T?>(initialValue)
-                else AtomicReference()
+                if (initialValue != null) {
+                    AtomicReference<T?>(initialValue)
+                } else {
+                    AtomicReference()
+                }
 
         /**
          * Observable of this [State].
@@ -220,7 +227,7 @@ abstract class PresentationModel {
         /**
          * Consumer of the [Action][Action].
          */
-        val consumer = relay.asConsumer()
+        val consumer get() = relay.asConsumer()
     }
 
     /**
@@ -249,8 +256,11 @@ abstract class PresentationModel {
                 if (bufferSize == 0) {
                     relay.asObservable()
                 } else {
-                    if (isIdle == null) relay.bufferWhileUnbind(bufferSize)
-                    else relay.bufferWhileIdle(isIdle, bufferSize)
+                    if (isIdle == null) {
+                        relay.bufferWhileUnbind(bufferSize)
+                    } else {
+                        relay.bufferWhileIdle(isIdle, bufferSize)
+                    }
                 }
     }
 
