@@ -75,25 +75,28 @@ inline fun <T> Observable<T>.skipWhileInProgress(progressState: Observable<Boole
  */
 inline fun <T> Observable<T>.bufferWhileIdle(isIdle: Observable<Boolean>, bufferSize: Int? = null): Observable<T> {
 
+    val itemsObservable = this.withLatestFrom(isIdle,
+                                              BiFunction { t: T, idle: Boolean ->
+                                                  Pair(t, idle)
+                                              }
+    ).publish().autoConnect(2)
+
     return Observable
             .merge(
-                    this.withLatestFrom(isIdle,
-                                        BiFunction<T, Boolean, Pair<T, Boolean>> { t, idle ->
-                                            Pair(t, idle)
-                                        })
+                    itemsObservable
                             .filter { !it.second }
                             .map { it.first },
 
-                    this
+                    itemsObservable
+                            .filter { it.second }
+                            .map { it.first }
                             .buffer(
-                                    isIdle.filter { it },
+                                    isIdle.distinctUntilChanged().filter { it },
                                     Function<Boolean, Observable<Boolean>> {
-                                        isIdle.filter { !it }
-                                    })
-                            .map {
-                                if (bufferSize != null) it.takeLast(bufferSize)
-                                else it
-                            }
+                                        isIdle.distinctUntilChanged().filter { !it }
+                                    }
+                            )
+                            .map { if (bufferSize != null) it.takeLast(bufferSize) else it }
                             .flatMapIterable { it }
 
             )
