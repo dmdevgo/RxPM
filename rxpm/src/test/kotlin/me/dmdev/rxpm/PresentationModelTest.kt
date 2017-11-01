@@ -42,15 +42,15 @@ class PresentationModelTest {
 
         val callbacks = Mockito.mock(LifeCycleCallbacks::class.java)
         val childPm = TestPm(callbacks)
-        val testChildPm = TestChildPm(childPm)
+        val pm = TestPmWithChild(childPm)
         val to = TestObserver<Lifecycle>()
 
-        testChildPm.lifecycleObservable.subscribe(to)
+        pm.lifecycleObservable.subscribe(to)
 
-        testChildPm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        testChildPm.lifecycleConsumer.accept(Lifecycle.BINDED)
-        testChildPm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-        testChildPm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
+        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
+        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
 
         to.assertSubscribed()
         to.assertValues(Lifecycle.CREATED,
@@ -145,9 +145,9 @@ class PresentationModelTest {
     }
 }
 
-open class TestChildPm(childPm: TestPm) : PresentationModel() {
+open class TestPmWithChild(childPm: TestPm) : PresentationModel() {
     init {
-        childPm.bindLifecycle()
+        bindChild(childPm)
     }
 }
 

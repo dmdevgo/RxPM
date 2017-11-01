@@ -33,6 +33,7 @@ abstract class PresentationModel {
 
     /**
      * The [lifecycle][Lifecycle] state of this presentation model.
+     * @since 1.1
      */
     val lifecycleObservable = lifecycle.asObservable()
     internal val lifecycleConsumer = lifecycle.asConsumer()
@@ -100,6 +101,21 @@ abstract class PresentationModel {
     protected open fun onDestroy() {}
 
     /**
+     * Binds a child Presentation Model to this Presentation Model.
+     * @since 1.1
+     */
+    protected fun bindChild(childPm: PresentationModel) {
+
+        lifecycleObservable
+                .takeUntil { it == Lifecycle.DESTROYED }
+                .subscribe(childPm.lifecycleConsumer)
+
+        childPm.navigationMessages.observable
+                .subscribe(navigationMessages.consumer)
+                .untilDestroy()
+    }
+
+    /**
      * Local extension to add this [Disposable] to the [CompositeDisposable][compositeUnbind]
      * that will be CLEARED ON [UNBIND][Lifecycle.UNBINDED].
      */
@@ -113,15 +129,6 @@ abstract class PresentationModel {
      */
     protected fun Disposable.untilDestroy() {
         compositeDestroy.add(this)
-    }
-
-    /**
-     * Binds `this` [PresentationModel]'s (child) lifecycle to the enclosing presentation model's (parent) lifecycle.
-     */
-    protected fun PresentationModel.bindLifecycle() {
-        this@PresentationModel.lifecycle
-                .subscribe(this.lifecycleConsumer)
-                .untilDestroy()
     }
 
     /**
