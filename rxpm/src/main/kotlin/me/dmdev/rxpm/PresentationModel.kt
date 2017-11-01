@@ -6,6 +6,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
+import me.dmdev.rxpm.navigation.NavigationMessage
+import me.dmdev.rxpm.navigation.NavigationMessageHandler
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -24,15 +26,23 @@ abstract class PresentationModel {
     private val unbind = BehaviorRelay.createDefault<Boolean>(true)
 
     /**
-     * The [lifecycle][Lifecycle] state of this presentation model.
+     * Command to send [navigation message][NavigationMessage] to the [NavigationMessageHandler].
+     * @since 1.1
      */
-    val lifecycleState = lifecycle.asObservable()
+    val navigationMessages = Command<NavigationMessage>()
+
+    /**
+     * The [lifecycle][Lifecycle] state of this presentation model.
+     * @since 1.1
+     */
+    val lifecycleObservable = lifecycle.asObservable()
     internal val lifecycleConsumer = lifecycle.asConsumer()
 
     init {
         lifecycle
                 .takeUntil { it == Lifecycle.DESTROYED }
                 .subscribe {
+                    @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
                     when (it) {
                         Lifecycle.CREATED -> onCreate()
                         Lifecycle.BINDED -> onBind()
@@ -91,6 +101,21 @@ abstract class PresentationModel {
     protected open fun onDestroy() {}
 
     /**
+     * Binds a child Presentation Model to this Presentation Model.
+     * @since 1.1
+     */
+    protected fun bindChild(childPm: PresentationModel) {
+
+        lifecycleObservable
+                .takeUntil { it == Lifecycle.DESTROYED }
+                .subscribe(childPm.lifecycleConsumer)
+
+        childPm.navigationMessages.observable
+                .subscribe(navigationMessages.consumer)
+                .untilDestroy()
+    }
+
+    /**
      * Local extension to add this [Disposable] to the [CompositeDisposable][compositeUnbind]
      * that will be CLEARED ON [UNBIND][Lifecycle.UNBINDED].
      */
@@ -104,15 +129,6 @@ abstract class PresentationModel {
      */
     protected fun Disposable.untilDestroy() {
         compositeDestroy.add(this)
-    }
-
-    /**
-     * Binds `this` [PresentationModel]'s (child) lifecycle to the enclosing presentation model's (parent) lifecycle.
-     */
-    protected fun PresentationModel.bindLifecycle() {
-        this@PresentationModel.lifecycle
-                .subscribe(this.lifecycleConsumer)
-                .untilDestroy()
     }
 
     /**
@@ -160,12 +176,18 @@ abstract class PresentationModel {
      */
     inner class State<T>(initialValue: T? = null) {
         internal val relay =
-                if (initialValue != null) BehaviorRelay.createDefault<T>(initialValue).toSerialized()
-                else BehaviorRelay.create<T>().toSerialized()
+                if (initialValue != null) {
+                    BehaviorRelay.createDefault<T>(initialValue).toSerialized()
+                } else {
+                    BehaviorRelay.create<T>().toSerialized()
+                }
 
         private val cachedValue =
-                if (initialValue != null) AtomicReference<T?>(initialValue)
-                else AtomicReference()
+                if (initialValue != null) {
+                    AtomicReference<T?>(initialValue)
+                } else {
+                    AtomicReference()
+                }
 
         /**
          * Observable of this [State].
@@ -212,7 +234,7 @@ abstract class PresentationModel {
         /**
          * Consumer of the [Action][Action].
          */
-        val consumer = relay.asConsumer()
+        val consumer get() = relay.asConsumer()
     }
 
     /**
@@ -238,10 +260,14 @@ abstract class PresentationModel {
          * Observable of this [Command].
          */
         val observable =
-                if (bufferSize == 0) { relay.asObservable() }
-                else {
-                    if (isIdle == null) relay.bufferWhileUnbind(bufferSize)
-                    else relay.bufferWhileIdle(isIdle, bufferSize)
+                if (bufferSize == 0) {
+                    relay.asObservable()
+                } else {
+                    if (isIdle == null) {
+                        relay.bufferWhileUnbind(bufferSize)
+                    } else {
+                        relay.bufferWhileIdle(isIdle, bufferSize)
+                    }
                 }
     }
 

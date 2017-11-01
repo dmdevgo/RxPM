@@ -2,6 +2,8 @@ package me.dmdev.rxpm.map.base
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.map.MapPmExtension
@@ -21,11 +23,14 @@ import me.dmdev.rxpm.map.delegate.MapPmActivityDelegate
 abstract class MapPmSupportActivity<PM> : AppCompatActivity(), MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
-    private val delegate by lazy { MapPmActivityDelegate(this) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmActivityDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 
     final override val presentationModel get() = delegate.presentationModel
+
+    final override var mapView: MapView? = null
+    final override var googleMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

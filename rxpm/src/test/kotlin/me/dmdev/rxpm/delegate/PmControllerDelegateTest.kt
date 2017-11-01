@@ -2,8 +2,8 @@ package me.dmdev.rxpm.delegate
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
-import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.base.PmController
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,7 +20,7 @@ class PmControllerDelegateTest {
 
     @Spy lateinit var pm: PresentationModel
     @Mock lateinit var compositeDisposableMock: CompositeDisposable
-    @Mock lateinit var pmViewMock: PmView<PresentationModel>
+    @Mock lateinit var pmViewMock: PmController<PresentationModel>
 
     @Before
     fun initTest() {
@@ -55,7 +55,7 @@ class PmControllerDelegateTest {
     fun testPresentationModelLifeCycle() {
 
         val testObserver = TestObserver<PresentationModel.Lifecycle>()
-        pm.lifecycleState.subscribe(testObserver)
+        pm.lifecycleObservable.subscribe(testObserver)
 
         val delegate = PmControllerDelegate(pmViewMock)
 

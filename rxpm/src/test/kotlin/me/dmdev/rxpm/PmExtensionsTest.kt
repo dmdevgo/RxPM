@@ -174,7 +174,9 @@ class PmExtensionsTest {
 
         val commands = mutableListOf<Int>()
 
-        var disposable = commandsObservable.subscribe { commands.add(it) }
+        var disposable = commandsObservable.subscribe {
+            commands.add(it)
+        }
 
         relay.accept(1)
         relay.accept(2)
@@ -196,4 +198,99 @@ class PmExtensionsTest {
 
     }
 
+    @Test
+    fun testBufferWhileIdle2() {
+        val openCloseObservable = BehaviorRelay.createDefault<Boolean>(false)
+        val relay = PublishRelay.create<Int>()
+        val commandsObservable = relay.bufferWhileIdle(openCloseObservable)
+
+        val commands = mutableListOf<Int>()
+
+        val disposable = commandsObservable.subscribe {
+            commands.add(it)
+        }
+
+        relay.accept(1)
+        relay.accept(2)
+
+        openCloseObservable.accept(true)
+
+        relay.accept(3)
+        relay.accept(4)
+
+        Assert.assertArrayEquals(intArrayOf(1,2), commands.toIntArray())
+
+        openCloseObservable.accept(false)
+
+        Assert.assertArrayEquals(intArrayOf(1,2,3,4), commands.toIntArray())
+
+        disposable.dispose()
+
+    }
+
+    @Test
+    fun testBufferWhileIdle3() {
+        val openCloseObservable = BehaviorRelay.createDefault<Boolean>(false)
+        val relay = PublishRelay.create<Int>()
+        val commandsObservable = relay.bufferWhileIdle(openCloseObservable)
+
+        val commands = mutableListOf<Int>()
+
+        var disposable = commandsObservable.subscribe {
+            commands.add(it)
+            if (it == 2 ) openCloseObservable.accept(true)
+        }
+
+        relay.accept(1)
+        relay.accept(2)
+
+        disposable.dispose()
+
+        relay.accept(3)
+        relay.accept(4)
+
+        Assert.assertArrayEquals(intArrayOf(1,2), commands.toIntArray())
+
+        disposable = commandsObservable.subscribe { commands.add(it) }
+        openCloseObservable.accept(false)
+
+        Assert.assertArrayEquals(intArrayOf(1,2,3,4), commands.toIntArray())
+
+        disposable.dispose()
+
+    }
+
+    @Test
+    fun testBufferWhileIdle4() {
+        val openCloseObservable = BehaviorRelay.createDefault<Boolean>(false)
+        val relay = PublishRelay.create<Int>()
+        val commandsObservable = relay.bufferWhileIdle(openCloseObservable)
+
+        val commands = mutableListOf<Int>()
+
+        var disposable = commandsObservable.subscribe {
+            commands.add(it)
+        }
+
+        relay.accept(1)
+        relay.accept(2)
+
+        disposable.dispose()
+        openCloseObservable.accept(true)
+        openCloseObservable.accept(true)
+
+        relay.accept(3)
+        relay.accept(4)
+
+        Assert.assertArrayEquals(intArrayOf(1,2), commands.toIntArray())
+
+        disposable = commandsObservable.subscribe { commands.add(it) }
+        openCloseObservable.accept(false)
+        openCloseObservable.accept(false)
+
+        Assert.assertArrayEquals(intArrayOf(1,2,3,4), commands.toIntArray())
+
+        disposable.dispose()
+
+    }
 }

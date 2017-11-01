@@ -18,11 +18,11 @@ import me.dmdev.rxpm.map.base.MapPmSupportFragment
  * Users of this class must forward all the life cycle methods from the containing Fragment
  * to the corresponding ones in this class.
  */
-class MapPmSupportFragmentDelegate<out PM>(private val mapPmView: MapPmView<PM>)
-where PM : PresentationModel, PM : MapPmExtension {
+class MapPmSupportFragmentDelegate<PM, F>(private val mapPmView: F)
+where PM : PresentationModel, PM : MapPmExtension, F: Fragment, F : MapPmView<PM> {
 
     private val pmDelegate = PmSupportFragmentDelegate(mapPmView)
-    private val mapPmViewDelegate by lazy {
+    private val mapPmViewDelegate by lazy(LazyThreadSafetyMode.NONE) {
         MapPmViewDelegate(pmDelegate.presentationModel,
                           mapPmView,
                           pmDelegate.pmBinder)

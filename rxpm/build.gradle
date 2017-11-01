@@ -63,6 +63,7 @@ dependencies {
     // For tests
     testImplementation rootProject.junitKotlin
     testImplementation rootProject.mockito
+    testImplementation rootProject.conductor
     testImplementation rootProject.ext.supportAppCompat
 }
 
@@ -71,7 +72,7 @@ ext {
     bintrayName = 'RxPM'
     publishedGroupId = 'me.dmdev.rxpm'
     artifact = 'rxpm'
-    libraryVersion = '1.0'
+    libraryVersion = '1.1'
     gitUrl = 'https://github.com/dmdevgo/RxPM'
     allLicenses = ['MIT']
 }

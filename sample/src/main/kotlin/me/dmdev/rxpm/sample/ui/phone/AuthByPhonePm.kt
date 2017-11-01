@@ -70,7 +70,7 @@ class AuthByPhonePm(
                 .untilDestroy()
 
         Observable.combineLatest(phoneNumber.textChanges.observable, chosenCountry.observable,
-                                 BiFunction<String, Country, String> { number, country ->
+                                 BiFunction { number: String, country: Country ->
                                      phoneUtil.formatPhoneNumber(country, number)
                                  })
                 .subscribe(phoneNumber.text.consumer)
@@ -78,7 +78,7 @@ class AuthByPhonePm(
 
 
         Observable.combineLatest(phoneNumber.textChanges.observable, chosenCountry.observable,
-                                 BiFunction<String, Country, Boolean> { number, country ->
+                                 BiFunction { number: String, country: Country ->
                                      phoneUtil.isValidPhone(country, number)
                                  })
                 .subscribe(doneButton.enabled.consumer)

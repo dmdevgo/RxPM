@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.RestoreViewOnCreateController
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PresentationModel
@@ -31,11 +32,14 @@ abstract class MapPmController<PM>(args: Bundle? = null) : RestoreViewOnCreateCo
                                                            MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
-    private val delegate by lazy { MapPmControllerDelegate(this) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmControllerDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 
     final override val presentationModel get() = delegate.presentationModel
+
+    final override var mapView: MapView? = null
+    final override var googleMap: GoogleMap? = null
 
     final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
         val view = createView(inflater, container, savedViewState)

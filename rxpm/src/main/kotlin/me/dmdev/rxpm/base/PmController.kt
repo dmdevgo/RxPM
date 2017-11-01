@@ -22,7 +22,7 @@ import me.dmdev.rxpm.delegate.PmControllerDelegate
 abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : RestoreViewOnCreateController(args),
                                                                             AndroidPmView<PM> {
 
-    private val delegate by lazy { PmControllerDelegate(this) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmControllerDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 
