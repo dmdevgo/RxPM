@@ -22,7 +22,7 @@ class MapPmControllerDelegate<PM, C>(private val mapPmView: C)
 where PM : PresentationModel, PM : MapPmExtension, C : Controller, C : MapPmView<PM> {
 
     private val pmDelegate = PmControllerDelegate(mapPmView)
-    private val mapPmViewDelegate by lazy {
+    private val mapPmViewDelegate by lazy(LazyThreadSafetyMode.NONE) {
         MapPmViewDelegate(pmDelegate.presentationModel,
                           mapPmView,
                           pmDelegate.pmBinder)

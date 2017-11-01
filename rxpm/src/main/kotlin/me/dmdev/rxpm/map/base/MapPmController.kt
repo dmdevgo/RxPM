@@ -32,7 +32,7 @@ abstract class MapPmController<PM>(args: Bundle? = null) : RestoreViewOnCreateCo
                                                            MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
-    private val delegate by lazy { MapPmControllerDelegate(this) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmControllerDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 

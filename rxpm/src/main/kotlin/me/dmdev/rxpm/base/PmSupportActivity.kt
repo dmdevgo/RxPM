@@ -18,7 +18,7 @@ import me.dmdev.rxpm.delegate.PmActivityDelegate
  */
 abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), AndroidPmView<PM> {
 
-    private val delegate by lazy { PmActivityDelegate(this) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmActivityDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 

@@ -22,7 +22,7 @@ class MapPmActivityDelegate<PM, A>(private val mapPmView:A)
 where PM : PresentationModel, PM : MapPmExtension, A : Activity, A : MapPmView<PM> {
 
     private val pmDelegate = PmActivityDelegate(mapPmView)
-    private val mapPmViewDelegate by lazy {
+    private val mapPmViewDelegate by lazy(LazyThreadSafetyMode.NONE) {
         MapPmViewDelegate(pmDelegate.presentationModel,
                           mapPmView,
                           pmDelegate.pmBinder)

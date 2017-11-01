@@ -23,7 +23,7 @@ import me.dmdev.rxpm.map.delegate.MapPmActivityDelegate
 abstract class MapPmSupportActivity<PM> : AppCompatActivity(), MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
-    private val delegate by lazy { MapPmActivityDelegate(this) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmActivityDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 

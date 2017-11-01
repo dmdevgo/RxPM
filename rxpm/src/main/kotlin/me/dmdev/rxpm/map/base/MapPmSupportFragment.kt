@@ -26,7 +26,7 @@ import me.dmdev.rxpm.map.delegate.MapPmSupportFragmentDelegate
 abstract class MapPmSupportFragment<PM> : Fragment(), MapPmView<PM>
 where PM : PresentationModel, PM : MapPmExtension {
 
-    private val delegate by lazy { MapPmSupportFragmentDelegate(this) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmSupportFragmentDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 

@@ -22,7 +22,7 @@ class MapPmSupportFragmentDelegate<PM, F>(private val mapPmView: F)
 where PM : PresentationModel, PM : MapPmExtension, F: Fragment, F : MapPmView<PM> {
 
     private val pmDelegate = PmSupportFragmentDelegate(mapPmView)
-    private val mapPmViewDelegate by lazy {
+    private val mapPmViewDelegate by lazy(LazyThreadSafetyMode.NONE) {
         MapPmViewDelegate(pmDelegate.presentationModel,
                           mapPmView,
                           pmDelegate.pmBinder)
