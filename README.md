@@ -1,12 +1,12 @@
 # RxPM
 Reactive implementation of [Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html) pattern in Android.
 
-## Why use RxPM?
+## Why Use RxPM?
 Ever found yourself thinking about passing the RxJava chain from the View to the Presenter in MVP?
 Don’t satisfied with Databinding Library in MVVM?
 Then you are one of us, who think this patterns are not Rx-friendly.
 
-<img src="/docs/images/rxpm_vs_mvp_vs_mvvm.png" width="600">
+<img src="/docs/images/rxpm_vs_mvp_vs_mvvm.png" width="400">
 
 RxPM allows to use the RxJava all the way from a widget to the data. And the main advantage of that is the possibility to declaratively define and interconnect reactive states.
 
@@ -81,6 +81,8 @@ class DataFragment : PmSupportFragment<DataPresentationModel>() {
     }
 }
 ```
+## Interactions Diagram
+<img src="/docs/images/rxpm_diagram.png">
 
 ## Main Components
 ### State
@@ -159,10 +161,10 @@ You have to implement two methods:
 
 Also the library has a predefined classes for work with Google Maps.
 
-### Two-way Databinding
-For the cases of two-way databinding (eg. input field text changes) the library has predefined [Сontrols](https://github.com/dmdevgo/RxPM/tree/develop/rxpm/src/main/kotlin/me/dmdev/rxpm/widget).
+### Two-way Data Binding
+For the cases of two-way data binding (eg. input field text changes) the library has predefined [Сontrols](https://github.com/dmdevgo/RxPM/tree/develop/rxpm/src/main/kotlin/me/dmdev/rxpm/widget).
 
-In PresentationModel:
+In the PresentationModel:
 ```kotlin
 val name = inputControl(
     formatter = {
@@ -170,13 +172,13 @@ val name = inputControl(
     }
 )
 
-val isChecked = checkControl()
+val checked = checkControl()
 ```
 
 In the View:
 ```kotlin
 pm.name bindTo editText
-pm.isChecked bindTo checkBox
+pm.checked bindTo checkBox
 ```
 
 
