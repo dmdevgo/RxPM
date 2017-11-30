@@ -17,6 +17,7 @@ class MainPm(
 
     override fun onCreate() {
         super.onCreate()
+
         logoutAction.observable
                 .skipWhileInProgress(inProgress.observable)
                 .flatMapCompletable {
