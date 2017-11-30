@@ -41,6 +41,7 @@ class InputControl internal constructor(pm: PresentationModel,
     /**
      * The input field enabled [state][PresentationModel.State].
      */
+    @Deprecated("Will be removed in 1.2")
     val enabled = pm.State(initialEnabled)
 
     /**
@@ -72,11 +73,25 @@ class InputControl internal constructor(pm: PresentationModel,
  * @param formatter formats the user input. The default does nothing.
  * @param hideErrorOnUserInput hide the error if user entered something.
  */
+@Deprecated("Enabled state will be removed in 1.2", ReplaceWith("inputControl(initialText, formatter, hideErrorOnUserInput)", "me.dmdev.rxpm.widget.inputControl"))
 fun PresentationModel.inputControl(initialText: String = "",
                                    initialEnabled: Boolean = true,
                                    formatter: (text: String) -> String = { it },
                                    hideErrorOnUserInput: Boolean = true): InputControl {
     return InputControl(this, initialText, initialEnabled, formatter, hideErrorOnUserInput)
+}
+
+/**
+ * Creates the [InputControl].
+ *
+ * @param initialText initial text of the input field.
+ * @param formatter formats the user input. The default does nothing.
+ * @param hideErrorOnUserInput hide the error if user entered something.
+ */
+fun PresentationModel.inputControl(initialText: String = "",
+                                   formatter: (text: String) -> String = { it },
+                                   hideErrorOnUserInput: Boolean = true): InputControl {
+    return InputControl(this, initialText, true, formatter, hideErrorOnUserInput)
 }
 
 inline internal fun TextInputLayout.bind(inputControl: InputControl): Disposable {
