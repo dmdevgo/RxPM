@@ -21,10 +21,6 @@ android {
     }
 }
 
-ext {
-    daggerVersion = "2.11"
-}
-
 dependencies {
 
     implementation rootProject.ext.kotlinStdlib
