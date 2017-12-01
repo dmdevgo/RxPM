@@ -33,6 +33,7 @@ class CheckControl internal constructor(pm: PresentationModel,
     /**
      * The checkable widget enabled [state][PresentationModel.State].
      */
+    @Deprecated("Will be removed in 1.2")
     val enabled = pm.State(initialEnabled)
 
     /**
@@ -53,9 +54,19 @@ class CheckControl internal constructor(pm: PresentationModel,
  * @param initialChecked initial checked state.
  * @param initialEnabled is checkable widget initially enabled.
  */
+@Deprecated("Enabled state will be removed in 1.2", ReplaceWith("checkControl(initialChecked)", "me.dmdev.rxpm.widget.checkControl"))
 fun PresentationModel.checkControl(initialChecked: Boolean = false,
                                    initialEnabled: Boolean = true): CheckControl {
     return CheckControl(this, initialChecked, initialEnabled)
+}
+
+/**
+ * Creates the [CheckControl].
+ *
+ * @param initialChecked initial checked state.
+ */
+fun PresentationModel.checkControl(initialChecked: Boolean = false): CheckControl {
+    return CheckControl(this, initialChecked, true)
 }
 
 @Suppress("NOTHING_TO_INLINE")

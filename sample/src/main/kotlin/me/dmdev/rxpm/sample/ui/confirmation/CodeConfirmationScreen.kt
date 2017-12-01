@@ -3,7 +3,9 @@ package me.dmdev.rxpm.sample.ui.confirmation
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.view.enabled
 import com.jakewharton.rxbinding2.widget.editorActions
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.screen_code_confirmation.*
 import me.dmdev.rxpm.sample.App
 import me.dmdev.rxpm.sample.R
@@ -32,14 +34,20 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
     override fun onBindPresentationModel(pm: CodeConfirmationPm) {
         super.onBindPresentationModel(pm)
         pm.code bindTo codeEditLayout
-        pm.doneButton bindTo doneButton
         pm.inProgress.observable bindTo progressConsumer
+        pm.doneButtonEnabled.observable bindTo doneButton.enabled()
 
         navButton.clicks().bindTo(pm.backAction.consumer)
-        codeEdit.editorActions()
-                .filter { it == EditorInfo.IME_ACTION_SEND }
-                .map { Unit }
-                .bindTo(pm.doneButton.clicks.consumer)
+
+        Observable
+                .merge(
+                        doneButton.clicks(),
+
+                        codeEdit.editorActions()
+                                .filter { it == EditorInfo.IME_ACTION_SEND }
+                                .map { Unit }
+                )
+                .bindTo(pm.doneAction.consumer)
 
     }
 

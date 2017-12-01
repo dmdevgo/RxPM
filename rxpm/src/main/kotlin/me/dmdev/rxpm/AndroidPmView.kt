@@ -67,6 +67,8 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     /**
      * Local extension to bind the [ClickControl] to the [View][view], use it ONLY in [onBindPresentationModel].
      */
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("Will be removed in 1.2")
     infix fun ClickControl.bindTo(view: View) {
         compositeUnbind.add(view.bind(this))
     }

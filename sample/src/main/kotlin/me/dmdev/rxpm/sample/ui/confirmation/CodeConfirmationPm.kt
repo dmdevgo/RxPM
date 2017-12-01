@@ -10,7 +10,6 @@ import me.dmdev.rxpm.sample.model.AuthModel
 import me.dmdev.rxpm.sample.ui.base.ScreenPresentationModel
 import me.dmdev.rxpm.sample.util.ResourceProvider
 import me.dmdev.rxpm.skipWhileInProgress
-import me.dmdev.rxpm.widget.clickControl
 import me.dmdev.rxpm.widget.inputControl
 
 class CodeConfirmationPm(
@@ -25,13 +24,14 @@ class CodeConfirmationPm(
 
     val code = inputControl(formatter = { it.onlyDigits().take(CODE_LENGTH) })
     val inProgress = State(false)
+    val doneButtonEnabled = State(false)
 
-    val doneButton = clickControl(initialEnabled = false)
+    val doneAction = Action<Unit>()
 
     override fun onCreate() {
         super.onCreate()
 
-        Observable.merge(doneButton.clicks.observable,
+        Observable.merge(doneAction.observable,
                          code.textChanges.observable
                                  .filter { it.length == CODE_LENGTH }
                                  .distinctUntilChanged())
@@ -51,7 +51,7 @@ class CodeConfirmationPm(
 
         code.text.observable
                 .map { it.length == CODE_LENGTH }
-                .subscribe(doneButton.enabled.consumer)
+                .subscribe(doneButtonEnabled.consumer)
                 .untilDestroy()
 
     }

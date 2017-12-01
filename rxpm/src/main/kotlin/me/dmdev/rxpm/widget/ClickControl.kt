@@ -20,6 +20,7 @@ import me.dmdev.rxpm.PresentationModel
  * @see InputControl
  * @see CheckControl
  */
+@Deprecated("Will be removed in 1.2")
 class ClickControl internal constructor(pm: PresentationModel,
                                         initialEnabled: Boolean) {
 
@@ -39,6 +40,8 @@ class ClickControl internal constructor(pm: PresentationModel,
  *
  * @param initialEnabled is clickable widget initially enabled.
  */
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("ClickControl will be removed in 1.2")
 fun PresentationModel.clickControl(initialEnabled: Boolean = true): ClickControl {
     return me.dmdev.rxpm.widget.ClickControl(this, initialEnabled)
 }

@@ -15,7 +15,6 @@ import me.dmdev.rxpm.sample.util.Country
 import me.dmdev.rxpm.sample.util.PhoneUtil
 import me.dmdev.rxpm.sample.util.ResourceProvider
 import me.dmdev.rxpm.skipWhileInProgress
-import me.dmdev.rxpm.widget.clickControl
 import me.dmdev.rxpm.widget.inputControl
 
 
@@ -48,9 +47,10 @@ class AuthByPhonePm(
     )
 
     val inProgress = State(false)
+    val doneButtonEnabled = State(false)
     val phoneNumberFocus = Command<Unit>(bufferSize = 1)
 
-    val doneButton = clickControl(initialEnabled = false)
+    val doneAction = Action<Unit>()
     val countryClicks = Action<Unit>()
     val chooseCountryAction = Action<Country>()
 
@@ -81,7 +81,7 @@ class AuthByPhonePm(
                                  BiFunction { number: String, country: Country ->
                                      phoneUtil.isValidPhone(country, number)
                                  })
-                .subscribe(doneButton.enabled.consumer)
+                .subscribe(doneButtonEnabled.consumer)
                 .untilDestroy()
 
         countryClicks.observable
@@ -98,7 +98,7 @@ class AuthByPhonePm(
                 }
                 .untilDestroy()
 
-        doneButton.clicks.observable
+        doneAction.observable
                 .skipWhileInProgress(inProgress.observable)
                 .filter { validateForm() }
                 .map { "${countryCode.text.value} ${phoneNumber.text.value}" }
