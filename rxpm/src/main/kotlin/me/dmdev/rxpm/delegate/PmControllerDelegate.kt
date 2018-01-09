@@ -26,7 +26,7 @@ where PM : PresentationModel, C : Controller, C : PmView<PM> {
     private lateinit var navigationMessagesDisposable: Disposable
     private val navigationMessageDispatcher = ControllerNavigationMessageDispatcher(pmView)
 
-    val presentationModel: PM by lazy { pmView.providePresentationModel() }
+    val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) { pmView.providePresentationModel() }
 
     private fun onCreate() {
         presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)

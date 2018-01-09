@@ -28,7 +28,7 @@ where PM : PresentationModel, A : Activity, A : PmView<PM> {
     private lateinit var navigationMessagesDisposable: Disposable
     private val navigationMessagesDispatcher = ActivityNavigationMessageDispatcher(pmView)
 
-    val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
+    val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) { outlast.outlasting.presentationModel }
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
