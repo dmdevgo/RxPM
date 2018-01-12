@@ -104,6 +104,7 @@ abstract class PresentationModel {
      * Binds a child Presentation Model to this Presentation Model.
      * @since 1.1
      */
+    @Deprecated("Method bindChild() will be removed in 1.2", ReplaceWith("attachToParent()"))
     protected fun bindChild(childPm: PresentationModel) {
 
         lifecycleObservable
@@ -113,6 +114,81 @@ abstract class PresentationModel {
         childPm.navigationMessages.observable
                 .subscribe(navigationMessages.consumer)
                 .untilDestroy()
+    }
+
+    /**
+     * Attaches `this` (child presentation model) to the [parent] presentation model.
+     * This presentation model will be bind to the lifecycle of the [parent] presentation model.
+     *
+     * @see [detachFromParent]
+     * @since 1.1.2
+     */
+    fun attachToParent(parent: PresentationModel) {
+
+        if (parent == this) {
+            throw IllegalArgumentException("Presentation model can't be attached to itself.")
+        }
+
+        if (lifecycle.hasValue()) {
+            throw IllegalStateException("Presentation model can't be a child more than once. It must not be reused.")
+        }
+
+        when (parent.lifecycle.value) {
+
+            Lifecycle.BINDED -> {
+                parent.lifecycleObservable
+                        .startWith(Lifecycle.CREATED)
+                        .subscribe(lifecycleConsumer)
+            }
+
+            Lifecycle.UNBINDED -> {
+                parent.lifecycleObservable
+                        .skip(1)
+                        .startWith(Lifecycle.CREATED)
+                        .subscribe(lifecycleConsumer)
+            }
+
+            null,
+            Lifecycle.CREATED -> {
+                parent.lifecycleObservable
+                        .subscribe(lifecycleConsumer)
+            }
+
+            Lifecycle.DESTROYED -> {
+                throw IllegalStateException("Presentation model can't be attached as a child to the already destroyed parent.")
+            }
+
+        }.untilDestroy()
+
+        navigationMessages.observable
+                .subscribe(parent.navigationMessages.consumer)
+                .untilDestroy()
+    }
+
+    /**
+     * Detaches this presentation model from parent.
+     * @see [attachToParent]
+     * @since 1.1.2
+     */
+    fun detachFromParent() {
+
+        when (lifecycle.value) {
+
+            Lifecycle.CREATED,
+            Lifecycle.UNBINDED -> {
+                lifecycleConsumer.accept(Lifecycle.DESTROYED)
+            }
+
+            Lifecycle.BINDED -> {
+                lifecycleConsumer.accept(Lifecycle.UNBINDED)
+                lifecycleConsumer.accept(Lifecycle.DESTROYED)
+            }
+
+            null,
+            Lifecycle.DESTROYED -> {
+                //  do nothing
+            }
+        }
     }
 
     /**

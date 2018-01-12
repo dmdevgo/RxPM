@@ -28,7 +28,7 @@ where PM : PresentationModel, F : Fragment, F : PmView<PM> {
     private lateinit var navigationMessagesDisposable: Disposable
     private val navigationMessageDispatcher = SupportFragmentNavigationMessageDispatcher(pmView)
 
-    val presentationModel: PM by lazy { outlast.outlasting.presentationModel }
+    val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) { outlast.outlasting.presentationModel }
 
     /**
      * You must call this method from the containing [Fragment]'s corresponding method.
