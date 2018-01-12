@@ -16,7 +16,7 @@ Add the dependency to your build.gradle:
 ```gradle
 dependencies {
 
-    compile 'me.dmdev.rxpm:rxpm:1.1.1'
+    compile 'me.dmdev.rxpm:rxpm:1.1.2'
     
     // optional RxBinding
     compile 'com.jakewharton.rxbinding2:rxbinding-kotlin:$latest_version'
