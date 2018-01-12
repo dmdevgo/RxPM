@@ -117,7 +117,7 @@ abstract class PresentationModel {
     }
 
     /**
-     * Attaches this (child presentation model) to the [parent] presentation model.
+     * Attaches `this` (child presentation model) to the [parent] presentation model.
      * This presentation model will be bind to the lifecycle of the [parent] presentation model.
      *
      * @see [detachFromParent]
@@ -126,11 +126,11 @@ abstract class PresentationModel {
     fun attachToParent(parent: PresentationModel) {
 
         if (parent == this) {
-            throw IllegalArgumentException("Сan not bind the presentation model to itself")
+            throw IllegalArgumentException("Presentation model can't be attached to itself.")
         }
 
         if (lifecycle.hasValue()) {
-            throw IllegalStateException("Don't reuse the child presentation model")
+            throw IllegalStateException("Presentation model can't be a child more than once. It must not be reused.")
         }
 
         when (parent.lifecycle.value) {
@@ -155,7 +155,7 @@ abstract class PresentationModel {
             }
 
             Lifecycle.DESTROYED -> {
-                throw IllegalStateException("Don't bind a child presentation model to the destroyed parent")
+                throw IllegalStateException("Presentation model can't be attached as a child to the already destroyed parent.")
             }
 
         }.untilDestroy()
@@ -185,7 +185,9 @@ abstract class PresentationModel {
             }
 
             null,
-            Lifecycle.DESTROYED -> {}
+            Lifecycle.DESTROYED -> {
+                //  do nothing
+            }
         }
     }
 
