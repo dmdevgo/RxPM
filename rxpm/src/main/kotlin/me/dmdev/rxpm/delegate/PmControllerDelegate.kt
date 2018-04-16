@@ -20,17 +20,16 @@ import me.dmdev.rxpm.navigation.ControllerNavigationMessageDispatcher
 class PmControllerDelegate<PM, C>(private val pmView: C)
 where PM : PresentationModel, C : Controller, C : PmView<PM> {
 
-    internal lateinit var pmBinder: PmBinder<PM>
+    internal val pmBinder: PmBinder<PM> by lazy(LazyThreadSafetyMode.NONE) { PmBinder(presentationModel, pmView) }
     private var created = false
 
-    private lateinit var navigationMessagesDisposable: Disposable
     private val navigationMessageDispatcher = ControllerNavigationMessageDispatcher(pmView)
+    private var navigationMessagesDisposable: Disposable? = null
 
     val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) { pmView.providePresentationModel() }
 
     private fun onCreate() {
         presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)
-        pmBinder = PmBinder(presentationModel, pmView)
         navigationMessagesDisposable = presentationModel.navigationMessages.observable.subscribe {
             navigationMessageDispatcher.dispatch(it)
         }
@@ -41,8 +40,8 @@ where PM : PresentationModel, C : Controller, C : PmView<PM> {
      */
     fun onCreateView() {
         if (!created) {
-            created = true
             onCreate()
+            created = true
         }
     }
 
@@ -71,7 +70,9 @@ where PM : PresentationModel, C : Controller, C : PmView<PM> {
      * You must call this method from the containing [Controller]'s corresponding method.
      */
     fun onDestroy() {
-        navigationMessagesDisposable.dispose()
-        presentationModel.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        if (created) {
+            navigationMessagesDisposable?.dispose()
+            presentationModel.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        }
     }
 }
