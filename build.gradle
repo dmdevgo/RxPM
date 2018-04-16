@@ -23,9 +23,9 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 16
-    compileSdkVersion = 26
-    targetSdkVersion = 26
-    buildToolsVersion = '26.0.2'
+    compileSdkVersion = 27
+    targetSdkVersion = 27
+    buildToolsVersion = '27.0.3'
 
     supportVersion = '26.1.0'
     supportAppCompat = "com.android.support:appcompat-v7:$supportVersion"
@@ -36,9 +36,9 @@ ext {
 
     kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
-    rxJava2 = "io.reactivex.rxjava2:rxjava:2.1.7"
+    rxJava2 = "io.reactivex.rxjava2:rxjava:2.1.12"
     rxRelay2 = "com.jakewharton.rxrelay2:rxrelay:2.0.0"
-    rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.0.1"
+    rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.0.2"
 
     rxBinding2Version = '2.0.0'
     rxBindingKotlin = "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBinding2Version"
