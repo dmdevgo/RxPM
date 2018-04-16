@@ -70,8 +70,8 @@ where PM : PresentationModel, C : Controller, C : PmView<PM> {
      * You must call this method from the containing [Controller]'s corresponding method.
      */
     fun onDestroy() {
-        navigationMessagesDisposable?.dispose()
         if (created) {
+            navigationMessagesDisposable?.dispose()
             presentationModel.lifecycleConsumer.accept(Lifecycle.DESTROYED)
         }
     }
