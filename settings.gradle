@@ -1,1 +1,1 @@
-include ':sample', ':rxpm'
+include ':sample', ':rxpm', ':demo'
