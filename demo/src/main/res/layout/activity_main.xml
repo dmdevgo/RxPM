@@ -6,4 +6,12 @@
     android:layout_height="match_parent"
     tools:context="me.dmdev.demo.MainActivity">
 
+    <Button
+        android:id="@+id/showAlertButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show alert dialog"
+        tools:ignore="HardcodedText"
+        android:layout_margin="8dp"/>
+
 </LinearLayout>
