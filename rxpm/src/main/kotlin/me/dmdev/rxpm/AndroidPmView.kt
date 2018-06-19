@@ -71,9 +71,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
         compositeUnbind.add(view.bind(this))
     }
 
-    infix fun <T, R> DialogControl<T, R>.bindTo(f: (data: T, dc: DialogControl<T, R>) -> Dialog) {
+    infix fun <T, R> DialogControl<T, R>.bindTo(createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog) {
         compositeUnbind.add(
-                bind { data, dc -> f(data, dc) }
+                bind { data, dc -> createDialog(data, dc) }
         )
     }
 
