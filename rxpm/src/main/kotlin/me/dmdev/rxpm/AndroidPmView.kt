@@ -71,6 +71,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
         compositeUnbind.add(view.bind(this))
     }
 
+    /**
+     * Local extension to bind the [DialogControl] to the [Dialog][Dialog], use it ONLY in [onBindPresentationModel].
+     */
     infix fun <T, R> DialogControl<T, R>.bindTo(createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog) {
         compositeUnbind.add(
                 bind { data, dc -> createDialog(data, dc) }
