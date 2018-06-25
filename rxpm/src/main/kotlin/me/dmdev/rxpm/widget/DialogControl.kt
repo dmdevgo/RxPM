@@ -13,18 +13,21 @@ import me.dmdev.rxpm.widget.DialogControl.State.NotDisplayed
 
 /**
  *
- * Helps display data using a dialog and get the corresponding result in a reactive form.
- * Also takes work on processing the lifecycle. The dialog that is attached using [AndroidPmView.bindTo]
- * method will automatically close on [PresentationModel.Lifecycle.UNBINDED] and be restored after config changes.
- * So there is no need to use [DialogFragment].
+ * Helps to display a dialog and get the result in a reactive form.
+ * Takes care of all lifecycle processing.
+ *
+ * The dialog attached using [AndroidPmView.bindTo] will be
+ * automatically dismissed and restored on config changes ([UNBINDED][PresentationModel.Lifecycle.UNBINDED]
+ * and [BINDED][PresentationModel.Lifecycle.BINDED] states correspondingly).
+ * So there is no need to use [DialogFragment] or something similar.
  *
  * You can bind this to any subclass of [Dialog] using the familiar `bindTo` methods
  * in the [AndroidPmView].
  *
  * Instantiate this using the [dialogControl] extension function of the presentation model.
  *
- * @param [T] the type of data required to display the dialog.
- * @param [R] the type of result from the dialog.
+ * @param T the type of the data to display in the dialog.
+ * @param R the type of the result we get from the dialog.
  *
  * @see InputControl
  * @see CheckControl
@@ -37,8 +40,8 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
     /**
      * Shows the dialog and waits for the result.
      *
-     * @param [data] - the data required to display the dialog.
-     * @return Returns [Maybe] to wait for the result [R].
+     * @param data the data to display in the dialog.
+     * @return [Maybe] that waits for the result of the dialog.
      */
     fun show(data: T): Maybe<R> {
         return result.relay.asObservable()
@@ -60,7 +63,7 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
     }
 
     /**
-     * Dismiss the dialog associated with this [DialogControl].
+     * Dismisses the dialog associated with this [DialogControl].
      */
     fun dismiss() {
         displayed.relay.accept(NotDisplayed)
@@ -75,8 +78,8 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
 /**
  * Creates the [DialogControl].
  *
- * @param [T] the type of data to display in the dialog.
- * @param [R] the type of result from the dialog.
+ * @param T the type of the data to display in the dialog.
+ * @param R the type of the result we get from the dialog.
  */
 fun <T, R> PresentationModel.dialogControl(): DialogControl<T, R> {
     return DialogControl(this)
