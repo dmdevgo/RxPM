@@ -44,8 +44,13 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
      * @return [Maybe] that waits for the result of the dialog.
      */
     fun show(data: T): Maybe<R> {
+
+        dismiss()
+
         return result.relay.asObservable()
-                .doOnSubscribe { displayed.relay.accept(Displayed(data)) }
+                .doOnSubscribe {
+                    displayed.relay.accept(Displayed(data))
+                }
                 .takeUntil(
                         displayed.relay
                                 .skip(1)
@@ -66,7 +71,9 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
      * Dismisses the dialog associated with this [DialogControl].
      */
     fun dismiss() {
-        displayed.relay.accept(NotDisplayed)
+        if (displayed.valueOrNull is Displayed<*>) {
+            displayed.relay.accept(NotDisplayed)
+        }
     }
 
     internal sealed class State {
@@ -92,11 +99,9 @@ internal inline fun <T, R> DialogControl<T, R>.bind(crossinline createDialog: (d
     return displayed.observable
             .observeOn(AndroidSchedulers.mainThread())
             .doFinally {
-                if (dialog?.isShowing == true) {
-                    dialog?.setOnDismissListener(null)
-                    dialog?.dismiss()
-                    dialog = null
-                }
+                dialog?.setOnDismissListener(null)
+                dialog?.dismiss()
+                dialog = null
             }
             .subscribe {
                 @Suppress("UNCHECKED_CAST")
@@ -104,6 +109,10 @@ internal inline fun <T, R> DialogControl<T, R>.bind(crossinline createDialog: (d
                     dialog = createDialog(it.data as T, this)
                     dialog?.setOnDismissListener { this.dismiss() }
                     dialog?.show()
+                } else if (it === NotDisplayed) {
+                    dialog?.setOnDismissListener(null)
+                    dialog?.dismiss()
+                    dialog = null
                 }
             }
 }
