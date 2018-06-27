@@ -38,12 +38,22 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
     private val result = pm.Action<R>()
 
     /**
+     * Shows the dialog
+     *
+     * @param data the data to display in the dialog.
+     */
+    fun show(data: T) {
+        dismiss()
+        displayed.relay.accept(Displayed(data))
+    }
+
+    /**
      * Shows the dialog and waits for the result.
      *
      * @param data the data to display in the dialog.
      * @return [Maybe] that waits for the result of the dialog.
      */
-    fun show(data: T): Maybe<R> {
+    fun showForResult(data: T): Maybe<R> {
 
         dismiss()
 

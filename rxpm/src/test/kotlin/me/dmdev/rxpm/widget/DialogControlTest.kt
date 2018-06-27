@@ -17,7 +17,7 @@ class DialogControlTest {
 
         val to = TestObserver<Unit>()
 
-        dc.show(Unit).subscribe(to)
+        dc.showForResult(Unit).subscribe(to)
 
         assertEquals(true, dc.displayed.value is Displayed<*>)
 
@@ -37,7 +37,7 @@ class DialogControlTest {
 
         val to = TestObserver<Unit>()
 
-        dc.show(Unit).subscribe(to)
+        dc.showForResult(Unit).subscribe(to)
 
         assertEquals(true, dc.displayed.value is Displayed<*>)
 
@@ -63,8 +63,8 @@ class DialogControlTest {
 
         dc.displayed.observable.subscribe(to)
 
-        dc.show(Unit).subscribe(firstResultObserver)
-        dc.show(Unit).subscribe(secondResultObserver)
+        dc.showForResult(Unit).subscribe(firstResultObserver)
+        dc.showForResult(Unit).subscribe(secondResultObserver)
 
         to.assertSubscribed()
         to.assertNoErrors()
