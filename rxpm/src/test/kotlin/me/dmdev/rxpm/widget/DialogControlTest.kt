@@ -26,12 +26,7 @@ class DialogControlTest {
 
         assertEquals(true, dc.displayed.value === NotDisplayed)
 
-        to.assertSubscribed()
-        to.assertNoErrors()
-        to.assertValue(Unit)
-        to.assertValueCount(1)
-        to.assertTerminated()
-
+        to.assertResult(Unit)
     }
 
     @Test
@@ -51,6 +46,7 @@ class DialogControlTest {
         assertEquals(true, dc.displayed.value === NotDisplayed)
 
         to.assertSubscribed()
+        to.assertNoErrors()
         to.assertNoValues()
         to.assertComplete()
     }
@@ -79,11 +75,10 @@ class DialogControlTest {
         to.assertValueAt(2, NotDisplayed)
         to.assertValueAt(3) { it is Displayed<*> }
 
-        firstResultObserver.assertSubscribed()
-        firstResultObserver.assertNoValues()
-        firstResultObserver.assertComplete()
+        firstResultObserver
+                .assertSubscribed()
+                .assertComplete()
 
-        secondResultObserver.assertSubscribed()
         secondResultObserver.assertEmpty()
 
     }

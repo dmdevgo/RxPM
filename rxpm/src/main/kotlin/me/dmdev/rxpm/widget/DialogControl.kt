@@ -96,13 +96,15 @@ internal inline fun <T, R> DialogControl<T, R>.bind(crossinline createDialog: (d
 
     var dialog: Dialog? = null
 
+    val closeDialog: () -> Unit = {
+        dialog?.setOnDismissListener(null)
+        dialog?.dismiss()
+        dialog = null
+    }
+
     return displayed.observable
             .observeOn(AndroidSchedulers.mainThread())
-            .doFinally {
-                dialog?.setOnDismissListener(null)
-                dialog?.dismiss()
-                dialog = null
-            }
+            .doFinally { closeDialog() }
             .subscribe {
                 @Suppress("UNCHECKED_CAST")
                 if (it is Displayed<*>) {
@@ -110,9 +112,7 @@ internal inline fun <T, R> DialogControl<T, R>.bind(crossinline createDialog: (d
                     dialog?.setOnDismissListener { this.dismiss() }
                     dialog?.show()
                 } else if (it === NotDisplayed) {
-                    dialog?.setOnDismissListener(null)
-                    dialog?.dismiss()
-                    dialog = null
+                    closeDialog()
                 }
             }
 }
