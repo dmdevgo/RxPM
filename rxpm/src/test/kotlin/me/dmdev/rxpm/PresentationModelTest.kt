@@ -145,9 +145,11 @@ class PresentationModelTest {
     }
 }
 
-open class TestPmWithChild(childPm: TestPm) : PresentationModel() {
-    init {
-        bindChild(childPm)
+open class TestPmWithChild(private val childPm: TestPm) : PresentationModel() {
+
+    override fun onCreate() {
+        super.onCreate()
+        childPm.attachToParent(this)
     }
 }
 

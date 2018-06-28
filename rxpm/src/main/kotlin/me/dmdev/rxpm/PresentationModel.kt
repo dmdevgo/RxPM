@@ -101,22 +101,6 @@ abstract class PresentationModel {
     protected open fun onDestroy() {}
 
     /**
-     * Binds a child Presentation Model to this Presentation Model.
-     * @since 1.1
-     */
-    @Deprecated("Method bindChild() will be removed in 1.2", ReplaceWith("attachToParent()"))
-    protected fun bindChild(childPm: PresentationModel) {
-
-        lifecycleObservable
-                .takeUntil { it == Lifecycle.DESTROYED }
-                .subscribe(childPm.lifecycleConsumer)
-
-        childPm.navigationMessages.observable
-                .subscribe(navigationMessages.consumer)
-                .untilDestroy()
-    }
-
-    /**
      * Attaches `this` (child presentation model) to the [parent] presentation model.
      * This presentation model will be bind to the lifecycle of the [parent] presentation model.
      *

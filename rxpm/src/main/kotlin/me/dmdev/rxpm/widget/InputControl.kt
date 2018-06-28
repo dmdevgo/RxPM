@@ -7,7 +7,6 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
 import android.widget.EditText
-import com.jakewharton.rxbinding2.view.enabled
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -25,24 +24,19 @@ import me.dmdev.rxpm.PresentationModel
  * Instantiate this using the [inputControl] extension function of the presentation model.
  *
  * @see CheckControl
- * @see ClickControl
+ * @see DialogControl
  */
-class InputControl internal constructor(pm: PresentationModel,
-                                        initialText: String,
-                                        initialEnabled: Boolean,
-                                        formatter: (text: String) -> String,
-                                        hideErrorOnUserInput: Boolean) {
+class InputControl internal constructor(
+        pm: PresentationModel,
+        initialText: String,
+        formatter: (text: String) -> String,
+        hideErrorOnUserInput: Boolean
+) {
 
     /**
      * The input field text [state][PresentationModel.State].
      */
     val text = pm.State(initialText)
-
-    /**
-     * The input field enabled [state][PresentationModel.State].
-     */
-    @Deprecated("Will be removed in 1.2")
-    val enabled = pm.State(initialEnabled)
 
     /**
      * The input field error [state][PresentationModel.State].
@@ -69,32 +63,16 @@ class InputControl internal constructor(pm: PresentationModel,
  * Creates the [InputControl].
  *
  * @param initialText initial text of the input field.
- * @param initialEnabled is input field initially enabled.
- * @param formatter formats the user input. The default does nothing.
- * @param hideErrorOnUserInput hide the error if user entered something.
- */
-@Deprecated("Enabled state will be removed in 1.2", ReplaceWith("inputControl(initialText, formatter, hideErrorOnUserInput)", "me.dmdev.rxpm.widget.inputControl"))
-fun PresentationModel.inputControl(initialText: String = "",
-                                   initialEnabled: Boolean = true,
-                                   formatter: (text: String) -> String = { it },
-                                   hideErrorOnUserInput: Boolean = true): InputControl {
-    return InputControl(this, initialText, initialEnabled, formatter, hideErrorOnUserInput)
-}
-
-/**
- * Creates the [InputControl].
- *
- * @param initialText initial text of the input field.
  * @param formatter formats the user input. The default does nothing.
  * @param hideErrorOnUserInput hide the error if user entered something.
  */
 fun PresentationModel.inputControl(initialText: String = "",
                                    formatter: (text: String) -> String = { it },
                                    hideErrorOnUserInput: Boolean = true): InputControl {
-    return InputControl(this, initialText, true, formatter, hideErrorOnUserInput)
+    return InputControl(this, initialText, formatter, hideErrorOnUserInput)
 }
 
-inline internal fun TextInputLayout.bind(inputControl: InputControl): Disposable {
+internal inline fun TextInputLayout.bind(inputControl: InputControl): Disposable {
     val edit = editText!!
     return CompositeDisposable().apply {
         addAll(
@@ -106,7 +84,7 @@ inline internal fun TextInputLayout.bind(inputControl: InputControl): Disposable
     }
 }
 
-inline internal fun EditText.bind(inputControl: InputControl): Disposable {
+internal inline fun EditText.bind(inputControl: InputControl): Disposable {
 
     return CompositeDisposable().apply {
 
@@ -128,10 +106,6 @@ inline internal fun EditText.bind(inputControl: InputControl): Disposable {
                                 editing = false
                             }
                         },
-
-                inputControl.enabled.observable
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(enabled()),
 
                 textChanges()
                         .skipInitialValue()
