@@ -10,7 +10,6 @@ import android.widget.EditText
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
 
@@ -72,46 +71,45 @@ fun PresentationModel.inputControl(initialText: String = "",
     return InputControl(this, initialText, formatter, hideErrorOnUserInput)
 }
 
-internal inline fun TextInputLayout.bind(inputControl: InputControl): Disposable {
+internal inline fun TextInputLayout.bind(inputControl: InputControl, compositeDisposable: CompositeDisposable) {
+
     val edit = editText!!
-    return CompositeDisposable().apply {
-        addAll(
-                edit.bind(inputControl),
-                inputControl.error.observable.subscribe { error ->
-                    this@bind.error = if (error.isEmpty()) null else error
-                }
-        )
-    }
+
+    edit.bind(inputControl, compositeDisposable)
+    compositeDisposable.add(
+            inputControl.error.observable.subscribe { error ->
+                this@bind.error = if (error.isEmpty()) null else error
+            }
+    )
 }
 
-internal inline fun EditText.bind(inputControl: InputControl): Disposable {
+internal inline fun EditText.bind(inputControl: InputControl, compositeDisposable: CompositeDisposable) {
 
-    return CompositeDisposable().apply {
+    var editing = false
 
-        var editing = false
-        addAll(
-                inputControl.text.observable
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            val editable = text
-                            if(!it.contentEquals(editable)) {
-                                editing = true
-                                if (editable is Spanned) {
-                                    val ss = SpannableString(it)
-                                    TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
-                                    editable.replace(0, editable.length, ss)
-                                } else {
-                                    editable.replace(0, editable.length, it)
-                                }
-                                editing = false
+    compositeDisposable.addAll(
+
+            inputControl.text.observable
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        val editable = text
+                        if (!it.contentEquals(editable)) {
+                            editing = true
+                            if (editable is Spanned) {
+                                val ss = SpannableString(it)
+                                TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
+                                editable.replace(0, editable.length, ss)
+                            } else {
+                                editable.replace(0, editable.length, it)
                             }
-                        },
+                            editing = false
+                        }
+                    },
 
-                textChanges()
-                        .skipInitialValue()
-                        .filter { !editing }
-                        .map { it.toString() }
-                        .subscribe(inputControl.textChanges.consumer)
-        )
-    }
+            textChanges()
+                    .skipInitialValue()
+                    .filter { !editing }
+                    .map { it.toString() }
+                    .subscribe(inputControl.textChanges.consumer)
+    )
 }

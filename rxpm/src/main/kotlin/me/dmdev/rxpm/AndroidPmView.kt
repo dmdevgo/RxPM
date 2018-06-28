@@ -47,31 +47,31 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * Local extension to bind the [InputControl] to the [EditText][editText], use it ONLY in [onBindPresentationModel].
      */
     infix fun InputControl.bindTo(editText: EditText) {
-        compositeUnbind.add(editText.bind(this))
+        editText.bind(this, compositeUnbind)
     }
 
     /**
      * Local extension to bind the [InputControl] to the [TextInputLayout][textInputLayout], use it ONLY in [onBindPresentationModel].
      */
     infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
-        compositeUnbind.add(textInputLayout.bind(this))
+        textInputLayout.bind(this, compositeUnbind)
     }
 
     /**
      * Local extension to bind the [CheckControl] to the [CompoundButton][compoundButton], use it ONLY in [onBindPresentationModel].
      */
     infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
-        compositeUnbind.add(compoundButton.bind(this))
+        compoundButton.bind(this, compositeUnbind)
     }
 
     /**
      * Local extension to bind the [DialogControl] to the [Dialog], use it ONLY in [onBindPresentationModel].
      * @param createDialog function that creates [Dialog] using passed data.
+     *
+     * @since 1.2
      */
     infix fun <T, R> DialogControl<T, R>.bindTo(createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog) {
-        compositeUnbind.add(
-                bind { data, dc -> createDialog(data, dc) }
-        )
+        bind({ data, dc -> createDialog(data, dc) }, compositeUnbind)
     }
 
     /**

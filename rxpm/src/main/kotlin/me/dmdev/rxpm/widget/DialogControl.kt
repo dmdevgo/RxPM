@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.app.DialogFragment
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.asObservable
@@ -31,6 +31,8 @@ import me.dmdev.rxpm.widget.DialogControl.State.NotDisplayed
  *
  * @see InputControl
  * @see CheckControl
+ *
+ * @since 1.2
  */
 class DialogControl<T, R> internal constructor(pm: PresentationModel) {
 
@@ -97,12 +99,17 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
  *
  * @param T the type of the data to display in the dialog.
  * @param R the type of the result we get from the dialog.
+ *
+ * @since 1.2
  */
 fun <T, R> PresentationModel.dialogControl(): DialogControl<T, R> {
     return DialogControl(this)
 }
 
-internal inline fun <T, R> DialogControl<T, R>.bind(crossinline createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog): Disposable {
+internal inline fun <T, R> DialogControl<T, R>.bind(
+        crossinline createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog,
+        compositeDisposable: CompositeDisposable
+) {
 
     var dialog: Dialog? = null
 
@@ -112,7 +119,8 @@ internal inline fun <T, R> DialogControl<T, R>.bind(crossinline createDialog: (d
         dialog = null
     }
 
-    return displayed.observable
+    compositeDisposable.add(
+            displayed.observable
             .observeOn(AndroidSchedulers.mainThread())
             .doFinally { closeDialog() }
             .subscribe {
@@ -125,5 +133,6 @@ internal inline fun <T, R> DialogControl<T, R>.bind(crossinline createDialog: (d
                     closeDialog()
                 }
             }
+    )
 }
 

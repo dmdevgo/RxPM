@@ -4,7 +4,6 @@ import android.widget.CompoundButton
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
 
@@ -49,22 +48,22 @@ fun PresentationModel.checkControl(initialChecked: Boolean = false): CheckContro
 }
 
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun CompoundButton.bind(checkControl: CheckControl): Disposable {
-    return CompositeDisposable().apply {
-        var editing = false
-        addAll(
-                checkControl.checked.observable
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            editing = true
-                            isChecked = it
-                            editing = false
-                        },
+internal inline fun CompoundButton.bind(checkControl: CheckControl, compositeDisposable: CompositeDisposable) {
 
-                checkedChanges()
-                        .skipInitialValue()
-                        .filter { !editing }
-                        .subscribe(checkControl.checkedChanges.consumer)
-        )
-    }
+    var editing = false
+
+    compositeDisposable.addAll(
+            checkControl.checked.observable
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        editing = true
+                        isChecked = it
+                        editing = false
+                    },
+
+            checkedChanges()
+                    .skipInitialValue()
+                    .filter { !editing }
+                    .subscribe(checkControl.checkedChanges.consumer)
+    )
 }
