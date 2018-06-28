@@ -44,6 +44,80 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     }
 
     /**
+     * Local extension to subscribe [PresentationModel.Action] to the observable and add it to the subscriptions list
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
+     */
+    infix fun <T> Observable<T>.bindTo(action: PresentationModel.Action<T>) {
+        compositeUnbind.add(
+                this
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(action.consumer)
+        )
+    }
+
+    /**
+     * Local extension to subscribe to the [PresentationModel.State] and add it to the subscriptions list
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
+     *
+     * @since 1.x
+     */
+    infix fun <T> PresentationModel.State<T>.bindTo(consumer: Consumer<in T>) {
+        compositeUnbind.add(
+                this.observable
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(consumer)
+        )
+    }
+
+
+    /**
+     * Local extension to subscribe to the [PresentationModel.State] and add it to the subscriptions list
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
+     *
+     * @since 1.x
+     */
+    infix fun <T> PresentationModel.State<T>.bindTo(consumer: (T) -> Unit) {
+        compositeUnbind.add(
+                this.observable
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(consumer)
+        )
+    }
+
+    /**
+     * Local extension to subscribe to the [PresentationModel.Command] and add it to the subscriptions list
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
+     *
+     * @since 1.x
+     */
+    infix fun <T> PresentationModel.Command<T>.bindTo(consumer: Consumer<in T>) {
+        compositeUnbind.add(
+                this.observable
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(consumer)
+        )
+    }
+
+    /**
+     * Local extension to subscribe to the [PresentationModel.Command] and add it to the subscriptions list
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
+     *
+     * @since 1.x
+     */
+    infix fun <T> PresentationModel.Command<T>.bindTo(consumer: (T) -> Unit) {
+        compositeUnbind.add(
+                this.observable
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(consumer)
+        )
+    }
+
+    /**
      * Local extension to bind the [InputControl] to the [EditText][editText], use it ONLY in [onBindPresentationModel].
      */
     infix fun InputControl.bindTo(editText: EditText) {
@@ -86,6 +160,15 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      */
     infix fun <T> T.passTo(consumer: Consumer<T>) {
         consumer.accept(this)
+    }
+
+    /**
+     * Local extension to pass the value to the [PresentationModel.Action].
+     *
+     * @since 1.x
+     */
+    infix fun <T> T.passTo(action: PresentationModel.Action<T>) {
+        action.consumer.accept(this)
     }
 
 }
