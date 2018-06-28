@@ -38,7 +38,7 @@ class CodeConfirmationPm(
                 .skipWhileInProgress(inProgress.observable)
                 .map { code.text.value }
                 .filter { validateForm() }
-                .flatMapCompletable { code ->
+                .switchMapCompletable { code ->
                     authModel.sendConfirmationCode(phone, code)
                             .observeOn(AndroidSchedulers.mainThread())
                             .bindProgress(inProgress.consumer)

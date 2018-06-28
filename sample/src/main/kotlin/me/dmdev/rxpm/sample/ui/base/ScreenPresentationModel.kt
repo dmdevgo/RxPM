@@ -3,11 +3,12 @@ package me.dmdev.rxpm.sample.ui.base
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.navigation.NavigationMessage
 import me.dmdev.rxpm.sample.BackMessage
+import me.dmdev.rxpm.widget.dialogControl
 
 
 abstract class ScreenPresentationModel : PresentationModel() {
 
-    val errors = Command<String>()
+    val errorDialog = dialogControl<String, Unit>()
 
     private val backActionDefault = Action<Unit>()
 
@@ -25,7 +26,7 @@ abstract class ScreenPresentationModel : PresentationModel() {
         navigationMessages.consumer.accept(message)
     }
 
-    protected fun showError(error: String?) {
-        errors.consumer.accept(error ?: "Unknown error")
+    protected fun showError(errorMessage: String?) {
+        errorDialog.show(errorMessage ?: "Unknown error")
     }
 }

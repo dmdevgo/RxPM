@@ -1,5 +1,6 @@
 package me.dmdev.rxpm
 
+import android.app.Dialog
 import android.support.design.widget.TextInputLayout
 import android.view.View
 import android.widget.CompoundButton
@@ -7,10 +8,7 @@ import android.widget.EditText
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
-import me.dmdev.rxpm.widget.CheckControl
-import me.dmdev.rxpm.widget.ClickControl
-import me.dmdev.rxpm.widget.InputControl
-import me.dmdev.rxpm.widget.bind
+import me.dmdev.rxpm.widget.*
 
 /**
  * Extends [PmView] by adding several useful extensions.
@@ -71,6 +69,16 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     @Deprecated("Will be removed in 1.2")
     infix fun ClickControl.bindTo(view: View) {
         compositeUnbind.add(view.bind(this))
+    }
+
+    /**
+     * Local extension to bind the [DialogControl] to the [Dialog], use it ONLY in [onBindPresentationModel].
+     * @param createDialog function that creates [Dialog] using passed data.
+     */
+    infix fun <T, R> DialogControl<T, R>.bindTo(createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog) {
+        compositeUnbind.add(
+                bind { data, dc -> createDialog(data, dc) }
+        )
     }
 
     /**

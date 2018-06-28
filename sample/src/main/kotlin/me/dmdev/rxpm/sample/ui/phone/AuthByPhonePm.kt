@@ -102,7 +102,7 @@ class AuthByPhonePm(
                 .skipWhileInProgress(inProgress.observable)
                 .filter { validateForm() }
                 .map { "${countryCode.text.value} ${phoneNumber.text.value}" }
-                .flatMapCompletable { phone ->
+                .switchMapCompletable { phone ->
                    authModel.sendPhone(phone)
                            .observeOn(AndroidSchedulers.mainThread())
                            .bindProgress(inProgress.consumer)
