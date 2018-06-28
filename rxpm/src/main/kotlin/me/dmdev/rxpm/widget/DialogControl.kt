@@ -38,7 +38,7 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
     private val result = pm.Action<R>()
 
     /**
-     * Shows the dialog
+     * Shows the dialog.
      *
      * @param data the data to display in the dialog.
      */
