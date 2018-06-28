@@ -36,27 +36,27 @@ class ChooseCountryScreen : Screen<ChooseCountryPm>() {
     override fun onBindPresentationModel(pm: ChooseCountryPm) {
         super.onBindPresentationModel(pm)
 
-        pm.mode.observable.bindTo {
+        pm.mode bindTo {
             if (it == Mode.SEARCH_OPENED) {
                 toolbarTitle.visible(false)
-                searchQuery.visible(true)
-                searchQuery.showKeyboard()
+                searchQueryEdit.visible(true)
+                searchQueryEdit.showKeyboard()
                 searchButton.visible(false)
                 clearButton.visible(true)
             } else {
                 toolbarTitle.visible(true)
-                searchQuery.visible(false)
-                searchQuery.hideKeyboard()
+                searchQueryEdit.visible(false)
+                searchQueryEdit.hideKeyboard()
                 searchButton.visible(true)
                 clearButton.visible(false)
             }
         }
 
-        pm.searchQuery.bindTo(searchQuery)
-        pm.countries.observable.bindTo { countriesAdapter.setData(it) }
+        pm.searchQueryInput bindTo searchQueryEdit
+        pm.countries bindTo { countriesAdapter.setData(it) }
 
-        searchButton.clicks().bindTo(pm.openSearchAction.consumer)
-        clearButton.clicks().bindTo(pm.clearAction.consumer)
-        navButton.clicks().bindTo(pm.backAction.consumer)
+        searchButton.clicks() bindTo pm.openSearchAction
+        clearButton.clicks() bindTo pm.clearAction
+        navButton.clicks() bindTo pm.backAction
     }
 }

@@ -19,16 +19,17 @@ class MainScreen : Screen<MainPm>() {
     override fun onBindPresentationModel(pm: MainPm) {
         super.onBindPresentationModel(pm)
 
-        pm.logoutDialog.bindTo { _, dc ->
+        pm.logoutDialog bindTo { _, dc ->
             AlertDialog.Builder(context)
                     .setMessage("Are you sure you want to log out?")
                     .setPositiveButton("ok", { _, _ -> dc.sendResult(Ok) })
                     .setNegativeButton("cancel", { _, _ -> dc.sendResult(Cancel) })
                     .create()
         }
-        pm.inProgress.observable.bindTo(progressConsumer)
 
-        logoutButton.clicks().bindTo(pm.logoutAction.consumer)
+        pm.inProgress bindTo progressConsumer
+
+        logoutButton.clicks() bindTo pm.logoutAction
     }
 
 }

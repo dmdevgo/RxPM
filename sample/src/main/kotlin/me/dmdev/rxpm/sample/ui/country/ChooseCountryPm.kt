@@ -15,7 +15,7 @@ class ChooseCountryPm(private val phoneUtil: PhoneUtil) : ScreenPresentationMode
 
     val countries = State<List<Country>>()
     val mode = State(SEARCH_CLOSED)
-    val searchQuery = inputControl()
+    val searchQueryInput = inputControl()
 
     override val backAction = Action<Unit>()
 
@@ -33,10 +33,10 @@ class ChooseCountryPm(private val phoneUtil: PhoneUtil) : ScreenPresentationMode
 
         clearAction.observable
                 .subscribe {
-                    if (searchQuery.text.value.isEmpty()) {
+                    if (searchQueryInput.text.value.isEmpty()) {
                         mode.consumer.accept(SEARCH_CLOSED)
                     } else {
-                        searchQuery.text.consumer.accept("")
+                        searchQueryInput.text.consumer.accept("")
                     }
                 }
                 .untilDestroy()
@@ -51,7 +51,7 @@ class ChooseCountryPm(private val phoneUtil: PhoneUtil) : ScreenPresentationMode
                 }
                 .untilDestroy()
 
-        searchQuery.text.observable
+        searchQueryInput.text.observable
                 .debounce(100, TimeUnit.MILLISECONDS)
                 .map { query ->
                     val regex = "${query.toLowerCase()}.*".toRegex()

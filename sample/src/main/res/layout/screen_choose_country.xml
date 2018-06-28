@@ -18,7 +18,7 @@
             android:text="@string/choose_country_screen_title"/>
 
         <EditText
-            android:id="@+id/searchQuery"
+            android:id="@+id/searchQueryEdit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
