@@ -23,11 +23,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * so use it ONLY in [onBindPresentationModel].
      */
     infix fun <T> Observable<T>.bindTo(consumer: Consumer<in T>) {
-        compositeUnbind.add(
-                this
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(consumer)
-        )
+        this.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
     }
 
     /**
@@ -36,11 +34,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * so use it ONLY in [onBindPresentationModel].
      */
     infix fun <T> Observable<T>.bindTo(consumer: (T) -> Unit) {
-        compositeUnbind.add(
-                this
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(consumer)
-        )
+        this.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
     }
 
     /**
@@ -51,11 +47,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * @since 1.2
      */
     infix fun <T> Observable<T>.bindTo(action: PresentationModel.Action<T>) {
-        compositeUnbind.add(
-                this
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(action.consumer)
-        )
+        this.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(action.consumer)
+                .untilUnbind()
     }
 
     /**
@@ -66,11 +60,10 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * @since 1.2
      */
     infix fun <T> PresentationModel.State<T>.bindTo(consumer: Consumer<in T>) {
-        compositeUnbind.add(
-                this.observable
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(consumer)
-        )
+        this.observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
     }
 
 
@@ -82,11 +75,10 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * @since 1.2
      */
     infix fun <T> PresentationModel.State<T>.bindTo(consumer: (T) -> Unit) {
-        compositeUnbind.add(
-                this.observable
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(consumer)
-        )
+        this.observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
     }
 
     /**
@@ -94,14 +86,13 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
      * so use it ONLY in [onBindPresentationModel].
      *
-     * @since 1.x
+     * @since 1.2
      */
     infix fun <T> PresentationModel.Command<T>.bindTo(consumer: Consumer<in T>) {
-        compositeUnbind.add(
-                this.observable
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(consumer)
-        )
+        this.observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
     }
 
     /**
@@ -109,14 +100,13 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
      * so use it ONLY in [onBindPresentationModel].
      *
-     * @since 1.x
+     * @since 1.2
      */
     infix fun <T> PresentationModel.Command<T>.bindTo(consumer: (T) -> Unit) {
-        compositeUnbind.add(
-                this.observable
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(consumer)
-        )
+        this.observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
     }
 
     /**
