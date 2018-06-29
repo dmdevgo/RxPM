@@ -33,11 +33,12 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
 
     override fun onBindPresentationModel(pm: CodeConfirmationPm) {
         super.onBindPresentationModel(pm)
-        pm.code bindTo codeEditLayout
-        pm.inProgress.observable bindTo progressConsumer
-        pm.doneButtonEnabled.observable bindTo doneButton.enabled()
 
-        navButton.clicks().bindTo(pm.backAction.consumer)
+        pm.code bindTo codeEditLayout
+        pm.inProgress bindTo progressConsumer
+        pm.doneButtonEnabled bindTo doneButton.enabled()
+
+        navButton.clicks() bindTo pm.backAction
 
         Observable
                 .merge(
@@ -47,7 +48,7 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
                                 .filter { it == EditorInfo.IME_ACTION_SEND }
                                 .map { Unit }
                 )
-                .bindTo(pm.doneAction.consumer)
+                .bindTo(pm.doneAction)
 
     }
 

@@ -21,7 +21,7 @@ abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(), B
     }
 
     override fun onBindPresentationModel(pm: PM) {
-        pm.errorDialog.bindTo { message, _ ->
+        pm.errorDialog bindTo { message, _ ->
             AlertDialog.Builder(context)
                     .setMessage(message)
                     .setPositiveButton(R.string.ok_button, null)

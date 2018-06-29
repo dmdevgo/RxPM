@@ -26,16 +26,16 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
         super.onBindPresentationModel(pm)
         pm.countryCode bindTo editCountryCodeLayout
         pm.phoneNumber bindTo editPhoneNumberLayout
-        pm.chosenCountry.observable.bindTo {
+        pm.chosenCountry bindTo {
             countryName.text = it.name
         }
 
-        pm.inProgress.observable bindTo progressConsumer
-        pm.doneButtonEnabled.observable bindTo doneButton.enabled()
+        pm.inProgress bindTo progressConsumer
+        pm.doneButtonEnabled bindTo doneButton.enabled()
 
-        pm.phoneNumberFocus.observable.bindTo { phoneNumberEdit.requestFocus() }
+        pm.phoneNumberFocus bindTo { phoneNumberEdit.requestFocus() }
 
-        countryName.clicks().bindTo(pm.countryClicks.consumer)
+        countryName.clicks() bindTo pm.countryClicks
 
         Observable
                 .merge(
@@ -45,12 +45,12 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
                                 .filter { it == EditorInfo.IME_ACTION_SEND }
                                 .map { Unit }
                 )
-                .bindTo(pm.doneAction.consumer)
+                .bindTo(pm.doneAction)
 
     }
 
     fun onCountryChosen(country: Country) {
-        presentationModel.chooseCountryAction.consumer.accept(country)
+        country passTo presentationModel.chooseCountryAction
     }
 
     override fun onResume() {

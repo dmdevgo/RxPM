@@ -23,11 +23,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * so use it ONLY in [onBindPresentationModel].
      */
     infix fun <T> Observable<T>.bindTo(consumer: Consumer<in T>) {
-        compositeUnbind.add(
-                this
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(consumer)
-        )
+        this.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
     }
 
     /**
@@ -36,11 +34,79 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * so use it ONLY in [onBindPresentationModel].
      */
     infix fun <T> Observable<T>.bindTo(consumer: (T) -> Unit) {
-        compositeUnbind.add(
-                this
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(consumer)
-        )
+        this.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
+    }
+
+    /**
+     * Local extension to subscribe [Action][PresentationModel.Action] to the observable and add it to the subscriptions list
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
+     *
+     * @since 1.2
+     */
+    infix fun <T> Observable<T>.bindTo(action: PresentationModel.Action<T>) {
+        this.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(action.consumer)
+                .untilUnbind()
+    }
+
+    /**
+     * Local extension to subscribe to the [State][PresentationModel.State] and add it to the subscriptions list
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
+     *
+     * @since 1.2
+     */
+    infix fun <T> PresentationModel.State<T>.bindTo(consumer: Consumer<in T>) {
+        this.observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
+    }
+
+
+    /**
+     * Local extension to subscribe to the [State][PresentationModel.State] and add it to the subscriptions list
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
+     *
+     * @since 1.2
+     */
+    infix fun <T> PresentationModel.State<T>.bindTo(consumer: (T) -> Unit) {
+        this.observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
+    }
+
+    /**
+     * Local extension to subscribe to the [Command][PresentationModel.Command] and add it to the subscriptions list
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
+     *
+     * @since 1.2
+     */
+    infix fun <T> PresentationModel.Command<T>.bindTo(consumer: Consumer<in T>) {
+        this.observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
+    }
+
+    /**
+     * Local extension to subscribe to the [Command][PresentationModel.Command] and add it to the subscriptions list
+     * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
+     * so use it ONLY in [onBindPresentationModel].
+     *
+     * @since 1.2
+     */
+    infix fun <T> PresentationModel.Command<T>.bindTo(consumer: (T) -> Unit) {
+        this.observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer)
+                .untilUnbind()
     }
 
     /**
@@ -86,6 +152,15 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      */
     infix fun <T> T.passTo(consumer: Consumer<T>) {
         consumer.accept(this)
+    }
+
+    /**
+     * Local extension to pass the value to the [Action][PresentationModel.Action].
+     *
+     * @since 1.2
+     */
+    infix fun <T> T.passTo(action: PresentationModel.Action<T>) {
+        action.consumer.accept(this)
     }
 
 }
