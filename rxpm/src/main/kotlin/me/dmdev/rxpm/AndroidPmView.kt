@@ -44,9 +44,11 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     }
 
     /**
-     * Local extension to subscribe [PresentationModel.Action] to the observable and add it to the subscriptions list
+     * Local extension to subscribe [Action][PresentationModel.Action] to the observable and add it to the subscriptions list
      * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
      * so use it ONLY in [onBindPresentationModel].
+     *
+     * @since 1.2
      */
     infix fun <T> Observable<T>.bindTo(action: PresentationModel.Action<T>) {
         compositeUnbind.add(
@@ -57,11 +59,11 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     }
 
     /**
-     * Local extension to subscribe to the [PresentationModel.State] and add it to the subscriptions list
+     * Local extension to subscribe to the [State][PresentationModel.State] and add it to the subscriptions list
      * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
      * so use it ONLY in [onBindPresentationModel].
      *
-     * @since 1.x
+     * @since 1.2
      */
     infix fun <T> PresentationModel.State<T>.bindTo(consumer: Consumer<in T>) {
         compositeUnbind.add(
@@ -73,11 +75,11 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
 
 
     /**
-     * Local extension to subscribe to the [PresentationModel.State] and add it to the subscriptions list
+     * Local extension to subscribe to the [State][PresentationModel.State] and add it to the subscriptions list
      * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
      * so use it ONLY in [onBindPresentationModel].
      *
-     * @since 1.x
+     * @since 1.2
      */
     infix fun <T> PresentationModel.State<T>.bindTo(consumer: (T) -> Unit) {
         compositeUnbind.add(
@@ -88,7 +90,7 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     }
 
     /**
-     * Local extension to subscribe to the [PresentationModel.Command] and add it to the subscriptions list
+     * Local extension to subscribe to the [Command][PresentationModel.Command] and add it to the subscriptions list
      * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
      * so use it ONLY in [onBindPresentationModel].
      *
@@ -103,7 +105,7 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     }
 
     /**
-     * Local extension to subscribe to the [PresentationModel.Command] and add it to the subscriptions list
+     * Local extension to subscribe to the [Command][PresentationModel.Command] and add it to the subscriptions list
      * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
      * so use it ONLY in [onBindPresentationModel].
      *
@@ -163,9 +165,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     }
 
     /**
-     * Local extension to pass the value to the [PresentationModel.Action].
+     * Local extension to pass the value to the [Action][PresentationModel.Action].
      *
-     * @since 1.x
+     * @since 1.2
      */
     infix fun <T> T.passTo(action: PresentationModel.Action<T>) {
         action.consumer.accept(this)
