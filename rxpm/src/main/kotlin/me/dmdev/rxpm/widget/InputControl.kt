@@ -71,28 +71,28 @@ fun PresentationModel.inputControl(initialText: String = "",
     return InputControl(this, initialText, formatter, hideErrorOnUserInput)
 }
 
-internal inline fun TextInputLayout.bind(inputControl: InputControl, compositeDisposable: CompositeDisposable) {
+internal inline fun InputControl.bind(textInputLayout: TextInputLayout, compositeDisposable: CompositeDisposable) {
 
-    val edit = editText!!
+    val edit = textInputLayout.editText!!
 
-    edit.bind(inputControl, compositeDisposable)
+    bind(edit, compositeDisposable)
     compositeDisposable.add(
-            inputControl.error.observable.subscribe { error ->
-                this@bind.error = if (error.isEmpty()) null else error
+            error.observable.subscribe { error ->
+                textInputLayout.error = if (error.isEmpty()) null else error
             }
     )
 }
 
-internal inline fun EditText.bind(inputControl: InputControl, compositeDisposable: CompositeDisposable) {
+internal inline fun InputControl.bind(editText: EditText, compositeDisposable: CompositeDisposable) {
 
     var editing = false
 
     compositeDisposable.addAll(
 
-            inputControl.text.observable
+            text.observable
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
-                        val editable = text
+                        val editable = editText.text
                         if (!it.contentEquals(editable)) {
                             editing = true
                             if (editable is Spanned) {
@@ -106,10 +106,10 @@ internal inline fun EditText.bind(inputControl: InputControl, compositeDisposabl
                         }
                     },
 
-            textChanges()
+            editText.textChanges()
                     .skipInitialValue()
                     .filter { !editing }
                     .map { it.toString() }
-                    .subscribe(inputControl.textChanges.consumer)
+                    .subscribe(textChanges.consumer)
     )
 }

@@ -48,22 +48,22 @@ fun PresentationModel.checkControl(initialChecked: Boolean = false): CheckContro
 }
 
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun CompoundButton.bind(checkControl: CheckControl, compositeDisposable: CompositeDisposable) {
+internal inline fun CheckControl.bind(compoundButton: CompoundButton, compositeDisposable: CompositeDisposable) {
 
     var editing = false
 
     compositeDisposable.addAll(
-            checkControl.checked.observable
+            checked.observable
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
                         editing = true
-                        isChecked = it
+                        compoundButton.isChecked = it
                         editing = false
                     },
 
-            checkedChanges()
+            compoundButton.checkedChanges()
                     .skipInitialValue()
                     .filter { !editing }
-                    .subscribe(checkControl.checkedChanges.consumer)
+                    .subscribe(checkedChanges.consumer)
     )
 }

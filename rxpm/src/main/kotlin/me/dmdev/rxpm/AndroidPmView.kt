@@ -113,21 +113,21 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      * Local extension to bind the [InputControl] to the [EditText][editText], use it ONLY in [onBindPresentationModel].
      */
     infix fun InputControl.bindTo(editText: EditText) {
-        editText.bind(this, compositeUnbind)
+        bind(editText, compositeUnbind)
     }
 
     /**
      * Local extension to bind the [InputControl] to the [TextInputLayout][textInputLayout], use it ONLY in [onBindPresentationModel].
      */
     infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
-        textInputLayout.bind(this, compositeUnbind)
+        bind(textInputLayout, compositeUnbind)
     }
 
     /**
      * Local extension to bind the [CheckControl] to the [CompoundButton][compoundButton], use it ONLY in [onBindPresentationModel].
      */
     infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
-        compoundButton.bind(this, compositeUnbind)
+        bind(compoundButton, compositeUnbind)
     }
 
     /**
