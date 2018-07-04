@@ -42,6 +42,7 @@ abstract class PresentationModel {
      * Current state of this presentation model lifecycle.
      *
      * @return [lifecycle state][Lifecycle] or null if this presentation model is not created yet.
+     * @since 1.2
      */
     val currentLifecycleState: Lifecycle? get() = lifecycle.value
 
