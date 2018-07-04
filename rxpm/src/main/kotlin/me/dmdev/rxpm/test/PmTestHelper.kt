@@ -7,6 +7,8 @@ import me.dmdev.rxpm.PresentationModel.Lifecycle.*
  * Helps to test [PresentationModel].
  *
  * @param pm presentation model under test.
+ *
+ * @since 1.2
  */
 class PmTestHelper(val pm: PresentationModel) {
 
@@ -28,6 +30,9 @@ class PmTestHelper(val pm: PresentationModel) {
     /**
      * Sets the lifecycle of the [presentation model][pm] under test to the specified [state][lifecycleState].
      * This will also create natural sequence of states before the requested one.
+     *
+     * **Note** that because of it's nature [Command][PresentationModel.Command] emits items right away
+     * only in [BINDED] lifecycle state. So if you want to test it, be sure to set the state.
      *
      * @param lifecycleState lifecycle state to set to.
      * @param shortSequence defines if the sequence of states should be short.
