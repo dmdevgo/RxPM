@@ -32,11 +32,18 @@ abstract class PresentationModel {
     val navigationMessages = Command<NavigationMessage>()
 
     /**
-     * The [lifecycle][Lifecycle] state of this presentation model.
+     * The [lifecycle][Lifecycle] of this presentation model.
      * @since 1.1
      */
     val lifecycleObservable = lifecycle.asObservable()
     internal val lifecycleConsumer = lifecycle.asConsumer()
+
+    /**
+     * Current state of this presentation model lifecycle.
+     *
+     * @return [lifecycle state][Lifecycle] or null if this presentation model is not created yet.
+     */
+    val currentLifecycleState: Lifecycle? get() = lifecycle.value
 
     init {
         lifecycle
