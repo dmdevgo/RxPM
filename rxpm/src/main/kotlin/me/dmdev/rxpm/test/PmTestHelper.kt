@@ -12,20 +12,7 @@ import me.dmdev.rxpm.PresentationModel.Lifecycle.*
  */
 class PmTestHelper(val pm: PresentationModel) {
 
-    private var currentLifecycleState: PresentationModel.Lifecycle? = null
-
     private val lifecycleStates = PresentationModel.Lifecycle.values()
-
-    init {
-        subscribeToCurrentLifecycleState()
-    }
-
-    private fun subscribeToCurrentLifecycleState() {
-        pm.lifecycleObservable
-            .subscribe {
-                currentLifecycleState = it
-            }
-    }
 
     /**
      * Sets the lifecycle of the [presentation model][pm] under test to the specified [state][lifecycleState].
@@ -65,17 +52,17 @@ class PmTestHelper(val pm: PresentationModel) {
     }
 
     private fun checkStateAllowed(lifecycleState: PresentationModel.Lifecycle) {
-        currentLifecycleState?.let { currentState ->
+        pm.currentLifecycleState?.let { currentState ->
             if (lifecycleState <= currentState && !isBindedAgain(lifecycleState)) {
                 throw IllegalStateException(
-                    "You can't set lifecycle state as $lifecycleState when it already is $currentLifecycleState."
+                    "You can't set lifecycle state as $lifecycleState when it already is $pm.currentLifecycleState."
                 )
             }
         }
     }
 
     private fun isBindedAgain(lifecycleState: PresentationModel.Lifecycle): Boolean {
-        return currentLifecycleState == UNBINDED && lifecycleState == BINDED
+        return pm.currentLifecycleState == UNBINDED && lifecycleState == BINDED
     }
 
     private fun isShortDestroyed(
@@ -86,7 +73,7 @@ class PmTestHelper(val pm: PresentationModel) {
     }
 
     private fun listOfSequencedStateOrdinals(lifecycleState: PresentationModel.Lifecycle): List<Int> {
-        val nextStateOrdinal = currentLifecycleState?.let { it.ordinal + 1 } ?: 0
+        val nextStateOrdinal = pm.currentLifecycleState?.let { it.ordinal + 1 } ?: 0
         val wantedStateOrdinal = lifecycleState.ordinal
         return (nextStateOrdinal..wantedStateOrdinal).toList()
     }
