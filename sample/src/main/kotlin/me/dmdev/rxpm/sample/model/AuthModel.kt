@@ -20,7 +20,7 @@ class AuthModel(private val api: ServerApi,
         return api.sendConfirmationCode(phone.onlyDigits(), code.onlyDigits())
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess { tokenStorage.saveToken(it.token) }
-                .toCompletable()
+                .ignoreElement()
     }
 
     fun logout(): Completable {

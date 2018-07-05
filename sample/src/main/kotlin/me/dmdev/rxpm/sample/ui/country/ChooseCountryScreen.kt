@@ -24,7 +24,7 @@ class ChooseCountryScreen : Screen<ChooseCountryPm>() {
 
     override fun providePresentationModel() = ChooseCountryPm(App.component.phoneUtil)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(recyclerView) {
             layoutManager = LinearLayoutManager(context)

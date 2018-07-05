@@ -2,7 +2,6 @@ package me.dmdev.rxpm.sample.ui.phone
 
 import android.view.inputmethod.EditorInfo
 import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.view.enabled
 import com.jakewharton.rxbinding2.widget.editorActions
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.screen_auth_by_phone.*
@@ -31,7 +30,7 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
         }
 
         pm.inProgress bindTo progressConsumer
-        pm.doneButtonEnabled bindTo doneButton.enabled()
+        pm.doneButtonEnabled bindTo doneButton::setEnabled
 
         pm.phoneNumberFocus bindTo { phoneNumberEdit.requestFocus() }
 
@@ -57,5 +56,4 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
         super.onResume()
         phoneNumberEdit.showKeyboard()
     }
-
 }
