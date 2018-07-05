@@ -6,6 +6,8 @@ import me.dmdev.rxpm.PresentationModel.Lifecycle
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class PresentationModelTest {
 
@@ -64,6 +66,25 @@ class PresentationModelTest {
         Mockito.verify(callbacks).onUnbind()
         Mockito.verify(callbacks).onDestroy()
 
+    }
+
+    @Test
+    fun testCurrentLifecycleValue() {
+        val pm = object: PresentationModel() {}
+
+        assertNull(pm.currentLifecycleState)
+
+        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
+        assertEquals(Lifecycle.CREATED, pm.currentLifecycleState)
+
+        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
+        assertEquals(Lifecycle.BINDED, pm.currentLifecycleState)
+
+        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+        assertEquals(Lifecycle.UNBINDED, pm.currentLifecycleState)
+
+        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        assertEquals(Lifecycle.DESTROYED, pm.currentLifecycleState)
     }
 
     @Test
