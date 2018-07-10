@@ -21,7 +21,7 @@ import me.jeevuz.outlast.predefined.ActivityOutlast
  * to the corresponding ones in this class.
  */
 class PmActivityDelegate<PM, A>(private val pmView: A)
-where PM : PresentationModel, A : Activity, A : PmView<PM> {
+    where PM : PresentationModel, A : Activity, A : PmView<PM> {
 
     private lateinit var outlast: ActivityOutlast<PmWrapper<PM>>
     internal lateinit var pmBinder: PmBinder<PM>
@@ -36,15 +36,17 @@ where PM : PresentationModel, A : Activity, A : PmView<PM> {
      */
     fun onCreate(savedInstanceState: Bundle?) {
         outlast = ActivityOutlast(pmView,
-                                  Outlasting.Creator<PmWrapper<PM>> {
-                                      PmWrapper(pmView.providePresentationModel())
-                                  },
-                                  savedInstanceState)
+            Outlasting.Creator<PmWrapper<PM>> {
+                PmWrapper(pmView.providePresentationModel())
+            },
+            savedInstanceState)
         presentationModel // Create lazy presentation model now
         pmBinder = PmBinder(presentationModel, pmView)
-        navigationMessagesDisposable = presentationModel.navigationMessages.observable.observeOn(AndroidSchedulers.mainThread()).subscribe {
-            navigationMessagesDispatcher.dispatch(it)
-        }
+        navigationMessagesDisposable = presentationModel.navigationMessages.observable
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                navigationMessagesDispatcher.dispatch(it)
+            }
     }
 
     /**
