@@ -5,7 +5,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.PresentationModel.*
+import me.dmdev.rxpm.PresentationModel.Lifecycle
 import me.dmdev.rxpm.base.PmController
 import me.dmdev.rxpm.navigation.ControllerNavigationMessageDispatcher
 
@@ -19,7 +19,7 @@ import me.dmdev.rxpm.navigation.ControllerNavigationMessageDispatcher
  * to the corresponding ones in this class.
  */
 class PmControllerDelegate<PM, C>(private val pmView: C)
-    where PM : PresentationModel, C : Controller, C : PmView<PM> {
+where PM : PresentationModel, C : Controller, C : PmView<PM> {
 
     internal val pmBinder: PmBinder<PM> by lazy(LazyThreadSafetyMode.NONE) { PmBinder(presentationModel, pmView) }
     private var created = false
