@@ -1,6 +1,7 @@
 package me.dmdev.rxpm.delegate
 
 import com.bluelinelabs.conductor.Controller
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
@@ -30,9 +31,11 @@ where PM : PresentationModel, C : Controller, C : PmView<PM> {
 
     private fun onCreate() {
         presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)
-        navigationMessagesDisposable = presentationModel.navigationMessages.observable.subscribe {
-            navigationMessageDispatcher.dispatch(it)
-        }
+        navigationMessagesDisposable = presentationModel.navigationMessages.observable
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                navigationMessageDispatcher.dispatch(it)
+            }
     }
 
     /**
