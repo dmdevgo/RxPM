@@ -20,7 +20,7 @@ class MainScreen : Screen<MainPm>() {
         super.onBindPresentationModel(pm)
 
         pm.logoutDialog bindTo { _, dc ->
-            AlertDialog.Builder(context)
+            AlertDialog.Builder(context!!)
                     .setMessage("Are you sure you want to log out?")
                     .setPositiveButton("ok", { _, _ -> dc.sendResult(Ok) })
                     .setNegativeButton("cancel", { _, _ -> dc.sendResult(Cancel) })

@@ -20,8 +20,8 @@ class MessageDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(context)
-                .setMessage(arguments.getString(ARG_MESSAGE))
+        return AlertDialog.Builder(context!!)
+                .setMessage(arguments?.getString(ARG_MESSAGE))
                 .setPositiveButton(R.string.ok_button, null)
                 .create()
     }
