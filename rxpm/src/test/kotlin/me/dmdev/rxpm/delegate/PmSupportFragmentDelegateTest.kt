@@ -1,81 +1,77 @@
 package me.dmdev.rxpm.delegate
 
 import android.support.v4.app.FragmentActivity
+import com.nhaarman.mockitokotlin2.*
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmSupportFragment
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
-import org.mockito.Spy
-import org.mockito.junit.MockitoJUnitRunner
 import kotlin.test.assertEquals
 
-@RunWith(MockitoJUnitRunner.Silent::class)
 class PmSupportFragmentDelegateTest {
 
-    @Spy lateinit var pm: PresentationModel
-    @Mock lateinit var compositeDisposableMock: CompositeDisposable
-    @Mock lateinit var activityMock: FragmentActivity
-    @Mock lateinit var fragmentMock: PmSupportFragment<PresentationModel>
+    private lateinit var pm: PresentationModel
+    private lateinit var compositeDisposable: CompositeDisposable
+    private lateinit var activity: FragmentActivity
+    private lateinit var view: PmSupportFragment<PresentationModel>
+    private lateinit var delegate: PmSupportFragmentDelegate<PresentationModel, PmSupportFragment<PresentationModel>>
 
-    @Before
-    fun initTest() {
-        MockitoAnnotations.initMocks(this)
-        Mockito.`when`(fragmentMock.compositeUnbind).thenReturn(compositeDisposableMock)
-        Mockito.`when`(fragmentMock.providePresentationModel()).thenReturn(pm)
-        Mockito.`when`(fragmentMock.activity).thenReturn(activityMock)
+    @Before fun setUp() {
+        pm = spy()
+        compositeDisposable = mock()
+        activity = mock()
+        view = mockView()
+
+        delegate = PmSupportFragmentDelegate(view)
     }
 
-    @Test
-    fun testViewLifeCycle() {
+    private fun mockView(): PmSupportFragment<PresentationModel> {
+        return mock {
+            on { compositeUnbind } doReturn compositeDisposable
+            on { providePresentationModel() } doReturn pm
+            on { activity } doReturn activity
+        }
+    }
 
-        val delegate = PmSupportFragmentDelegate(fragmentMock)
-
+    @Test fun callViewMethods() {
         delegate.onCreate(null)
 
-        verify(fragmentMock).providePresentationModel()
+        verify(view).providePresentationModel()
         assertEquals(pm, delegate.presentationModel)
 
         delegate.onStart()
-        verify(fragmentMock).onBindPresentationModel(pm)
+        verify(view).onBindPresentationModel(pm)
 
         delegate.onResume()
         delegate.onPause()
 
         delegate.onStop()
 
-        verify(fragmentMock).onUnbindPresentationModel()
-        verify(compositeDisposableMock).clear()
+        verify(view).onUnbindPresentationModel()
+        verify(compositeDisposable).clear()
 
         delegate.onDestroy()
     }
 
-    @Test
-    fun testPresentationModelLifeCycle() {
+    @Test fun changePmLifecycle() {
 
-        val testObserver = TestObserver<PresentationModel.Lifecycle>()
-        pm.lifecycleObservable.subscribe(testObserver)
-
-        val delegate = PmSupportFragmentDelegate(fragmentMock)
+        val testObserver = pm.lifecycleObservable.test()
 
         delegate.onCreate(null)
         delegate.onStart()
         delegate.onResume()
         delegate.onPause()
         delegate.onStop()
-        Mockito.`when`(activityMock.isFinishing).thenReturn(true)
+        whenever(activity.isFinishing).thenReturn(true)
         delegate.onDestroy()
 
-        testObserver.assertValues(PresentationModel.Lifecycle.CREATED,
-                                  PresentationModel.Lifecycle.BINDED,
-                                  PresentationModel.Lifecycle.UNBINDED,
-                                  PresentationModel.Lifecycle.DESTROYED)
+        testObserver.assertValues(
+            PresentationModel.Lifecycle.CREATED,
+            PresentationModel.Lifecycle.BINDED,
+            PresentationModel.Lifecycle.UNBINDED,
+            PresentationModel.Lifecycle.DESTROYED
+        )
     }
 
 }

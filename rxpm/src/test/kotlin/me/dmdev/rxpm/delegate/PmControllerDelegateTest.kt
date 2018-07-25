@@ -1,63 +1,59 @@
 package me.dmdev.rxpm.delegate
 
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmController
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
-import org.mockito.Spy
-import org.mockito.junit.MockitoJUnitRunner
 import kotlin.test.assertEquals
 
-@RunWith(MockitoJUnitRunner::class)
 class PmControllerDelegateTest {
 
-    @Spy lateinit var pm: PresentationModel
-    @Mock lateinit var compositeDisposableMock: CompositeDisposable
-    @Mock lateinit var pmViewMock: PmController<PresentationModel>
+    private lateinit var pm: PresentationModel
+    private lateinit var compositeDisposable: CompositeDisposable
+    private lateinit var view: PmController<PresentationModel>
+    private lateinit var delegate: PmControllerDelegate<PresentationModel, PmController<PresentationModel>>
 
-    @Before
-    fun initTest() {
-        MockitoAnnotations.initMocks(this)
-        Mockito.`when`(pmViewMock.compositeUnbind).thenReturn(compositeDisposableMock)
-        Mockito.`when`(pmViewMock.providePresentationModel()).thenReturn(pm)
+    @Before fun setUp() {
+        pm = spy()
+        compositeDisposable = mock()
+        view = mockView()
+
+        delegate = PmControllerDelegate(view)
     }
 
-    @Test
-    fun testViewLifeCycle() {
+    private fun mockView(): PmController<PresentationModel> {
+        return mock {
+            on { compositeUnbind } doReturn compositeDisposable
+            on { providePresentationModel() } doReturn pm
+        }
+    }
 
-        val delegate = PmControllerDelegate(pmViewMock)
-
+    @Test fun callViewMethods() {
         delegate.onCreateView()
-        verify(pmViewMock).providePresentationModel()
+
+        verify(view).providePresentationModel()
         assertEquals(pm, delegate.presentationModel)
 
         delegate.onAttach()
-        verify(pmViewMock).onBindPresentationModel(pm)
+
+        verify(view).onBindPresentationModel(pm)
 
         delegate.onDetach()
-        verify(pmViewMock).onUnbindPresentationModel()
-        verify(compositeDisposableMock).clear()
+
+        verify(view).onUnbindPresentationModel()
+        verify(compositeDisposable).clear()
 
         delegate.onDestroyView()
-
         delegate.onDestroy()
-
     }
 
-    @Test
-    fun testPresentationModelLifeCycle() {
-
-        val testObserver = TestObserver<PresentationModel.Lifecycle>()
-        pm.lifecycleObservable.subscribe(testObserver)
-
-        val delegate = PmControllerDelegate(pmViewMock)
+    @Test fun changePmLifecycle() {
+        val testObserver = pm.lifecycleObservable.test()
 
         delegate.onCreateView()
         delegate.onAttach()
@@ -65,9 +61,11 @@ class PmControllerDelegateTest {
         delegate.onDestroyView()
         delegate.onDestroy()
 
-        testObserver.assertValues(PresentationModel.Lifecycle.CREATED,
-                                  PresentationModel.Lifecycle.BINDED,
-                                  PresentationModel.Lifecycle.UNBINDED,
-                                  PresentationModel.Lifecycle.DESTROYED)
+        testObserver.assertValues(
+            PresentationModel.Lifecycle.CREATED,
+            PresentationModel.Lifecycle.BINDED,
+            PresentationModel.Lifecycle.UNBINDED,
+            PresentationModel.Lifecycle.DESTROYED
+        )
     }
 }

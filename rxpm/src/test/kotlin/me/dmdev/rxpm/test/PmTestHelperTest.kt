@@ -1,11 +1,11 @@
 package me.dmdev.rxpm.test
 
+import com.nhaarman.mockitokotlin2.spy
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
 import kotlin.test.assertFailsWith
 
 class PmTestHelperTest {
@@ -14,7 +14,7 @@ class PmTestHelperTest {
     private lateinit var lifecycleObserver: TestObserver<PresentationModel.Lifecycle>
 
     @Before fun setUp() {
-        val pm = Mockito.spy(PresentationModel::class.java)
+        val pm = spy<PresentationModel>()
         lifecycleObserver = pm.lifecycleObservable.test()
         pmTestHelper = PmTestHelper(pm)
     }
@@ -68,36 +68,40 @@ class PmTestHelperTest {
     @Test fun throwOnDuplicateState() {
         pmTestHelper.setLifecycleTo(CREATED)
         assertFailsWith<IllegalStateException>(
-            "You can't set lifecycle state as CREATED when it already is CREATED.",
-            { pmTestHelper.setLifecycleTo(CREATED) }
-        )
+            "You can't set lifecycle state as CREATED when it already is CREATED."
+        ) {
+            pmTestHelper.setLifecycleTo(CREATED)
+        }
     }
 
     @Test fun throwOnCreatedAfterBinded() {
         pmTestHelper.setLifecycleTo(BINDED)
 
         assertFailsWith<IllegalStateException>(
-            "You can't set lifecycle state as CREATED when it already is BINDED.",
-            { pmTestHelper.setLifecycleTo(CREATED) }
-        )
+            "You can't set lifecycle state as CREATED when it already is BINDED."
+        ) {
+            pmTestHelper.setLifecycleTo(CREATED)
+        }
     }
 
     @Test fun throwOnCreatedAfterUnbinded() {
         pmTestHelper.setLifecycleTo(UNBINDED)
 
         assertFailsWith<IllegalStateException>(
-            "You can't set lifecycle state as CREATED when it already is UNBINDED.",
-            { pmTestHelper.setLifecycleTo(CREATED) }
-        )
+            "You can't set lifecycle state as CREATED when it already is UNBINDED."
+        ) {
+            pmTestHelper.setLifecycleTo(CREATED)
+        }
     }
 
     @Test fun throwOnCreatedAfterDestroyed() {
         pmTestHelper.setLifecycleTo(DESTROYED)
 
         assertFailsWith<IllegalStateException>(
-            "You can't set lifecycle state as CREATED when it already is DESTROYED.",
-            { pmTestHelper.setLifecycleTo(CREATED) }
-        )
+            "You can't set lifecycle state as CREATED when it already is DESTROYED."
+        ) {
+            pmTestHelper.setLifecycleTo(CREATED)
+        }
     }
 
     @Test fun setBindedAfterUnbinded() {
@@ -130,17 +134,19 @@ class PmTestHelperTest {
         pmTestHelper.setLifecycleTo(DESTROYED)
 
         assertFailsWith<IllegalStateException>(
-            "You can't set lifecycle state as BINDED when it already is DESTROYED.",
-            { pmTestHelper.setLifecycleTo(BINDED) }
-        )
+            "You can't set lifecycle state as BINDED when it already is DESTROYED."
+        ) {
+            pmTestHelper.setLifecycleTo(BINDED)
+        }
     }
 
     @Test fun throwOnUnbindedAfterDestroyed() {
         pmTestHelper.setLifecycleTo(DESTROYED)
 
         assertFailsWith<IllegalStateException>(
-            "You can't set lifecycle state as UNBINDED when it already is DESTROYED.",
-            { pmTestHelper.setLifecycleTo(UNBINDED) }
-        )
+            "You can't set lifecycle state as UNBINDED when it already is DESTROYED."
+        ) {
+            pmTestHelper.setLifecycleTo(UNBINDED)
+        }
     }
 }
