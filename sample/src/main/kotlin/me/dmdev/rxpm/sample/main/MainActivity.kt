@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity(), NavigationMessageHandler {
             }
 
             is PhoneSentSuccessfullyMessage -> sfm.openScreen(
-                    CodeConfirmationScreen.newInstance(message.phone)
+                CodeConfirmationScreen.newInstance(message.phone)
             )
 
             is PhoneConfirmedMessage -> {

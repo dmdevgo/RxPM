@@ -1,58 +1,58 @@
 package me.dmdev.rxpm.sample.main.ui.confirmation
 
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import me.dmdev.rxpm.bindProgress
 import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.main.PhoneConfirmedMessage
-import me.dmdev.rxpm.sample.main.extensions.onlyDigits
 import me.dmdev.rxpm.sample.main.model.AuthModel
 import me.dmdev.rxpm.sample.main.ui.base.ScreenPresentationModel
 import me.dmdev.rxpm.sample.main.util.ResourceProvider
+import me.dmdev.rxpm.sample.main.util.onlyDigits
 import me.dmdev.rxpm.skipWhileInProgress
 import me.dmdev.rxpm.widget.inputControl
 
 class CodeConfirmationPm(
-        private val phone: String,
-        private val resourceProvider: ResourceProvider,
-        private val authModel: AuthModel
+    private val phone: String,
+    private val resourceProvider: ResourceProvider,
+    private val authModel: AuthModel
 ) : ScreenPresentationModel() {
 
     companion object {
         private const val CODE_LENGTH = 4
     }
 
-    val code = inputControl(formatter = { it.onlyDigits().take(CODE_LENGTH) })
+    val code = inputControl(
+        formatter = { it.onlyDigits().take(CODE_LENGTH) }
+    )
     val inProgress = State(false)
     val doneButtonEnabled = State(false)
 
     val doneAction = Action<Unit>()
 
     override fun onCreate() {
-        super.onCreate()
 
-        Observable.merge(doneAction.observable,
-                         code.textChanges.observable
-                                 .filter { it.length == CODE_LENGTH }
-                                 .distinctUntilChanged())
-                .skipWhileInProgress(inProgress.observable)
-                .map { code.text.value }
-                .filter { validateForm() }
-                .switchMapCompletable { code ->
-                    authModel.sendConfirmationCode(phone, code)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .bindProgress(inProgress.consumer)
-                            .doOnComplete { sendMessage(PhoneConfirmedMessage()) }
-                            .doOnError { showError(it.message) }
-                }
-                .retry()
-                .subscribe()
-                .untilDestroy()
+        val codeFilledAction = code.textChanges.observable
+            .filter { it.length == CODE_LENGTH }
+            .distinctUntilChanged()
+
+        Observable.merge(doneAction.observable, codeFilledAction)
+            .skipWhileInProgress(inProgress.observable)
+            .map { code.text.value }
+            .filter { validateForm() }
+            .switchMapCompletable { code ->
+                authModel.sendConfirmationCode(phone, code)
+                    .bindProgress(inProgress.consumer)
+                    .doOnComplete { sendMessage(PhoneConfirmedMessage()) }
+                    .doOnError { showError(it.message) }
+            }
+            .retry()
+            .subscribe()
+            .untilDestroy()
 
         code.text.observable
-                .map { it.length == CODE_LENGTH }
-                .subscribe(doneButtonEnabled.consumer)
-                .untilDestroy()
+            .map { it.length == CODE_LENGTH }
+            .subscribe(doneButtonEnabled.consumer)
+            .untilDestroy()
 
     }
 

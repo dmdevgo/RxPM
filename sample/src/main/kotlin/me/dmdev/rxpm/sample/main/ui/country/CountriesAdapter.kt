@@ -11,8 +11,8 @@ import me.dmdev.rxpm.sample.main.util.Country
 
 
 class CountriesAdapter(
-        private var countries: List<Country>?,
-        private val itemClickListener: (country: Country) -> Unit
+    private var countries: List<Country>?,
+    private val itemClickListener: (country: Country) -> Unit
 ) : RecyclerView.Adapter<CountriesAdapter.ViewHolder>() {
 
     fun setData(countries: List<Country>) {

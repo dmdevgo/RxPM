@@ -16,13 +16,17 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
 
     override val screenLayout = R.layout.screen_auth_by_phone
 
-    override fun providePresentationModel()
-            = AuthByPhonePm(App.component.phoneUtil,
-                            App.component.resourceProvider,
-                            App.component.authModel)
+    override fun providePresentationModel(): AuthByPhonePm {
+        return AuthByPhonePm(
+            App.component.phoneUtil,
+            App.component.resourceProvider,
+            App.component.authModel
+        )
+    }
 
     override fun onBindPresentationModel(pm: AuthByPhonePm) {
         super.onBindPresentationModel(pm)
+
         pm.countryCode bindTo editCountryCodeLayout
         pm.phoneNumber bindTo editPhoneNumberLayout
         pm.chosenCountry bindTo {
@@ -31,20 +35,18 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
 
         pm.inProgress bindTo progressConsumer
         pm.doneButtonEnabled bindTo doneButton::setEnabled
-
         pm.phoneNumberFocus bindTo { phoneNumberEdit.requestFocus() }
 
         countryName.clicks() bindTo pm.countryClicks
 
         Observable
-                .merge(
-                        doneButton.clicks(),
-
-                        phoneNumberEdit.editorActions()
-                                .filter { it == EditorInfo.IME_ACTION_SEND }
-                                .map { Unit }
-                )
-                .bindTo(pm.doneAction)
+            .merge(
+                doneButton.clicks(),
+                phoneNumberEdit.editorActions()
+                    .filter { it == EditorInfo.IME_ACTION_SEND }
+                    .map { Unit }
+            )
+            .bindTo(pm.doneAction)
 
     }
 

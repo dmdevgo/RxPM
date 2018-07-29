@@ -3,9 +3,7 @@ package me.dmdev.rxpm.sample.main.util
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
-import me.dmdev.rxpm.sample.main.extensions.onlyDigits
 import java.util.*
-
 
 class PhoneUtil {
 
@@ -15,22 +13,13 @@ class PhoneUtil {
     init {
         for (region in phoneNumberUtil.supportedRegions) {
             val country = Country(region, phoneNumberUtil.getCountryCodeForRegion(region))
-            countriesMap.put(region, country)
+            countriesMap[region] = country
         }
     }
 
     @Throws(NumberParseException::class)
     fun parsePhone(phone: String): Phonenumber.PhoneNumber {
         return phoneNumberUtil.parse(phone, PhoneNumberUtil.REGION_CODE_FOR_NON_GEO_ENTITY)
-    }
-
-    fun formatPhone(phone: String): String {
-        return try {
-            val phoneNumber = parsePhone("+${phone.onlyDigits()}")
-            phoneNumberUtil.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL)
-        } catch (e: NumberParseException) {
-            phone
-        }
     }
 
     fun formatPhoneNumber(country: Country, phoneNumber: String): String {
@@ -66,9 +55,9 @@ class PhoneUtil {
         return countriesMap[phoneNumberUtil.getRegionCodeForCountryCode(code)] ?: Country.UNKNOWN
     }
 
-    fun getCountryForRegion(region: String) = countriesMap[region] ?: Country.UNKNOWN
-
     fun countries(): List<Country> {
         return countriesMap.values.toList()
     }
 }
+
+fun String.onlyDigits() = this.replace("\\D".toRegex(), "")

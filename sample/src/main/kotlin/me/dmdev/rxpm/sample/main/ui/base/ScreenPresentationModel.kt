@@ -12,14 +12,14 @@ abstract class ScreenPresentationModel : PresentationModel() {
 
     private val backActionDefault = Action<Unit>()
 
-    open val backAction: Action<Unit>  = backActionDefault
+    open val backAction: Action<Unit> = backActionDefault
 
     override fun onCreate() {
         super.onCreate()
 
         backActionDefault.observable
-                .subscribe { sendMessage(BackMessage()) }
-                .untilDestroy()
+            .subscribe { sendMessage(BackMessage()) }
+            .untilDestroy()
     }
 
     protected fun sendMessage(message: NavigationMessage) {

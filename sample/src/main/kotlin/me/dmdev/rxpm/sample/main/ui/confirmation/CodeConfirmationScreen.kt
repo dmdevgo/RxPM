@@ -15,7 +15,7 @@ import me.dmdev.rxpm.sample.main.ui.base.Screen
 class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
 
     companion object {
-        private const val ARG_PHONE = "phone"
+        private const val ARG_PHONE = "arg_phone"
         fun newInstance(phone: String) = CodeConfirmationScreen().apply {
             arguments = Bundle().apply {
                 putString(ARG_PHONE, phone)
@@ -25,10 +25,13 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
 
     override val screenLayout = R.layout.screen_code_confirmation
 
-    override fun providePresentationModel()
-            = CodeConfirmationPm(arguments!!.getString(ARG_PHONE),
-                                 App.component.resourceProvider,
-                                 App.component.authModel)
+    override fun providePresentationModel(): CodeConfirmationPm {
+        return CodeConfirmationPm(
+            arguments!!.getString(ARG_PHONE),
+            App.component.resourceProvider,
+            App.component.authModel
+        )
+    }
 
     override fun onBindPresentationModel(pm: CodeConfirmationPm) {
         super.onBindPresentationModel(pm)
@@ -40,14 +43,13 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
         navButton.clicks() bindTo pm.backAction
 
         Observable
-                .merge(
-                        doneButton.clicks(),
-
-                        codeEdit.editorActions()
-                                .filter { it == EditorInfo.IME_ACTION_SEND }
-                                .map { Unit }
-                )
-                .bindTo(pm.doneAction)
+            .merge(
+                doneButton.clicks(),
+                codeEdit.editorActions()
+                    .filter { it == EditorInfo.IME_ACTION_SEND }
+                    .map { Unit }
+            )
+            .bindTo(pm.doneAction)
 
     }
 
@@ -57,4 +59,3 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
     }
 
 }
-

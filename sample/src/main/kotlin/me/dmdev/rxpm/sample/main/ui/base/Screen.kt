@@ -16,16 +16,20 @@ abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(), B
 
     abstract val screenLayout: Int
 
-    final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    final override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(screenLayout, container, false)
     }
 
     override fun onBindPresentationModel(pm: PM) {
         pm.errorDialog bindTo { message, _ ->
             AlertDialog.Builder(context!!)
-                    .setMessage(message)
-                    .setPositiveButton(R.string.ok_button, null)
-                    .create()
+                .setMessage(message)
+                .setPositiveButton(R.string.ok_button, null)
+                .create()
         }
     }
 
@@ -39,8 +43,8 @@ abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(), B
             childFragmentManager.showDialog(ProgressDialog())
         } else {
             childFragmentManager
-                    .findScreen<ProgressDialog>()
-                    ?.dismiss()
+                .findScreen<ProgressDialog>()
+                ?.dismiss()
         }
     }
 }

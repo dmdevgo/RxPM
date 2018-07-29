@@ -21,10 +21,10 @@ class MainScreen : Screen<MainPm>() {
 
         pm.logoutDialog bindTo { _, dc ->
             AlertDialog.Builder(context!!)
-                    .setMessage("Are you sure you want to log out?")
-                    .setPositiveButton("ok", { _, _ -> dc.sendResult(Ok) })
-                    .setNegativeButton("cancel", { _, _ -> dc.sendResult(Cancel) })
-                    .create()
+                .setMessage("Are you sure you want to log out?")
+                .setPositiveButton("ok") { _, _ -> dc.sendResult(Ok) }
+                .setNegativeButton("cancel") { _, _ -> dc.sendResult(Cancel) }
+                .create()
         }
 
         pm.inProgress bindTo progressConsumer
