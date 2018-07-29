@@ -8,7 +8,7 @@ import me.dmdev.rxpm.sample.main.model.TokenStorage
 import me.dmdev.rxpm.sample.main.util.PhoneUtil
 import me.dmdev.rxpm.sample.main.util.ResourceProvider
 
-class AppComponent(private val context: Application) {
+class MainComponent(private val context: Application) {
 
     val resourceProvider by lazy { ResourceProvider(context) }
     val phoneUtil by lazy { PhoneUtil() }

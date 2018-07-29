@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_launch.*
-import me.dmdev.rxpm.sample.main.AppActivity
+import me.dmdev.rxpm.sample.main.MainActivity
 
 class LaunchActivity : AppCompatActivity() {
 
@@ -13,7 +13,7 @@ class LaunchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_launch)
 
         mainSample.setOnClickListener {
-            startActivity(Intent(this, AppActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
         }
     }
 }

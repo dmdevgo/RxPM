@@ -13,7 +13,7 @@ import me.dmdev.rxpm.sample.main.ui.main.MainScreen
 import me.dmdev.rxpm.sample.main.ui.phone.AuthByPhoneScreen
 
 
-class AppActivity : AppCompatActivity(), NavigationMessageHandler {
+class MainActivity : AppCompatActivity(), NavigationMessageHandler {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
