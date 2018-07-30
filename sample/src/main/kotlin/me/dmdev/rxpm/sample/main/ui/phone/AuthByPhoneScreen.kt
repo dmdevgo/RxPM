@@ -29,24 +29,22 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
 
         pm.countryCode bindTo editCountryCodeLayout
         pm.phoneNumber bindTo editPhoneNumberLayout
-        pm.chosenCountry bindTo {
-            countryName.text = it.name
-        }
+        pm.chosenCountry bindTo { countryName.text = it.name }
 
         pm.inProgress bindTo progressConsumer
-        pm.doneButtonEnabled bindTo doneButton::setEnabled
+        pm.sendButtonEnabled bindTo sendButton::setEnabled
         pm.phoneNumberFocus bindTo { phoneNumberEdit.requestFocus() }
 
         countryName.clicks() bindTo pm.countryClicks
 
         Observable
             .merge(
-                doneButton.clicks(),
+                sendButton.clicks(),
                 phoneNumberEdit.editorActions()
                     .filter { it == EditorInfo.IME_ACTION_SEND }
                     .map { Unit }
             )
-            .bindTo(pm.doneAction)
+            .bindTo(pm.sendAction)
 
     }
 

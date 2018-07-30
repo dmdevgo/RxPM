@@ -45,10 +45,10 @@ class AuthByPhonePm(
     )
 
     val inProgress = State(false)
-    val doneButtonEnabled = State(false)
+    val sendButtonEnabled = State(false)
     val phoneNumberFocus = Command<Unit>(bufferSize = 1)
 
-    val doneAction = Action<Unit>()
+    val sendAction = Action<Unit>()
     val countryClicks = Action<Unit>()
     val chooseCountryAction = Action<Country>()
 
@@ -79,7 +79,7 @@ class AuthByPhonePm(
             BiFunction { number: String, country: Country ->
                 phoneUtil.isValidPhone(country, number)
             })
-            .subscribe(doneButtonEnabled.consumer)
+            .subscribe(sendButtonEnabled.consumer)
             .untilDestroy()
 
         countryClicks.observable
@@ -96,7 +96,7 @@ class AuthByPhonePm(
             }
             .untilDestroy()
 
-        doneAction.observable
+        sendAction.observable
             .skipWhileInProgress(inProgress.observable)
             .filter { validateForm() }
             .map { "${countryCode.text.value} ${phoneNumber.text.value}" }

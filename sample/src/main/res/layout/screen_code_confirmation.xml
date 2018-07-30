@@ -1,27 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout style="@style/AppLinearToolbar">
-
-        <ImageView
-            android:id="@+id/navButton"
-            style="@style/ActionButton"
-            app:srcCompat="@drawable/ic_arrow_back_white_24dp"/>
-
-        <TextView
-            style="@style/AppToolbarTitle"
-            android:text="@string/code_confirmation_screen_title"/>
-
-        <ImageView
-            android:id="@+id/doneButton"
-            style="@style/ActionButton"
-            app:srcCompat="@drawable/ic_check_white_24dp"/>
-
-    </LinearLayout>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+        app:title="@string/code_confirmation_screen_title" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/codeEditLayout"
@@ -37,17 +27,23 @@
             android:layout_height="wrap_content"
             android:hint="@string/code_confirmation_hint"
             android:imeOptions="actionSend"
-            android:inputType="phone"/>
+            android:inputType="phone" />
 
     </android.support.design.widget.TextInputLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="32dp"
-        android:text="@string/code_confirmation_screen_text"/>
+        android:text="@string/code_confirmation_screen_text" />
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/send_code_button" />
 
 </LinearLayout>

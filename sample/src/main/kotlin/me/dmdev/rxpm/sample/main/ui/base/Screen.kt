@@ -12,7 +12,9 @@ import me.dmdev.rxpm.sample.main.extensions.findScreen
 import me.dmdev.rxpm.sample.main.extensions.showDialog
 
 
-abstract class Screen<PM : ScreenPresentationModel> : PmSupportFragment<PM>(), BackHandler {
+abstract class Screen<PM : ScreenPresentationModel> :
+    PmSupportFragment<PM>(),
+    BackHandler {
 
     abstract val screenLayout: Int
 

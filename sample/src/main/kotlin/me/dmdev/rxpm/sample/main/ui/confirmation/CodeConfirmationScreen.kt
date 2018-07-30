@@ -2,6 +2,7 @@ package me.dmdev.rxpm.sample.main.ui.confirmation
 
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
+import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.editorActions
 import io.reactivex.Observable
@@ -38,18 +39,18 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
 
         pm.code bindTo codeEditLayout
         pm.inProgress bindTo progressConsumer
-        pm.doneButtonEnabled bindTo doneButton::setEnabled
+        pm.sendButtonEnabled bindTo sendButton::setEnabled
 
-        navButton.clicks() bindTo pm.backAction
+        toolbar.navigationClicks() bindTo pm.backAction
 
         Observable
             .merge(
-                doneButton.clicks(),
+                sendButton.clicks(),
                 codeEdit.editorActions()
                     .filter { it == EditorInfo.IME_ACTION_SEND }
                     .map { Unit }
             )
-            .bindTo(pm.doneAction)
+            .bindTo(pm.sendAction)
 
     }
 

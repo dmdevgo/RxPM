@@ -25,17 +25,18 @@ class CodeConfirmationPm(
         formatter = { it.onlyDigits().take(CODE_LENGTH) }
     )
     val inProgress = State(false)
-    val doneButtonEnabled = State(false)
+    val sendButtonEnabled = State(false)
 
-    val doneAction = Action<Unit>()
+    val sendAction = Action<Unit>()
 
     override fun onCreate() {
+        super.onCreate()
 
         val codeFilledAction = code.textChanges.observable
             .filter { it.length == CODE_LENGTH }
             .distinctUntilChanged()
 
-        Observable.merge(doneAction.observable, codeFilledAction)
+        Observable.merge(sendAction.observable, codeFilledAction)
             .skipWhileInProgress(inProgress.observable)
             .map { code.text.value }
             .filter { validateForm() }
@@ -51,7 +52,7 @@ class CodeConfirmationPm(
 
         code.text.observable
             .map { it.length == CODE_LENGTH }
-            .subscribe(doneButtonEnabled.consumer)
+            .subscribe(sendButtonEnabled.consumer)
             .untilDestroy()
 
     }

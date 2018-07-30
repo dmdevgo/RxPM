@@ -1,7 +1,9 @@
 package me.dmdev.rxpm.sample.main.ui.main
 
+import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import com.jakewharton.rxbinding2.view.clicks
+import android.view.View
+import com.jakewharton.rxbinding2.support.v7.widget.itemClicks
 import kotlinx.android.synthetic.main.screen_main.*
 import me.dmdev.rxpm.sample.App
 import me.dmdev.rxpm.sample.R
@@ -16,6 +18,11 @@ class MainScreen : Screen<MainPm>() {
 
     override fun providePresentationModel() = MainPm(App.component.authModel)
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        toolbar.inflateMenu(R.menu.main)
+    }
+
     override fun onBindPresentationModel(pm: MainPm) {
         super.onBindPresentationModel(pm)
 
@@ -29,7 +36,10 @@ class MainScreen : Screen<MainPm>() {
 
         pm.inProgress bindTo progressConsumer
 
-        logoutButton.clicks() bindTo pm.logoutAction
+        toolbar.itemClicks()
+            .filter { it.itemId == R.id.logoutAction }
+            .map { Unit }
+            .bindTo(pm.logoutAction)
     }
 
 }
