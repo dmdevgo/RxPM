@@ -19,6 +19,7 @@
         </activity>
 
         <activity android:name=".main.MainActivity"/>
+        <activity android:name=".counter.CounterActivity"/>
 
     </application>
 

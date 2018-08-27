@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <android.support.v7.widget.AppCompatImageButton
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:id="@+id/minusButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
+        app:srcCompat="@drawable/ic_remove_white_24dp" />
+
+    <TextView
+        android:id="@+id/counterText"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/primary_text_dark"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.AppCompatImageButton
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:id="@+id/plusButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
+        app:srcCompat="@drawable/ic_add_white_24dp" />
+
+</LinearLayout>
