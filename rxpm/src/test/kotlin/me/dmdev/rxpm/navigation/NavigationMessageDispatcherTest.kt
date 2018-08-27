@@ -1,76 +1,64 @@
 package me.dmdev.rxpm.navigation
 
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnitRunner
+import kotlin.test.assertFailsWith
 
-@RunWith(MockitoJUnitRunner::class)
 class NavigationMessageDispatcherTest {
 
-    @Mock lateinit var handledNavigator: NavigationMessageHandler
-    @Mock lateinit var notHandledNavigator: NavigationMessageHandler
-    @Mock lateinit var unreachableNavigator: NavigationMessageHandler
     private val testMessage = object : NavigationMessage {}
 
-    @Before
-    fun init() {
-        MockitoAnnotations.initMocks(this)
-        Mockito.`when`(handledNavigator.handleNavigationMessage(testMessage)).thenReturn(true)
-        Mockito.`when`(notHandledNavigator.handleNavigationMessage(testMessage)).thenReturn(false)
+    private lateinit var workingHandler: NavigationMessageHandler
+    private lateinit var ignoringHandler: NavigationMessageHandler
+    private lateinit var unreachableHandler: NavigationMessageHandler
+
+    @Before fun setUp() {
+        workingHandler = mockMessageHandler(true)
+        ignoringHandler = mockMessageHandler(false)
+        unreachableHandler = mockMessageHandler(true)
     }
 
-    @Test
-    fun testHandledMessage() {
+    private fun mockMessageHandler(handleMessages: Boolean): NavigationMessageHandler {
+        return mock {
+            on { handleNavigationMessage(any()) } doReturn handleMessages
+        }
+    }
 
-        val dispatcher = object : NavigationMessageDispatcher(Unit) {
+    @Test fun handleMessage() {
+        val dispatcher = createDispatcher(listOf(Unit, ignoringHandler, workingHandler, unreachableHandler))
+
+        dispatcher.dispatch(testMessage)
+
+        verify(ignoringHandler).handleNavigationMessage(testMessage)
+        verify(workingHandler).handleNavigationMessage(testMessage)
+        verifyZeroInteractions(unreachableHandler)
+    }
+
+    private fun createDispatcher(handlers: List<Any>): NavigationMessageDispatcher {
+        return object : NavigationMessageDispatcher(Unit) {
 
             var k = 0
 
             override fun getParent(node: Any?): Any? {
 
-                val result: Any? = when (k) {
-                    0 -> Unit
-                    1 -> notHandledNavigator
-                    2 -> handledNavigator
-                    3 -> unreachableNavigator
-                    else -> null
+                val result: Any? = try {
+                    handlers[k]
+                } catch (e: ArrayIndexOutOfBoundsException) {
+                    null
                 }
                 k++
+
                 return result
             }
         }
-
-        dispatcher.dispatch(testMessage)
-
-        Mockito.verify(notHandledNavigator).handleNavigationMessage(testMessage)
-        Mockito.verify(handledNavigator).handleNavigationMessage(testMessage)
-        Mockito.verifyZeroInteractions(unreachableNavigator)
-
     }
 
-    @Test(expected = NotHandledNavigationMessageException::class)
-    fun testNotHandledMessage() {
+    @Test fun failsIfMessageNotHandled() {
+        val dispatcher = createDispatcher(listOf(Unit, ignoringHandler))
 
-        val dispatcher = object : NavigationMessageDispatcher(Unit) {
-
-            var k = 0
-
-            override fun getParent(node: Any?): Any? {
-
-                val result: Any? = when (k) {
-                    0 -> Unit
-                    1 -> notHandledNavigator
-                    else -> null
-                }
-                k++
-                return result
-            }
+        assertFailsWith<NotHandledNavigationMessageException> {
+            dispatcher.dispatch(testMessage)
         }
-
-        dispatcher.dispatch(testMessage)
     }
 }

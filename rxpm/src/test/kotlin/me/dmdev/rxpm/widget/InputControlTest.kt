@@ -1,49 +1,60 @@
 package me.dmdev.rxpm.widget
 
-import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PresentationModel
+import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
 
 class InputControlTest {
 
-    @Test
-    fun testFilterIfValueNotChanged() {
+    private lateinit var presentationModel: PresentationModel
 
-        val pm = Mockito.spy(PresentationModel::class.java)
-        val input = pm.inputControl()
-
-        val to = TestObserver<String>()
-        input.text.observable.subscribe(to)
-
-        input.textChanges.consumer.accept("a")
-        input.textChanges.consumer.accept("a")
-        input.textChanges.consumer.accept("ab")
-        input.textChanges.consumer.accept("ab")
-        input.textChanges.consumer.accept("abc")
-        input.textChanges.consumer.accept("abc")
-
-        to.assertValues("", "a", "ab", "abc")
-        to.assertNoErrors()
+    @Before fun setUp() {
+        presentationModel = object : PresentationModel() {}
     }
 
-    @Test
-    fun testFormatter() {
+    @Test fun filterDuplicateChanges() {
+        val inputControl = presentationModel.inputControl()
+        val testObserver = inputControl.text.observable.test()
 
-        val pm = Mockito.spy(PresentationModel::class.java)
-        val input = pm.inputControl(
-                formatter = { it.toUpperCase() }
+        inputControl.textChanges.consumer.run {
+            accept("a")
+            accept("a")
+            accept("ab")
+            accept("ab")
+            accept("abc")
+            accept("abc")
+        }
+
+        testObserver
+            .assertValues(
+                "", // initial value
+                "a",
+                "ab",
+                "abc"
+            )
+            .assertNoErrors()
+    }
+
+    @Test fun formatInput() {
+        val inputControl = presentationModel.inputControl(
+            formatter = { it.toUpperCase() }
         )
+        val testObserver = inputControl.text.observable.test()
 
-        val to = TestObserver<String>()
-        input.text.observable.subscribe(to)
+        inputControl.textChanges.consumer.run {
+            accept("a")
+            accept("ab")
+            accept("abc")
+        }
 
-        input.textChanges.consumer.accept("a")
-        input.textChanges.consumer.accept("ab")
-        input.textChanges.consumer.accept("abc")
-
-        to.assertValues("", "A", "AB", "ABC")
-        to.assertNoErrors()
+        testObserver
+            .assertValues(
+                "", // initial value
+                "A",
+                "AB",
+                "ABC"
+            )
+            .assertNoErrors()
     }
 
 }

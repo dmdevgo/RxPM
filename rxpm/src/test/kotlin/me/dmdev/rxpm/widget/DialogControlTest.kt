@@ -1,85 +1,86 @@
 package me.dmdev.rxpm.widget
 
-import io.reactivex.observers.TestObserver
-import junit.framework.Assert.assertEquals
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.widget.DialogControl.State.Displayed
 import me.dmdev.rxpm.widget.DialogControl.State.NotDisplayed
+import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertTrue
 
 class DialogControlTest {
 
-    @Test
-    fun simpleDialogResultTest() {
+    private lateinit var dialogControl: DialogControl<Unit, Unit>
 
-        val pm = object : PresentationModel() {}
-        val dc = pm.dialogControl<Unit, Unit>()
-
-        val to = TestObserver<Unit>()
-
-        dc.showForResult(Unit).subscribe(to)
-
-        assertEquals(true, dc.displayed.value is Displayed<*>)
-
-        dc.sendResult(Unit)
-        dc.sendResult(Unit) // only one is expected
-
-        assertEquals(true, dc.displayed.value === NotDisplayed)
-
-        to.assertResult(Unit)
+    @Before fun setUp() {
+        dialogControl = createDialogControl()
     }
 
-    @Test
-    fun cancelDialogTest() {
-
+    private fun createDialogControl(): DialogControl<Unit, Unit> {
         val pm = object : PresentationModel() {}
-        val dc = pm.dialogControl<Unit, Unit>()
-
-        val to = TestObserver<Unit>()
-
-        dc.showForResult(Unit).subscribe(to)
-
-        assertEquals(true, dc.displayed.value is Displayed<*>)
-
-        dc.dismiss()
-
-        assertEquals(true, dc.displayed.value === NotDisplayed)
-
-        to.assertSubscribed()
-        to.assertNoErrors()
-        to.assertNoValues()
-        to.assertComplete()
+        return pm.dialogControl()
     }
 
-    @Test
-    fun onlyOneActiveDialogTest() {
+    @Test fun displayedOnShow() {
+        dialogControl.showForResult(Unit).subscribe()
+        assertTrue { dialogControl.displayed.value is Displayed<*> }
+    }
 
-        val pm = object : PresentationModel() {}
-        val dc = pm.dialogControl<Unit, Unit>()
+    @Test fun removedOnResult() {
+        dialogControl.showForResult(Unit).subscribe()
+        dialogControl.sendResult(Unit)
+        assertTrue { dialogControl.displayed.value === NotDisplayed }
+    }
 
-        val to = TestObserver<DialogControl.State>()
-        val firstResultObserver = TestObserver<Unit>()
-        val secondResultObserver = TestObserver<Unit>()
+    @Test fun acceptOneResult() {
+        val testObserver = dialogControl.showForResult(Unit).test()
 
-        dc.displayed.observable.subscribe(to)
+        // When two results sent
+        dialogControl.sendResult(Unit)
+        dialogControl.sendResult(Unit)
 
-        dc.showForResult(Unit).subscribe(firstResultObserver)
-        dc.showForResult(Unit).subscribe(secondResultObserver)
+        // Then only one is here
+        testObserver.assertResult(Unit)
+    }
 
-        to.assertSubscribed()
-        to.assertNoErrors()
-        to.assertValueCount(4)
+    @Test fun removedOnDismiss() {
+        dialogControl.showForResult(Unit).subscribe()
+        dialogControl.dismiss()
+        assertTrue { dialogControl.displayed.value === NotDisplayed }
+    }
 
-        to.assertValueAt(0, NotDisplayed)
-        to.assertValueAt(1) { it is Displayed<*> }
-        to.assertValueAt(2, NotDisplayed)
-        to.assertValueAt(3) { it is Displayed<*> }
+    @Test fun cancelDialog() {
+        val testObserver = dialogControl.showForResult(Unit).test()
+        dialogControl.dismiss()
 
-        firstResultObserver
-                .assertSubscribed()
-                .assertComplete()
+        testObserver
+            .assertSubscribed()
+            .assertNoValues()
+            .assertNoErrors()
+            .assertComplete()
+    }
 
-        secondResultObserver.assertEmpty()
+    @Test fun dismissPreviousOnNewShow() {
+        val displayedObserver = dialogControl.displayed.observable.test()
 
+        val firstObserver = dialogControl.showForResult(Unit).test()
+        val secondObserver = dialogControl.showForResult(Unit).test()
+
+        displayedObserver
+            .assertSubscribed()
+            .assertValueCount(4)
+            .assertValueAt(0, NotDisplayed)
+            .assertValueAt(1) { it is Displayed<*> }
+            .assertValueAt(2, NotDisplayed)
+            .assertValueAt(3) { it is Displayed<*> }
+            .assertNoErrors()
+
+        firstObserver
+            .assertSubscribed()
+            .assertNoValues()
+            .assertNoErrors()
+            .assertComplete()
+
+        secondObserver
+            .assertEmpty()
     }
 }

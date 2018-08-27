@@ -1,180 +1,162 @@
 package me.dmdev.rxpm
 
 import com.jakewharton.rxrelay2.PublishRelay
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PresentationModel.Lifecycle
-import org.junit.Assert
+import me.dmdev.rxpm.PresentationModel.Lifecycle.*
+import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class PresentationModelTest {
 
-    @Test
-    fun testLifeCycle() {
+    private lateinit var lifecycleCallbacks: LifecycleCallbacks
+    private lateinit var pm: TestPm
+    private lateinit var lifecycleObserver: TestObserver<Lifecycle>
 
-        val callbacks = Mockito.mock(LifeCycleCallbacks::class.java)
-        val testPm = TestPm(callbacks)
-        val to = TestObserver<Lifecycle>()
-
-        testPm.lifecycleObservable.subscribe(to)
-
-        testPm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        testPm.lifecycleConsumer.accept(Lifecycle.BINDED)
-        testPm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-        testPm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
-
-        to.assertSubscribed()
-        to.assertValues(Lifecycle.CREATED,
-                        Lifecycle.BINDED,
-                        Lifecycle.UNBINDED,
-                        Lifecycle.DESTROYED)
-        to.assertNoErrors()
-
-        Mockito.verify(callbacks).onCreate()
-        Mockito.verify(callbacks).onBind()
-        Mockito.verify(callbacks).onUnbind()
-        Mockito.verify(callbacks).onDestroy()
-
+    @Before fun setUp() {
+        lifecycleCallbacks = mock()
+        pm = TestPm(lifecycleCallbacks)
+        lifecycleObserver = pm.lifecycleObservable.test()
     }
 
-    @Test
-    fun testChildLifeCycle() {
+    @Test fun observingLifecycle() {
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.lifecycleConsumer.accept(DESTROYED)
 
-        val callbacks = Mockito.mock(LifeCycleCallbacks::class.java)
-        val childPm = TestPm(callbacks)
-        val pm = TestPmWithChild(childPm)
-        val to = TestObserver<Lifecycle>()
-
-        pm.lifecycleObservable.subscribe(to)
-
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
-        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
-
-        to.assertSubscribed()
-        to.assertValues(Lifecycle.CREATED,
-                        Lifecycle.BINDED,
-                        Lifecycle.UNBINDED,
-                        Lifecycle.DESTROYED)
-        to.assertNoErrors()
-
-        Mockito.verify(callbacks).onCreate()
-        Mockito.verify(callbacks).onBind()
-        Mockito.verify(callbacks).onUnbind()
-        Mockito.verify(callbacks).onDestroy()
-
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
     }
 
-    @Test
-    fun testCurrentLifecycleValue() {
-        val pm = object: PresentationModel() {}
+    @Test fun invokeLifecycleCallbacks() {
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.lifecycleConsumer.accept(DESTROYED)
 
+        verify(lifecycleCallbacks).onCreate()
+        verify(lifecycleCallbacks).onBind()
+        verify(lifecycleCallbacks).onUnbind()
+        verify(lifecycleCallbacks).onDestroy()
+    }
+
+    @Test fun invokeLifecycleCallbacksWhenChildAttached() {
+        val childPm = spy<PresentationModel>()
+        childPm.attachToParent(pm)
+
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.lifecycleConsumer.accept(DESTROYED)
+
+        verify(lifecycleCallbacks).onCreate()
+        verify(lifecycleCallbacks).onBind()
+        verify(lifecycleCallbacks).onUnbind()
+        verify(lifecycleCallbacks).onDestroy()
+    }
+
+    @Test fun currentLifecycleValue() {
         assertNull(pm.currentLifecycleState)
 
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        assertEquals(Lifecycle.CREATED, pm.currentLifecycleState)
+        pm.lifecycleConsumer.accept(CREATED)
+        assertEquals(CREATED, pm.currentLifecycleState)
 
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
-        assertEquals(Lifecycle.BINDED, pm.currentLifecycleState)
+        pm.lifecycleConsumer.accept(BINDED)
+        assertEquals(BINDED, pm.currentLifecycleState)
 
-        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-        assertEquals(Lifecycle.UNBINDED, pm.currentLifecycleState)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        assertEquals(UNBINDED, pm.currentLifecycleState)
 
-        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
-        assertEquals(Lifecycle.DESTROYED, pm.currentLifecycleState)
+        pm.lifecycleConsumer.accept(DESTROYED)
+        assertEquals(DESTROYED, pm.currentLifecycleState)
     }
 
-    @Test
-    fun testBufferWhileUnbind() {
-        val pm = object : PresentationModel() {
-            val relay = PublishRelay.create<Int>()
-            val commands = relay.bufferWhileUnbind()
-        }
-
-        val commands = mutableListOf<Int>()
-
-        pm.commands.subscribe { commands.add(it) }
+    @Test fun bufferWhileUnbindBlockItemsBeforeCreated() {
+        val testObserver = pm.commands.test()
 
         pm.relay.accept(1)
 
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
-
-        pm.relay.accept(2)
-
-        Assert.assertArrayEquals(intArrayOf(), commands.toIntArray())
-
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
-
-        Assert.assertArrayEquals(intArrayOf(1, 2), commands.toIntArray())
-
-        pm.relay.accept(3)
-        pm.relay.accept(4)
-
-        Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4), commands.toIntArray())
-
-        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-
-        pm.relay.accept(5)
-        pm.relay.accept(6)
-
-        Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4), commands.toIntArray())
-
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
-
-        Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4, 5, 6), commands.toIntArray())
-
-        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-
-        pm.relay.accept(7)
-
-        Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4, 5, 6), commands.toIntArray())
-
-        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
-
-        pm.relay.accept(8)
-
-        Assert.assertArrayEquals(intArrayOf(1, 2, 3, 4, 5, 6), commands.toIntArray())
-
+        testObserver.assertEmpty()
     }
 
-    @Test
-    fun testBufferWhileUnbindSize1() {
-        val pm = object : PresentationModel() {
-            val relay = PublishRelay.create<Int>()
-            val commands = relay.bufferWhileUnbind(bufferSize = 1)
-        }
+    @Test fun bufferWhileUnbindBlockItemsBeforeBinded() {
+        val testObserver = pm.commands.test()
 
-        val commands = mutableListOf<Int>()
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.relay.accept(1)
 
-        pm.commands.subscribe { commands.add(it) }
+        testObserver.assertEmpty()
+    }
 
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
+    @Test fun bufferWhileUnbindReceiveItemsWhenBinded() {
+        val testObserver = pm.commands.test()
 
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
         pm.relay.accept(1)
         pm.relay.accept(2)
-        pm.relay.accept(3)
 
-        Assert.assertArrayEquals(intArrayOf(), commands.toIntArray())
+        testObserver.assertValuesOnly(1, 2)
+    }
 
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
+    @Test fun bufferWhileUnbindPassItemsAfterBinded() {
+        val testObserver = pm.commands.test()
 
-        Assert.assertArrayEquals(intArrayOf(3), commands.toIntArray())
+        pm.relay.accept(1)
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.relay.accept(2)
+        pm.lifecycleConsumer.accept(BINDED)
 
+        testObserver.assertValuesOnly(1, 2)
+    }
+
+    @Test fun bufferWhileUnbindBlockItemsAfterUnbinded() {
+        val testObserver = pm.commands.test()
+
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.relay.accept(1)
+
+        testObserver.assertEmpty()
+    }
+
+    @Test fun bufferWhileUnbindPassItemsAfterBindedAgain() {
+        val testObserver = pm.commands.test()
+
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.relay.accept(1)
+        pm.relay.accept(2)
+        pm.lifecycleConsumer.accept(BINDED)
+
+        testObserver.assertValuesOnly(1, 2)
+    }
+
+    @Test fun bufferWhileUnbindBlockItemsAfterDestroyed() {
+        val testObserver = pm.commands.test()
+
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.lifecycleConsumer.accept(DESTROYED)
+        pm.relay.accept(1)
+
+        testObserver.assertEmpty()
     }
 }
 
-open class TestPmWithChild(private val childPm: TestPm) : PresentationModel() {
+open class TestPm(private val callbacks: LifecycleCallbacks) : PresentationModel() {
 
-    override fun onCreate() {
-        super.onCreate()
-        childPm.attachToParent(this)
-    }
-}
+    val relay = PublishRelay.create<Int>()
+    val commands = relay.bufferWhileUnbind()
 
-open class TestPm(val callbacks: LifeCycleCallbacks) : PresentationModel() {
     override fun onCreate() {
         callbacks.onCreate()
     }
@@ -192,9 +174,9 @@ open class TestPm(val callbacks: LifeCycleCallbacks) : PresentationModel() {
     }
 }
 
-open class LifeCycleCallbacks {
-    open fun onCreate() {}
-    open fun onBind() {}
-    open fun onUnbind() {}
-    open fun onDestroy() {}
+interface LifecycleCallbacks {
+    fun onCreate() {}
+    fun onBind() {}
+    fun onUnbind() {}
+    fun onDestroy() {}
 }

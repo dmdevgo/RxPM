@@ -1,31 +1,33 @@
 package me.dmdev.rxpm.widget
 
-import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PresentationModel
 import org.junit.Test
-import org.mockito.Mockito.spy
 
 class CheckControlTest {
 
-    @Test
-    fun testFilterIfValueNotChanged() {
-
-        val pm = spy(PresentationModel::class.java)
+    @Test fun filterIfValueNotChanged() {
+        val pm = object : PresentationModel() {}
         val checkbox = pm.checkControl()
 
-        val to = TestObserver<Boolean>()
-        checkbox.checked.observable.subscribe(to)
+        val testObserver = checkbox.checked.observable.test()
 
-        checkbox.checkedChanges.consumer.accept(true)
-        checkbox.checkedChanges.consumer.accept(true)
-        checkbox.checkedChanges.consumer.accept(false)
-        checkbox.checkedChanges.consumer.accept(false)
-        checkbox.checkedChanges.consumer.accept(true)
-        checkbox.checkedChanges.consumer.accept(false)
+        checkbox.checkedChanges.consumer.run {
+            accept(true)
+            accept(true)
+            accept(false)
+            accept(false)
+            accept(true)
+            accept(false)
+        }
 
-        to.assertValues(false, //initial value
-                        true, false, true, false)
-        to.assertNoErrors()
+        testObserver
+            .assertValues(
+                false, // initial value
+                true,
+                false,
+                true,
+                false
+            )
+            .assertNoErrors()
     }
-
 }

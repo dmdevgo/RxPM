@@ -6,152 +6,114 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
-import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 
 class PmExtensionsTest {
 
-    @Test
-    fun testSingleBindProgress() {
-        val progress = BehaviorRelay.createDefault<Boolean>(false)
-        val to = TestObserver<Int>()
-        val toProgress = TestObserver<Boolean>()
+    private lateinit var progress: BehaviorRelay<Boolean>
 
-        progress.subscribe(toProgress)
+    private lateinit var isIdleObservable: BehaviorRelay<Boolean>
+    private lateinit var relay: PublishRelay<Int>
+
+    @Before fun setUp() {
+        progress = BehaviorRelay.createDefault(false)
+
+        relay = PublishRelay.create()
+        isIdleObservable = BehaviorRelay.createDefault(false)
+    }
+
+    @Test fun bindProgressSingle() {
+        val testObserver = TestObserver<Int>()
+        val progressObserver = progress.test()
 
         Single.just(1)
-                .bindProgress(progress)
-                .subscribe(to)
+            .bindProgress(progress)
+            .subscribe(testObserver)
 
-        to.assertResult(1)
-
-        toProgress.assertValues(false, true, false)
-        toProgress.assertNoErrors()
+        testObserver.assertResult(1)
+        progressObserver.assertValuesOnly(false, true, false)
     }
 
-    @Test
-    fun testSingleBindProgressOnFailure() {
-        val progress = BehaviorRelay.createDefault<Boolean>(false)
-        val to = TestObserver<Int>()
-        val toProgress = TestObserver<Boolean>()
+    @Test fun bindProgressOnErrorSingle() {
         val error = IllegalArgumentException()
-
-        progress.subscribe(toProgress)
+        val testObserver = TestObserver<Int>()
+        val progressObserver = progress.test()
 
         Single.error<Int>(error)
-                .bindProgress(progress)
-                .subscribe(to)
+            .bindProgress(progress)
+            .subscribe(testObserver)
 
-        to.assertNotComplete()
-        to.assertError(error)
-
-        toProgress.assertValues(false, true, false)
-        toProgress.assertNoErrors()
+        testObserver.assertError(error)
+        progressObserver.assertValuesOnly(false, true, false)
     }
 
-    @Test
-    fun testMaybeBindProgress() {
-        val progress = BehaviorRelay.createDefault<Boolean>(false)
-        val to = TestObserver<Int>()
-        val toProgress = TestObserver<Boolean>()
-
-        progress.subscribe(toProgress)
+    @Test fun bindProgressMaybe() {
+        val testObserver = TestObserver<Int>()
+        val progressObserver = progress.test()
 
         Maybe.just(1)
-                .bindProgress(progress)
-                .subscribe(to)
+            .bindProgress(progress)
+            .subscribe(testObserver)
 
-        to.assertResult(1)
-
-        toProgress.assertValues(false, true, false)
-        toProgress.assertNoErrors()
+        testObserver.assertResult(1)
+        progressObserver.assertValuesOnly(false, true, false)
     }
 
-    @Test
-    fun testMaybeEmptyBindProgress() {
-        val progress = BehaviorRelay.createDefault<Boolean>(false)
-        val to = TestObserver<Int>()
-        val toProgress = TestObserver<Boolean>()
-
-        progress.subscribe(toProgress)
-
-        Maybe.empty<Int>()
-                .bindProgress(progress)
-                .subscribe(to)
-
-        to.assertComplete()
-        to.assertNoValues()
-
-        toProgress.assertValues(false, true, false)
-        toProgress.assertNoErrors()
-    }
-
-    @Test
-    fun testMaybeBindProgressOnFailure() {
-        val progress = BehaviorRelay.createDefault<Boolean>(false)
-        val to = TestObserver<Int>()
-        val toProgress = TestObserver<Boolean>()
+    @Test fun bindProgressOnErrorMaybe() {
         val error = IllegalArgumentException()
-
-        progress.subscribe(toProgress)
+        val testObserver = TestObserver<Int>()
+        val progressObserver = progress.test()
 
         Maybe.error<Int>(error)
-                .bindProgress(progress)
-                .subscribe(to)
+            .bindProgress(progress)
+            .subscribe(testObserver)
 
-        to.assertNotComplete()
-        to.assertError(error)
-
-        toProgress.assertValues(false, true, false)
-        toProgress.assertNoErrors()
+        testObserver.assertError(error)
+        progressObserver.assertValuesOnly(false, true, false)
     }
 
-    @Test
-    fun testCompletableBindProgress() {
-        val progress = BehaviorRelay.createDefault<Boolean>(false)
-        val to = TestObserver<Int>()
-        val toProgress = TestObserver<Boolean>()
+    @Test fun bindProgressOnEmptyMaybe() {
+        val testObserver = TestObserver<Int>()
+        val progressObserver = progress.test()
 
-        progress.subscribe(toProgress)
+        Maybe.empty<Int>()
+            .bindProgress(progress)
+            .subscribe(testObserver)
+
+        testObserver
+            .assertNoValues()
+            .assertComplete()
+        progressObserver.assertValuesOnly(false, true, false)
+    }
+
+    @Test fun bindProgressCompletable() {
+        val testObserver = TestObserver<Int>()
+        val progressObserver = progress.test()
 
         Completable.complete()
-                .bindProgress(progress)
-                .subscribe(to)
+            .bindProgress(progress)
+            .subscribe(testObserver)
 
-        to.assertComplete()
-        to.assertNoErrors()
-
-        toProgress.assertValues(false, true, false)
-        toProgress.assertNoErrors()
+        testObserver.assertComplete()
+        progressObserver.assertValuesOnly(false, true, false)
     }
 
-    @Test
-    fun testCompletableBindProgressOnFailure() {
-        val progress = BehaviorRelay.createDefault<Boolean>(false)
-        val to = TestObserver<Int>()
-        val toProgress = TestObserver<Boolean>()
+    @Test fun bindProgressOnErrorCompletable() {
         val error = IllegalArgumentException()
-
-        progress.subscribe(toProgress)
+        val testObserver = TestObserver<Int>()
+        val progressObserver = progress.test()
 
         Completable.error(error)
-                .bindProgress(progress)
-                .subscribe(to)
+            .bindProgress(progress)
+            .subscribe(testObserver)
 
-        to.assertNotComplete()
-        to.assertError(error)
-
-        toProgress.assertValues(false, true, false)
-        toProgress.assertNoErrors()
+        testObserver.assertError(error)
+        progressObserver.assertValuesOnly(false, true, false)
     }
 
-    @Test
-    fun testSkipWhileProgress() {
-        val progress = BehaviorRelay.createDefault<Boolean>(false)
-        val relay = PublishRelay.create<Int>()
-        val to = TestObserver<Int>()
-
-        relay.skipWhileInProgress(progress).subscribe(to)
+    @Test fun skipWhileInProgress() {
+        val testObserver = relay.skipWhileInProgress(progress).test()
 
         relay.accept(1)
         relay.accept(2)
@@ -162,135 +124,118 @@ class PmExtensionsTest {
         relay.accept(5)
         relay.accept(6)
 
-        to.assertValues(1, 2, 5, 6)
-        to.assertNoErrors()
+        testObserver.assertValuesOnly(1, 2, 5, 6)
     }
 
-    @Test
-    fun testBufferWhileIdle() {
-        val openCloseObservable = BehaviorRelay.createDefault<Boolean>(false)
-        val relay = PublishRelay.create<Int>()
-        val commandsObservable = relay.bufferWhileIdle(openCloseObservable)
-
-        val commands = mutableListOf<Int>()
-
-        var disposable = commandsObservable.subscribe {
-            commands.add(it)
-        }
+    @Test fun bufferWhileIdleReceiveItems() {
+        val testObserver = relay.bufferWhileIdle(isIdleObservable).test()
 
         relay.accept(1)
         relay.accept(2)
 
-        disposable.dispose()
-        openCloseObservable.accept(true)
+        testObserver.assertValuesOnly(1, 2)
+    }
 
+    @Test fun bufferWhileIdleBlockItemsWhenIdle() {
+        val testObserver = relay.bufferWhileIdle(isIdleObservable).test()
+
+        relay.accept(1)
+        relay.accept(2)
+        isIdleObservable.accept(true)
         relay.accept(3)
         relay.accept(4)
 
-        Assert.assertArrayEquals(intArrayOf(1,2), commands.toIntArray())
-
-        disposable = commandsObservable.subscribe { commands.add(it) }
-        openCloseObservable.accept(false)
-
-        Assert.assertArrayEquals(intArrayOf(1,2,3,4), commands.toIntArray())
-
-        disposable.dispose()
-
+        testObserver.assertValuesOnly(1, 2)
     }
 
-    @Test
-    fun testBufferWhileIdle2() {
-        val openCloseObservable = BehaviorRelay.createDefault<Boolean>(false)
-        val relay = PublishRelay.create<Int>()
-        val commandsObservable = relay.bufferWhileIdle(openCloseObservable)
+    @Test fun bufferWhileIdlePassItemsAfterIdle() {
+        val testObserver = relay.bufferWhileIdle(isIdleObservable).test()
 
-        val commands = mutableListOf<Int>()
+        relay.accept(1)
+        relay.accept(2)
+        isIdleObservable.accept(true)
+        relay.accept(3)
+        relay.accept(4)
+        isIdleObservable.accept(false)
 
-        val disposable = commandsObservable.subscribe {
-            commands.add(it)
-        }
+        testObserver.assertValuesOnly(1, 2, 3, 4)
+    }
+
+    @Test fun bufferWhileIdlePassItemsAfterIdleEvenIfResubscribed() {
+        val relayWithBuffer = relay.bufferWhileIdle(isIdleObservable)
+        var testObserver = relayWithBuffer.test()
 
         relay.accept(1)
         relay.accept(2)
 
-        openCloseObservable.accept(true)
+        testObserver.assertValuesOnly(1, 2)
 
+        testObserver.dispose()
+        isIdleObservable.accept(true)
         relay.accept(3)
         relay.accept(4)
+        testObserver = relayWithBuffer.test()
+        isIdleObservable.accept(false)
 
-        Assert.assertArrayEquals(intArrayOf(1,2), commands.toIntArray())
-
-        openCloseObservable.accept(false)
-
-        Assert.assertArrayEquals(intArrayOf(1,2,3,4), commands.toIntArray())
-
-        disposable.dispose()
-
+        testObserver.assertValuesOnly(3, 4)
     }
 
-    @Test
-    fun testBufferWhileIdle3() {
-        val openCloseObservable = BehaviorRelay.createDefault<Boolean>(false)
-        val relay = PublishRelay.create<Int>()
-        val commandsObservable = relay.bufferWhileIdle(openCloseObservable)
-
-        val commands = mutableListOf<Int>()
-
-        var disposable = commandsObservable.subscribe {
-            commands.add(it)
-            if (it == 2 ) openCloseObservable.accept(true)
-        }
+    @Test fun bufferWhileIdleRestrictBufferedItemsCount() {
+        val testObserver = relay.bufferWhileIdle(isIdleObservable, bufferSize = 1).test()
 
         relay.accept(1)
         relay.accept(2)
-
-        disposable.dispose()
-
+        isIdleObservable.accept(true)
         relay.accept(3)
         relay.accept(4)
+        isIdleObservable.accept(false)
 
-        Assert.assertArrayEquals(intArrayOf(1,2), commands.toIntArray())
-
-        disposable = commandsObservable.subscribe { commands.add(it) }
-        openCloseObservable.accept(false)
-
-        Assert.assertArrayEquals(intArrayOf(1,2,3,4), commands.toIntArray())
-
-        disposable.dispose()
-
+        testObserver.assertValuesOnly(1, 2, 4)
     }
 
-    @Test
-    fun testBufferWhileIdle4() {
-        val openCloseObservable = BehaviorRelay.createDefault<Boolean>(false)
-        val relay = PublishRelay.create<Int>()
-        val commandsObservable = relay.bufferWhileIdle(openCloseObservable)
-
-        val commands = mutableListOf<Int>()
-
-        var disposable = commandsObservable.subscribe {
-            commands.add(it)
-        }
+    @Test fun bufferWhileIdleCanStartIdlingWhenConsumingValue() {
+        val testObserver = relay.bufferWhileIdle(isIdleObservable)
+            .doOnNext { value ->
+                // Use already consumed value to open buffer
+                if (value == 2) isIdleObservable.accept(true)
+            }
+            .test()
 
         relay.accept(1)
         relay.accept(2)
-
-        disposable.dispose()
-        openCloseObservable.accept(true)
-        openCloseObservable.accept(true)
-
+        // Here idling will begin
         relay.accept(3)
         relay.accept(4)
+        isIdleObservable.accept(false)
 
-        Assert.assertArrayEquals(intArrayOf(1,2), commands.toIntArray())
+        testObserver.assertValuesOnly(1, 2, 3, 4)
+    }
 
-        disposable = commandsObservable.subscribe { commands.add(it) }
-        openCloseObservable.accept(false)
-        openCloseObservable.accept(false)
+    @Test fun bufferWhileIdleOpensOneBufferAtATime() {
+        val testObserver = relay.bufferWhileIdle(isIdleObservable).test()
 
-        Assert.assertArrayEquals(intArrayOf(1,2,3,4), commands.toIntArray())
+        relay.accept(1)
+        relay.accept(2)
+        isIdleObservable.accept(true)
+        isIdleObservable.accept(true)
+        relay.accept(3)
+        relay.accept(4)
+        isIdleObservable.accept(false)
 
-        disposable.dispose()
+        testObserver.assertValuesOnly(1, 2, 3, 4)
+    }
 
+    @Test fun bufferWhileIdleNoReactionOnMultipleCloses() {
+        val testObserver = relay.bufferWhileIdle(isIdleObservable).test()
+
+        relay.accept(1)
+        relay.accept(2)
+        isIdleObservable.accept(true)
+        relay.accept(3)
+        relay.accept(4)
+        isIdleObservable.accept(false)
+        isIdleObservable.accept(false)
+
+        testObserver.assertValuesOnly(1, 2, 3, 4)
     }
 }
