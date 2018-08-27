@@ -4,13 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
 
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         applicationId "me.dmdev.rxpm.sample"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
         versionCode 1
         versionName "1.0"
@@ -23,21 +23,20 @@ android {
 
 dependencies {
 
-    implementation rootProject.ext.kotlinStdlib
+    implementation rootProject.kotlinStdlib
 
     implementation project(':rxpm')
 
-    implementation rootProject.ext.supportAppCompat
-    implementation rootProject.ext.supportDesign
+    implementation rootProject.supportAppCompat
+    implementation rootProject.supportDesign
 
     // Rx
-    implementation rootProject.ext.rxAndroid2
+    implementation rootProject.rxAndroid2
 
     // RxBindings
-    implementation rootProject.ext.rxBindingKotlin
-    implementation(rootProject.ext.rxBindingSupportV4Kotlin) {
-        exclude module: 'support-core-ui'
-    }
+    implementation rootProject.rxBindingKotlin
+    implementation rootProject.rxBindingSupportV4Kotlin
+    implementation rootProject.rxBindingSupportV7Kotlin
 
     implementation "com.jakewharton.timber:timber:4.7.1"
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.9.9'

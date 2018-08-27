@@ -43,6 +43,7 @@ ext {
     rxBinding2Version = '2.1.1'
     rxBindingKotlin = "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBinding2Version"
     rxBindingSupportV4Kotlin = "com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:$rxBinding2Version"
+    rxBindingSupportV7Kotlin = "com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:$rxBinding2Version"
 
     conductor = "com.bluelinelabs:conductor:2.1.4"
     outlast = "me.jeevuz.outlast:outlast:1.1"

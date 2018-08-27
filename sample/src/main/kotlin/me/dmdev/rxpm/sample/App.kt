@@ -1,22 +1,20 @@
 package me.dmdev.rxpm.sample
 
-import android.annotation.SuppressLint
 import android.app.Application
-
+import me.dmdev.rxpm.sample.main.MainComponent
 import timber.log.Timber
 
 
 class App : Application() {
 
     companion object {
-        @SuppressLint("StaticFieldLeak")
-        lateinit var component: AppComponent
+        lateinit var component: MainComponent
             private set
     }
 
     override fun onCreate() {
         super.onCreate()
-        component = AppComponent(this)
+        component = MainComponent(this)
         initLogger()
     }
 
