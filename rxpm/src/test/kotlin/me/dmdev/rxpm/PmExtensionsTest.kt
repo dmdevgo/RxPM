@@ -65,7 +65,7 @@ class PmExtensionsTest {
         val testObserver = TestObserver<Int>()
         val progressObserver = progress.test()
 
-        Single.error<Int>(error)
+        Maybe.error<Int>(error)
             .bindProgress(progress)
             .subscribe(testObserver)
 

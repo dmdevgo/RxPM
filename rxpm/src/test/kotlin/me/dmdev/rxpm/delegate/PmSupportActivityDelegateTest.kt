@@ -3,12 +3,17 @@ package me.dmdev.rxpm.delegate
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.PresentationModel.Lifecycle.*
 import me.dmdev.rxpm.base.PmSupportActivity
+import me.dmdev.rxpm.util.SchedulersRule
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class PmSupportActivityDelegateTest {
+
+    @get:Rule val schedulers = SchedulersRule()
 
     private lateinit var pm: PresentationModel
     private lateinit var compositeDisposable: CompositeDisposable
@@ -61,11 +66,11 @@ class PmSupportActivityDelegateTest {
         whenever(view.isFinishing).thenReturn(true)
         delegate.onDestroy()
 
-        testObserver.assertValues(
-            PresentationModel.Lifecycle.CREATED,
-            PresentationModel.Lifecycle.BINDED,
-            PresentationModel.Lifecycle.UNBINDED,
-            PresentationModel.Lifecycle.DESTROYED
+        testObserver.assertValuesOnly(
+            CREATED,
+            BINDED,
+            UNBINDED,
+            DESTROYED
         )
     }
 
