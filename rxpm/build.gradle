@@ -12,12 +12,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
     }
 
     buildTypes {
@@ -41,30 +41,30 @@ android {
 dependencies {
 
     // For default implementations
-    compileOnly rootProject.ext.supportAppCompat
-    compileOnly rootProject.ext.supportDesign
-    compileOnly rootProject.ext.conductor
-    compileOnly rootProject.ext.googleMaps
+    compileOnly rootProject.supportAppCompat
+    compileOnly rootProject.supportDesign
+    compileOnly rootProject.conductor
+    compileOnly rootProject.googleMaps
 
     // Rx
-    api rootProject.ext.rxJava2
-    implementation rootProject.ext.rxRelay2
-    implementation rootProject.ext.rxAndroid2
+    api rootProject.rxJava2
+    implementation rootProject.rxRelay2
+    implementation rootProject.rxAndroid2
 
     // RxBindings
-    implementation rootProject.ext.rxBindingKotlin
-    implementation(rootProject.ext.rxBindingSupportV4Kotlin) {
+    implementation rootProject.rxBindingKotlin
+    implementation(rootProject.rxBindingSupportV4Kotlin) {
         exclude module: 'support-core-ui'
     }
 
     // Persistent PM
-    implementation rootProject.ext.outlast
+    implementation rootProject.outlast
 
     // For tests
     testImplementation rootProject.junitKotlin
-    testImplementation rootProject.mockito
+    testImplementation rootProject.mockitoKotlin
     testImplementation rootProject.conductor
-    testImplementation rootProject.ext.supportAppCompat
+    testImplementation rootProject.supportAppCompat
 }
 
 ext {
@@ -72,7 +72,7 @@ ext {
     bintrayName = 'RxPM'
     publishedGroupId = 'me.dmdev.rxpm'
     artifact = 'rxpm'
-    libraryVersion = '1.1.3'
+    libraryVersion = '1.2'
     gitUrl = 'https://github.com/dmdevgo/RxPM'
     allLicenses = ['MIT']
 }

@@ -1,151 +1,113 @@
 package me.dmdev.rxpm
 
+import com.nhaarman.mockitokotlin2.spy
 import io.reactivex.observers.TestObserver
 import me.dmdev.rxpm.PresentationModel.Lifecycle
+import me.dmdev.rxpm.PresentationModel.Lifecycle.*
 import me.dmdev.rxpm.navigation.NavigationMessage
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
+import kotlin.test.assertFailsWith
 
 class ChildPresentationModelTest {
 
     private lateinit var pm: PresentationModel
     private lateinit var childPm: PresentationModel
-    private lateinit var to: TestObserver<Lifecycle>
+    private lateinit var lifecycleObserver: TestObserver<Lifecycle>
 
-    @Before
-    fun init() {
-        pm = Mockito.spy(PresentationModel::class.java)
-        childPm = Mockito.spy(PresentationModel::class.java)
-        to = TestObserver()
-        childPm.lifecycleObservable.subscribe(to)
+    @Before fun setUp() {
+        pm = spy()
+        childPm = spy()
+        lifecycleObserver = childPm.lifecycleObservable.test()
     }
 
-    private fun checkLifecycle() {
-        to.assertSubscribed()
-        to.assertValues(Lifecycle.CREATED,
-                        Lifecycle.BINDED,
-                        Lifecycle.UNBINDED,
-                        Lifecycle.DESTROYED)
-        to.assertNoErrors()
-    }
-
-    @Test
-    fun testChildAttachToParent() {
-
+    @Test fun attachToParent() {
         childPm.attachToParent(pm)
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.lifecycleConsumer.accept(DESTROYED)
 
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
-        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
-
-        checkLifecycle()
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
     }
 
-    @Test
-    fun testChildDetachFromParent() {
-
+    @Test fun detachFromParent() {
         childPm.attachToParent(pm)
-
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
-
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
         childPm.detachFromParent()
 
-        checkLifecycle()
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
     }
 
-    @Test
-    fun testAttachToParentAfterCreate() {
-
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
+    @Test fun attachToParentAfterCreated() {
+        pm.lifecycleConsumer.accept(CREATED)
         childPm.attachToParent(pm)
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
-        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.lifecycleConsumer.accept(DESTROYED)
 
-        checkLifecycle()
-
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
     }
 
-    @Test
-    fun testAttachToParentAfterBind() {
-
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
+    @Test fun attachToParentAfterBinded() {
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
         childPm.attachToParent(pm)
-        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.lifecycleConsumer.accept(DESTROYED)
 
-        checkLifecycle()
-
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
     }
 
-    @Test
-    fun testAttachToParentAfterUnbind() {
-
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
-        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+    @Test fun attachToParentAfterUnbinded() {
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
         childPm.attachToParent(pm)
-        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        pm.lifecycleConsumer.accept(DESTROYED)
 
-        to.assertSubscribed()
-        to.assertValues(Lifecycle.CREATED,
-                        Lifecycle.DESTROYED)
-        to.assertNoErrors()
-
+        lifecycleObserver.assertValuesOnly(CREATED, DESTROYED)
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun testAttachToParentAfterDestroy() {
+    @Test fun throwOnAttachToParentAfterDestroyed() {
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.lifecycleConsumer.accept(DESTROYED)
 
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
-        pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
-        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        assertFailsWith<IllegalStateException> {
+            childPm.attachToParent(pm)
+        }
+    }
 
+    @Test fun throwOnAttachToItself() {
+        assertFailsWith<IllegalArgumentException> {
+            childPm.attachToParent(childPm)
+        }
+    }
+
+    @Test fun throwOnChildPmReuse() {
         childPm.attachToParent(pm)
-
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun testAttachToParentItself() {
-        childPm.attachToParent(childPm)
-    }
-
-    @Test(expected = IllegalStateException::class)
-    fun testChildPmReusing() {
-
-        childPm.attachToParent(pm)
-
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
-
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
         childPm.detachFromParent()
 
-        childPm.attachToParent(pm)
-
+        assertFailsWith<IllegalStateException> {
+            childPm.attachToParent(pm)
+        }
     }
 
-    @Test
-    fun testMessageSending() {
-        val testMessage = Mockito.mock(NavigationMessage::class.java)
-        val to = TestObserver<NavigationMessage>()
-
-        pm.navigationMessages.observable.subscribe(to)
-
+    @Test fun passNavigationMessagesToParent() {
+        val testMessage = object : NavigationMessage {}
+        val testObserver = pm.navigationMessages.observable.test()
         childPm.attachToParent(pm)
-        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
-        pm.lifecycleConsumer.accept(Lifecycle.BINDED)
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
 
         childPm.navigationMessages.relay.accept(testMessage)
 
-        to.assertSubscribed()
-        to.assertValues(testMessage)
-        to.assertNoErrors()
-
+        testObserver.assertValuesOnly(testMessage)
     }
 
 }

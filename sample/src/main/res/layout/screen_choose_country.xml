@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout style="@style/AppLinearToolbar">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:theme="@style/ToolbarThemeOverlay">
 
         <ImageView
             android:id="@+id/navButton"
             style="@style/ActionButton"
-            app:srcCompat="@drawable/ic_arrow_back_white_24dp"/>
+            app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
 
         <TextView
             android:id="@+id/toolbarTitle"
-            style="@style/AppToolbarTitle"
-            android:text="@string/choose_country_screen_title"/>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:text="@string/choose_country_screen_title"
+            android:textAppearance="@style/ToolbarTextAppearance" />
 
         <EditText
-            android:id="@+id/searchQuery"
+            android:id="@+id/searchQueryEdit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -29,18 +40,18 @@
             android:maxLines="1"
             android:textColor="@color/white"
             android:textColorHint="@color/hint_text_light"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/clearButton"
             style="@style/ActionButton"
             android:visibility="gone"
-            app:srcCompat="@drawable/ic_close_white_24dp"/>
+            app:srcCompat="@drawable/ic_close_white_24dp" />
 
         <ImageView
             android:id="@+id/searchButton"
             style="@style/ActionButton"
-            app:srcCompat="@drawable/ic_search_white_24dp"/>
+            app:srcCompat="@drawable/ic_search_white_24dp" />
 
     </LinearLayout>
 
@@ -48,6 +59,6 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
 </LinearLayout>

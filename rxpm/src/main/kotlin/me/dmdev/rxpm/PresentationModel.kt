@@ -32,11 +32,19 @@ abstract class PresentationModel {
     val navigationMessages = Command<NavigationMessage>()
 
     /**
-     * The [lifecycle][Lifecycle] state of this presentation model.
+     * The [lifecycle][Lifecycle] of this presentation model.
      * @since 1.1
      */
     val lifecycleObservable = lifecycle.asObservable()
     internal val lifecycleConsumer = lifecycle.asConsumer()
+
+    /**
+     * Current state of this presentation model lifecycle.
+     *
+     * @return [lifecycle state][Lifecycle] or null if this presentation model is not created yet.
+     * @since 1.2
+     */
+    val currentLifecycleState: Lifecycle? get() = lifecycle.value
 
     init {
         lifecycle
@@ -99,22 +107,6 @@ abstract class PresentationModel {
      * @see [onUnbind]
      */
     protected open fun onDestroy() {}
-
-    /**
-     * Binds a child Presentation Model to this Presentation Model.
-     * @since 1.1
-     */
-    @Deprecated("Method bindChild() will be removed in 1.2", ReplaceWith("attachToParent()"))
-    protected fun bindChild(childPm: PresentationModel) {
-
-        lifecycleObservable
-                .takeUntil { it == Lifecycle.DESTROYED }
-                .subscribe(childPm.lifecycleConsumer)
-
-        childPm.navigationMessages.observable
-                .subscribe(navigationMessages.consumer)
-                .untilDestroy()
-    }
 
     /**
      * Attaches `this` (child presentation model) to the [parent] presentation model.

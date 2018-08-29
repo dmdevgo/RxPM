@@ -2,6 +2,7 @@ package me.dmdev.rxpm.delegate
 
 import android.app.Activity
 import android.os.Bundle
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
@@ -41,9 +42,11 @@ where PM : PresentationModel, A : Activity, A : PmView<PM> {
                                   savedInstanceState)
         presentationModel // Create lazy presentation model now
         pmBinder = PmBinder(presentationModel, pmView)
-        navigationMessagesDisposable = presentationModel.navigationMessages.observable.subscribe {
-            navigationMessagesDispatcher.dispatch(it)
-        }
+        navigationMessagesDisposable = presentationModel.navigationMessages.observable
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                navigationMessagesDispatcher.dispatch(it)
+            }
     }
 
     /**

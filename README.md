@@ -1,35 +1,38 @@
 # RxPM
 Reactive implementation of [Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html) pattern in Android.
 
-## Why Use RxPM?
-Ever found yourself thinking about passing the RxJava chain from the View to the Presenter in MVP?
-Don’t satisfied with Databinding Library in MVVM?
-Then you are one of us, who think this patterns are not Rx-friendly.
+RxPM allows to use the RxJava all the way from the view to the model.  
+The main advantage of that is the **ability to write UI logic declaratively**.
 
-<img src="/docs/images/rxpm_vs_mvp_vs_mvvm.png" width="400">
+We focus on practice, so the library solves most of the typical presentation layer problems.
 
-RxPM allows to use the RxJava all the way from a widget to the data. And the main advantage of that is the possibility to declaratively define and interconnect reactive states.
+### Why PM and not MVVM?
+Actually the only difference between these two is that PM does'n have automated binding.  
+So PM name is just more correct for us. However many call it MVVM, so let it be.
 
-## Dependency
+### The Diagram
+<img src="/docs/images/rxpm_diagram.png">
+
+## Usage
 
 Add the dependency to your build.gradle:
 ```gradle
 dependencies {
 
-    compile 'me.dmdev.rxpm:rxpm:1.1.2'
+    implementation 'me.dmdev.rxpm:rxpm:1.2'
     
-    // optional RxBinding
-    compile 'com.jakewharton.rxbinding2:rxbinding-kotlin:$latest_version'
+    // RxBinding (optional)
+    implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:$latest_version'
     
-    // if you use Conductor
-    compile 'com.bluelinelabs:conductor:$latest_version'
+    // Conductor (if you use it)
+    implementation 'com.bluelinelabs:conductor:$latest_version'
 }
 ```
-## Usage
+
 ### Create a Presentation Model class and define reactive properties
 ```kotlin
 class DataPresentationModel(
-        private val dataModel: DataModel
+    private val dataModel: DataModel
 ) : PresentationModel() {
 
     val data = State<List<Item>>(emptyList())
@@ -41,19 +44,18 @@ class DataPresentationModel(
         super.onCreate()
 
         refreshAction.observable
-                .skipWhileInProgress(inProgress.observable)
-                .flatMapSingle {
-                    dataModel.loadData()
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .bindProgress(inProgress.consumer)
-                            .doOnError { 
-                                errorMessage.consumer.accept("Loading data error")
-                            }
-                }
-                .retry()
-                .subscribe(data.consumer)
-                .untilDestroy()
+            .skipWhileInProgress(inProgress.observable)
+            .flatMapSingle {
+                dataModel.loadData()
+                    .subscribeOn(Schedulers.io())
+                    .bindProgress(inProgress.consumer)
+                    .doOnError { 
+                        errorMessage.consumer.accept("Loading data error")
+                    }
+            }
+            .retry()
+            .subscribe(data.consumer)
+            .untilDestroy()
 
         refreshAction.consumer.accept(Unit) // first loading on create
     }
@@ -67,26 +69,49 @@ class DataFragment : PmSupportFragment<DataPresentationModel>() {
 
     override fun onBindPresentationModel(pm: DataPresentationModel) {
 
-        pm.inProgress.observable.bindTo(swipeRefreshLayout.refreshing())
+        pm.inProgress.observable bindTo swipeRefreshLayout.refreshing()
 
-        pm.data.observable.bindTo {
+        pm.data.observable bindTo {
             // adapter.setItems(it)
         }
 
-        pm.errorMessage.observable.bindTo {
-            // show alert dialog
+        pm.errorMessage.observable bindTo {
+            // show Snackbar
         }
 
-        swipeRefreshLayout.refreshes().bindTo(pm.refreshAction.consumer)
+        swipeRefreshLayout.refreshes() bindTo pm.refreshAction.consumer
     }
 }
 ```
-## Interactions Diagram
-<img src="/docs/images/rxpm_diagram.png">
 
 ## Main Components
+
+### PresentationModel
+The PresentationModel stores the state of the View and holds the UI logic.  
+PresentationModel instance is automatically retained during configuration changes. This behavior is provided by the delegate which controls the lifecycle.
+
+Lifecycle callbacks:
+- `onCreate()` — Called when the PresentationModel is created. Initialize your Rx chains in this method.
+- `onBind()` — Called when the View binds to the PresentationModel.
+- `onUnbind()` — Called when the View unbinds from the PresentationModel.
+- `onDestroy()` — Called when the PresentationModel is being destroyed. Dispose all subscriptions in this method.
+
+What's more you can observe lifecycle changes via `lifecycleObservable`.
+
+Also the useful extensions of the *Disposable* are available to make lifecycle handling easier: `untilUnbind` and `untilDestroy`. 
+
+### PmView
+The library has several predefined PmView implementations: `PmSupportActivity`, `PmSupportFragment` and `PmController` (for [Conductor](https://github.com/bluelinelabs/Conductor/)'s users).  
+
+You have to implement only two methods:
+1) `providePresentationModel()` — Create the instance of the PresentationModel.
+2) `onBindPresentationModel()` — Bind to the PresentationModel properties in this method. Use the `bindTo` extension and [RxBinding](https://github.com/JakeWharton/RxBinding) for this. 
+
+Also there is variants of these with Google Map integration.
+
 ### State
-**State** is a reactive property which represents a View state. It holds the latest value and emits it on binding. For example, **State** can be used to represent a progress of the http-request or some data that can change in time.
+**State** is a reactive property which represents a View state.  
+It holds the latest value and emits it on binding. For example, **State** can be used to represent a progress of the http-request or some data that can change in time.
 
 In the PresentationModel:
 ```kotlin
@@ -98,15 +123,16 @@ inProgress.consumer.accept(true)
 ```
 Observe changes in the View:
 ```kotlin
-pm.inProgress.observable.bindTo(progressBar.visibility())
+pm.inProgress.observable bindTo progressBar.visibility()
 ```
 
 ### Action
-**Action** is the reactive property which represents the user actions. It's mostly used for receiving events from the View, such as clicks.
+**Action** is the reactive property which represents the user actions.  
+It's mostly used for receiving events from the View, such as clicks.
 
 In the View:
 ```kotlin
-button.clicks().bindTo(pm.buttonClicks.consumer)
+button.clicks() bindTo pm.buttonClicks.consumer
 ```
 
 In the PresentationModel:
@@ -121,7 +147,8 @@ buttonClicks.observable
 ```
 
 ### Command
-**Command** is the reactive property which represents a command to the View. It can be used to show a toast or alert dialog.
+**Command** is the reactive property which represents a command to the View.  
+It can be used to show a toast or alert dialog.
 
 Define it in the PresentationModel:
 ```kotlin
@@ -129,7 +156,7 @@ val errorMessage = Command<String>()
 ```
 Show some message in the View:
 ```kotlin
-pm.errorMessage.observable.bindTo { message ->
+pm.errorMessage.observable bindTo { message ->
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 ```
@@ -138,28 +165,7 @@ When the View is unbound from the PresentationModel, **Command** collects all re
 
 ![Command](/docs/images/bwu.png)
 
-### PresentationModel
-The PresentationModel stores the state of the View and holds the UI logic. 
-PresentationModel instance is automatically retained during configuration changes. This behavior is provided by the delegate which controls the lifecycle.
-
-Lifecycle callbacks:
-- `onCreate()` — Called when the PresentationModel is created. Initialize your Rx chains in this method.
-- `onBind()` — Called when the View binds to the PresentationModel.
-- `onUnbind()` — Called when the View unbinds from the PresentationModel.
-- `onDestroy()` — Called when the PresentationModel is being destroyed. Dispose all subscriptions in this method.
-
-What's more you can observe lifecycle changes via `lifecycleObservable`.
-
-Also the useful extensions of the *Disposable* are available to make lifecycle handling easier: `untilUnbind` and `untilDestroy`. 
-
-### PmView
-The library has several predefined classes which implement `AndroidPmView`: `PmSupportActivity`, `PmSupportFragment` and `PmController` (for [Conductor](https://github.com/bluelinelabs/Conductor/)'s users). 
-
-You have to implement two methods:
-1) `providePresentationModel()` — Create the instance of the PresentationModel.
-2) `onBindPresentationModel()` — Bind to the PresentationModel properties in this method. Use the `bindTo` extension and [RxBinding](https://github.com/JakeWharton/RxBinding) for this. 
-
-Also the library has a predefined classes for work with Google Maps.
+## Controls
 
 ### Two-way Data Binding
 For the cases of two-way data binding (eg. input field text changes) the library has predefined [Сontrols](https://github.com/dmdevgo/RxPM/tree/develop/rxpm/src/main/kotlin/me/dmdev/rxpm/widget).
@@ -181,10 +187,55 @@ pm.name bindTo editText
 pm.checked bindTo checkBox
 ```
 
+### Dialogs
+
+The DialogControl is a component make possible the interaction with the dialogs in reactive style.  
+It manages the lifecycle and the state of the dialog. Just bind your Dialog object (eg. AlertDialog) to the DialogControl. No need in DialogFragment anymore.
+
+Here is an example of the dialog to confirm exit from the application:
+```kotlin
+enum class DialogResult { EXIT, CANCEL }
+
+val dialogControl = dialogControl<String, DialogResult>()
+
+val backButtonClicks = Action<Unit>()
+
+backButtonClicks.observable
+    .switchMapMaybe {
+        dialogControl.showForResult("Do you really want to exit?")
+    }
+    .filter { it == DialogResult.EXIT }
+    .subscribe {
+        // close application
+    }
+    .untilDestroy()
+```
+
+Bind the `dialogControl` to AlertDialog in the View:
+```kotlin
+pm.dialogControl bindTo { message, dialogControl ->
+    AlertDialog.Builder(context)
+        .setMessage(message)
+        .setPositiveButton("Exit") { _, _ ->
+            dialogControl.sendResult(DialogResult.EXIT)
+        }
+        .setNegativeButton("Cancel") { _, _ ->
+            dialogControl.sendResult(DialogResult.CANCEL)
+        }
+        .create()
+}
+```
 
 ## Sample
 
 The [sample](https://github.com/dmdevgo/RxPM/tree/develop/sample) shows how to use RxPM in practice.
+
+## How to test PM?
+
+You can test PresentationModel in the same way as any other class with RxJava (using TestObserver, Mockito, other).  
+The only difference is that you have to change it's lifecycle state while testing. And **PmTestHelper** allows you to do that.
+
+Note that Command passes events only when PM is in the BINDED state.
 
 ## License
 

@@ -1,11 +1,11 @@
 buildscript {
-    ext.kotlinVersion = '1.2.30'
+    ext.kotlinVersion = '1.2.61'
     repositories {
         jcenter()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
@@ -27,7 +27,7 @@ ext {
     targetSdkVersion = 27
     buildToolsVersion = '27.0.3'
 
-    supportVersion = '26.1.0'
+    supportVersion = '27.1.1'
     supportAppCompat = "com.android.support:appcompat-v7:$supportVersion"
     supportDesign = "com.android.support:design:$supportVersion"
 
@@ -36,17 +36,18 @@ ext {
 
     kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
-    rxJava2 = "io.reactivex.rxjava2:rxjava:2.1.12"
+    rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.1"
     rxRelay2 = "com.jakewharton.rxrelay2:rxrelay:2.0.0"
     rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.0.2"
 
-    rxBinding2Version = '2.0.0'
+    rxBinding2Version = '2.1.1'
     rxBindingKotlin = "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBinding2Version"
     rxBindingSupportV4Kotlin = "com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:$rxBinding2Version"
+    rxBindingSupportV7Kotlin = "com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:$rxBinding2Version"
 
-    conductor = "com.bluelinelabs:conductor:2.1.4"
+    conductor = "com.bluelinelabs:conductor:2.1.5"
     outlast = "me.jeevuz.outlast:outlast:1.1"
 
     junitKotlin = "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-    mockito = "org.mockito:mockito-core:2.11.0"
+    mockitoKotlin = 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC1'
 }
