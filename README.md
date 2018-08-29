@@ -16,20 +16,20 @@ Add the dependency to your build.gradle:
 ```gradle
 dependencies {
 
-    compile 'me.dmdev.rxpm:rxpm:1.1.3'
+    implementation 'me.dmdev.rxpm:rxpm:1.1.3'
     
     // optional RxBinding
-    compile 'com.jakewharton.rxbinding2:rxbinding-kotlin:$latest_version'
+    implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:$latest_version'
     
     // if you use Conductor
-    compile 'com.bluelinelabs:conductor:$latest_version'
+    implementation 'com.bluelinelabs:conductor:$latest_version'
 }
 ```
 ## Usage
 ### Create a Presentation Model class and define reactive properties
 ```kotlin
 class DataPresentationModel(
-        private val dataModel: DataModel
+    private val dataModel: DataModel
 ) : PresentationModel() {
 
     val data = State<List<Item>>(emptyList())
@@ -41,19 +41,18 @@ class DataPresentationModel(
         super.onCreate()
 
         refreshAction.observable
-                .skipWhileInProgress(inProgress.observable)
-                .flatMapSingle {
-                    dataModel.loadData()
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .bindProgress(inProgress.consumer)
-                            .doOnError { 
-                                errorMessage.consumer.accept("Loading data error")
-                            }
-                }
-                .retry()
-                .subscribe(data.consumer)
-                .untilDestroy()
+            .skipWhileInProgress(inProgress.observable)
+            .flatMapSingle {
+                dataModel.loadData()
+                    .subscribeOn(Schedulers.io())
+                    .bindProgress(inProgress.consumer)
+                    .doOnError { 
+                        errorMessage.consumer.accept("Loading data error")
+                    }
+            }
+            .retry()
+            .subscribe(data.consumer)
+            .untilDestroy()
 
         refreshAction.consumer.accept(Unit) // first loading on create
     }
@@ -74,7 +73,7 @@ class DataFragment : PmSupportFragment<DataPresentationModel>() {
         }
 
         pm.errorMessage.observable.bindTo {
-            // show alert dialog
+            // show Snackbar
         }
 
         swipeRefreshLayout.refreshes().bindTo(pm.refreshAction.consumer)
