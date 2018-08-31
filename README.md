@@ -148,7 +148,7 @@ buttonClicks.observable
 
 ### Command
 **Command** is the reactive property which represents a command to the View.  
-It can be used to show a toast or alert dialog.
+It can be used to show a toast or snackbar.
 
 Define it in the PresentationModel:
 ```kotlin
