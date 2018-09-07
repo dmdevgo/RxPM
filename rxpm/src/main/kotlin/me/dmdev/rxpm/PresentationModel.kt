@@ -48,32 +48,33 @@ abstract class PresentationModel {
 
     init {
         lifecycle
-                .takeUntil { it == Lifecycle.DESTROYED }
-                .subscribe {
-                    @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
-                    when (it) {
-                        Lifecycle.CREATED -> onCreate()
-                        Lifecycle.BINDED -> onBind()
-                        Lifecycle.UNBINDED -> {
-                            compositeUnbind.clear()
-                            onUnbind()
-                        }
-                        Lifecycle.DESTROYED -> {
-                            compositeDestroy.clear()
-                            onDestroy()
-                        }
+            .takeUntil { it == Lifecycle.DESTROYED }
+            .subscribe {
+                @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+                when (it) {
+                    Lifecycle.CREATED -> onCreate()
+                    Lifecycle.BINDED -> onBind()
+                    Lifecycle.UNBINDED -> {
+                        compositeUnbind.clear()
+                        onUnbind()
+                    }
+                    Lifecycle.DESTROYED -> {
+                        compositeDestroy.clear()
+                        onDestroy()
                     }
                 }
+            }
 
         lifecycle
-                .takeUntil { it == Lifecycle.DESTROYED }
-                .subscribe {
-                    when (it) {
-                        Lifecycle.BINDED -> unbind.accept(false)
-                        Lifecycle.UNBINDED -> unbind.accept(true)
-                        else -> {}
+            .takeUntil { it == Lifecycle.DESTROYED }
+            .subscribe {
+                when (it) {
+                    Lifecycle.BINDED -> unbind.accept(false)
+                    Lifecycle.UNBINDED -> unbind.accept(true)
+                    else -> {
                     }
                 }
+            }
     }
 
     /**
@@ -129,21 +130,21 @@ abstract class PresentationModel {
 
             Lifecycle.BINDED -> {
                 parent.lifecycleObservable
-                        .startWith(Lifecycle.CREATED)
-                        .subscribe(lifecycleConsumer)
+                    .startWith(Lifecycle.CREATED)
+                    .subscribe(lifecycleConsumer)
             }
 
             Lifecycle.UNBINDED -> {
                 parent.lifecycleObservable
-                        .skip(1)
-                        .startWith(Lifecycle.CREATED)
-                        .subscribe(lifecycleConsumer)
+                    .skip(1)
+                    .startWith(Lifecycle.CREATED)
+                    .subscribe(lifecycleConsumer)
             }
 
             null,
             Lifecycle.CREATED -> {
                 parent.lifecycleObservable
-                        .subscribe(lifecycleConsumer)
+                    .subscribe(lifecycleConsumer)
             }
 
             Lifecycle.DESTROYED -> {
@@ -153,8 +154,8 @@ abstract class PresentationModel {
         }.untilDestroy()
 
         navigationMessages.observable
-                .subscribe(parent.navigationMessages.consumer)
-                .untilDestroy()
+            .subscribe(parent.navigationMessages.consumer)
+            .untilDestroy()
     }
 
     /**
@@ -243,19 +244,20 @@ abstract class PresentationModel {
      * @see Command
      */
     inner class State<T>(initialValue: T? = null) {
+
         internal val relay =
-                if (initialValue != null) {
-                    BehaviorRelay.createDefault<T>(initialValue).toSerialized()
-                } else {
-                    BehaviorRelay.create<T>().toSerialized()
-                }
+            if (initialValue != null) {
+                BehaviorRelay.createDefault<T>(initialValue).toSerialized()
+            } else {
+                BehaviorRelay.create<T>().toSerialized()
+            }
 
         private val cachedValue =
-                if (initialValue != null) {
-                    AtomicReference<T?>(initialValue)
-                } else {
-                    AtomicReference()
-                }
+            if (initialValue != null) {
+                AtomicReference<T?>(initialValue)
+            } else {
+                AtomicReference()
+            }
 
         /**
          * Observable of this [State].
@@ -268,8 +270,8 @@ abstract class PresentationModel {
          */
         val value: T
             get() {
-                return cachedValue.get() ?: throw UninitializedPropertyAccessException(
-                        "The State has no value yet. Use valueOrNull() or pass initialValue to the constructor.")
+                return cachedValue.get()
+                    ?: throw UninitializedPropertyAccessException("The State has no value yet. Use valueOrNull() or pass initialValue to the constructor.")
             }
 
         /**
@@ -320,23 +322,25 @@ abstract class PresentationModel {
      * @see Action
      * @see Command
      */
-    inner class Command<T>(isIdle: Observable<Boolean>? = null,
-                           bufferSize: Int? = null) {
+    inner class Command<T>(
+        isIdle: Observable<Boolean>? = null,
+        bufferSize: Int? = null
+    ) {
         internal val relay = PublishRelay.create<T>().toSerialized()
 
         /**
          * Observable of this [Command].
          */
         val observable =
-                if (bufferSize == 0) {
-                    relay.asObservable()
+            if (bufferSize == 0) {
+                relay.asObservable()
+            } else {
+                if (isIdle == null) {
+                    relay.bufferWhileUnbind(bufferSize)
                 } else {
-                    if (isIdle == null) {
-                        relay.bufferWhileUnbind(bufferSize)
-                    } else {
-                        relay.bufferWhileIdle(isIdle, bufferSize)
-                    }
+                    relay.bufferWhileIdle(isIdle, bufferSize)
                 }
+            }
     }
 
 }

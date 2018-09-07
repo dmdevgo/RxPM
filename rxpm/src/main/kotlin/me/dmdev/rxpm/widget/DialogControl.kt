@@ -7,7 +7,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.asObservable
 import me.dmdev.rxpm.widget.DialogControl.State.Displayed
 import me.dmdev.rxpm.widget.DialogControl.State.NotDisplayed
 
@@ -59,16 +58,16 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
 
         dismiss()
 
-        return result.relay.asObservable()
-                .doOnSubscribe {
-                    displayed.relay.accept(Displayed(data))
-                }
-                .takeUntil(
-                        displayed.relay
-                                .skip(1)
-                                .filter { it == NotDisplayed }
-                )
-                .firstElement()
+        return result.relay
+            .doOnSubscribe {
+                displayed.relay.accept(Displayed(data))
+            }
+            .takeUntil(
+                displayed.relay
+                    .skip(1)
+                    .filter { it == NotDisplayed }
+            )
+            .firstElement()
     }
 
     /**
@@ -107,8 +106,8 @@ fun <T, R> PresentationModel.dialogControl(): DialogControl<T, R> {
 }
 
 internal inline fun <T, R> DialogControl<T, R>.bind(
-        crossinline createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog,
-        compositeDisposable: CompositeDisposable
+    crossinline createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog,
+    compositeDisposable: CompositeDisposable
 ) {
 
     var dialog: Dialog? = null
@@ -120,7 +119,7 @@ internal inline fun <T, R> DialogControl<T, R>.bind(
     }
 
     compositeDisposable.add(
-            displayed.observable
+        displayed.observable
             .observeOn(AndroidSchedulers.mainThread())
             .doFinally { closeDialog() }
             .subscribe {

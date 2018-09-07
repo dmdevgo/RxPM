@@ -33,8 +33,8 @@ class CheckControl internal constructor(pm: PresentationModel, initialChecked: B
 
     init {
         checkedChanges.relay
-                .filter { it != checked.value }
-                .subscribe(checked.relay)
+            .filter { it != checked.value }
+            .subscribe(checked.relay)
     }
 }
 
@@ -48,22 +48,26 @@ fun PresentationModel.checkControl(initialChecked: Boolean = false): CheckContro
 }
 
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun CheckControl.bind(compoundButton: CompoundButton, compositeDisposable: CompositeDisposable) {
+internal inline fun CheckControl.bind(
+    compoundButton: CompoundButton,
+    compositeDisposable: CompositeDisposable
+) {
 
     var editing = false
 
     compositeDisposable.addAll(
-            checked.observable
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        editing = true
-                        compoundButton.isChecked = it
-                        editing = false
-                    },
 
-            compoundButton.checkedChanges()
-                    .skipInitialValue()
-                    .filter { !editing }
-                    .subscribe(checkedChanges.consumer)
+        checked.observable
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                editing = true
+                compoundButton.isChecked = it
+                editing = false
+            },
+
+        compoundButton.checkedChanges()
+            .skipInitialValue()
+            .filter { !editing }
+            .subscribe(checkedChanges.consumer)
     )
 }

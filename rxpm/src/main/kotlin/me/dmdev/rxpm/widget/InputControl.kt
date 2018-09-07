@@ -26,10 +26,10 @@ import me.dmdev.rxpm.PresentationModel
  * @see DialogControl
  */
 class InputControl internal constructor(
-        pm: PresentationModel,
-        initialText: String,
-        formatter: (text: String) -> String,
-        hideErrorOnUserInput: Boolean
+    pm: PresentationModel,
+    initialText: String,
+    formatter: (text: String) -> String,
+    hideErrorOnUserInput: Boolean
 ) {
 
     /**
@@ -49,12 +49,12 @@ class InputControl internal constructor(
 
     init {
         textChanges.relay
-                .filter { it != text.value }
-                .map { formatter.invoke(it) }
-                .subscribe {
-                    text.relay.accept(it)
-                    if (hideErrorOnUserInput) error.relay.accept("")
-                }
+            .filter { it != text.value }
+            .map { formatter.invoke(it) }
+            .subscribe {
+                text.relay.accept(it)
+                if (hideErrorOnUserInput) error.relay.accept("")
+            }
     }
 }
 
@@ -65,51 +65,58 @@ class InputControl internal constructor(
  * @param formatter formats the user input. The default does nothing.
  * @param hideErrorOnUserInput hide the error if user entered something.
  */
-fun PresentationModel.inputControl(initialText: String = "",
-                                   formatter: (text: String) -> String = { it },
-                                   hideErrorOnUserInput: Boolean = true): InputControl {
+fun PresentationModel.inputControl(
+    initialText: String = "",
+    formatter: (text: String) -> String = { it },
+    hideErrorOnUserInput: Boolean = true
+): InputControl {
     return InputControl(this, initialText, formatter, hideErrorOnUserInput)
 }
 
-internal inline fun InputControl.bind(textInputLayout: TextInputLayout, compositeDisposable: CompositeDisposable) {
+internal inline fun InputControl.bind(
+    textInputLayout: TextInputLayout, compositeDisposable: CompositeDisposable
+) {
 
     val edit = textInputLayout.editText!!
 
     bind(edit, compositeDisposable)
     compositeDisposable.add(
-            error.observable.subscribe { error ->
-                textInputLayout.error = if (error.isEmpty()) null else error
-            }
+        error.observable.subscribe { error ->
+            textInputLayout.error = if (error.isEmpty()) null else error
+        }
     )
 }
 
-internal inline fun InputControl.bind(editText: EditText, compositeDisposable: CompositeDisposable) {
+internal inline fun InputControl.bind(
+    editText: EditText,
+    compositeDisposable: CompositeDisposable
+) {
 
     var editing = false
 
     compositeDisposable.addAll(
 
-            text.observable
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        val editable = editText.text
-                        if (!it.contentEquals(editable)) {
-                            editing = true
-                            if (editable is Spanned) {
-                                val ss = SpannableString(it)
-                                TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
-                                editable.replace(0, editable.length, ss)
-                            } else {
-                                editable.replace(0, editable.length, it)
-                            }
-                            editing = false
-                        }
-                    },
+        text.observable
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val editable = editText.text
+                if (!it.contentEquals(editable)) {
+                    editing = true
+                    if (editable is Spanned) {
+                        val ss = SpannableString(it)
+                        TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
+                        editable.replace(0, editable.length, ss)
+                    } else {
+                        editable.replace(0, editable.length, it)
+                    }
+                    editing = false
+                }
+            },
 
-            editText.textChanges()
-                    .skipInitialValue()
-                    .filter { !editing }
-                    .map { it.toString() }
-                    .subscribe(textChanges.consumer)
+        editText.textChanges()
+            .skipInitialValue()
+            .filter { !editing }
+            .map { it.toString() }
+            .subscribe(textChanges.consumer)
     )
 }

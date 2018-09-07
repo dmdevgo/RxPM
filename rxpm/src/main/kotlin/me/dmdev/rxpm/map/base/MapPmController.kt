@@ -28,9 +28,10 @@ import me.dmdev.rxpm.map.delegate.MapPmControllerDelegate
  * create a [MapPmControllerDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class MapPmController<PM>(args: Bundle? = null) : RestoreViewOnCreateController(args),
-                                                           MapPmView<PM>
-where PM : PresentationModel, PM : MapPmExtension {
+abstract class MapPmController<PM>(args: Bundle? = null) :
+    RestoreViewOnCreateController(args),
+    MapPmView<PM>
+        where PM : PresentationModel, PM : MapPmExtension {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmControllerDelegate(this) }
 
@@ -83,6 +84,7 @@ where PM : PresentationModel, PM : MapPmExtension {
      * the base [controller][Controller] does not have corresponding callback.
      * See https://github.com/bluelinelabs/Conductor/issues/59
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun onLowMemory() {
         delegate.onLowMemory()
     }

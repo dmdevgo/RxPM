@@ -21,7 +21,8 @@ import me.jeevuz.outlast.predefined.FragmentOutlast
  * to the corresponding ones in this class.
  */
 class PmSupportFragmentDelegate<PM, F>(private val pmView: F)
-where PM : PresentationModel, F : Fragment, F : PmView<PM> {
+        where PM : PresentationModel,
+              F : Fragment, F : PmView<PM> {
 
     private lateinit var outlast: FragmentOutlast<PmWrapper<PM>>
     internal lateinit var pmBinder: PmBinder<PM>
@@ -35,11 +36,13 @@ where PM : PresentationModel, F : Fragment, F : PmView<PM> {
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
-        outlast = FragmentOutlast(pmView,
-                                  Outlasting.Creator<PmWrapper<PM>> {
-                                      PmWrapper(pmView.providePresentationModel())
-                                  },
-                                  savedInstanceState)
+        outlast = FragmentOutlast(
+            pmView,
+            Outlasting.Creator<PmWrapper<PM>> {
+                PmWrapper(pmView.providePresentationModel())
+            },
+            savedInstanceState
+        )
         presentationModel // Create lazy presentation model now
         pmBinder = PmBinder(presentationModel, pmView)
         navigationMessagesDisposable = presentationModel.navigationMessages.observable
