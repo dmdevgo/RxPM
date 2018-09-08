@@ -1,8 +1,8 @@
 package me.dmdev.rxpm.sample.main.ui.main
 
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import com.jakewharton.rxbinding2.support.v7.widget.itemClicks
 import kotlinx.android.synthetic.main.screen_main.*
 import me.dmdev.rxpm.sample.App

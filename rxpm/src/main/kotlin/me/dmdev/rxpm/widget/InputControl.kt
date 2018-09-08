@@ -2,11 +2,11 @@
 
 package me.dmdev.rxpm.widget
 
-import android.support.design.widget.TextInputLayout
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
 import android.widget.EditText
+import com.google.android.material.textfield.TextInputLayout
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

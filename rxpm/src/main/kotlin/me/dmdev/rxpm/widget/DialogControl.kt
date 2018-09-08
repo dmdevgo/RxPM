@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.widget
 
 import android.app.Dialog
-import android.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

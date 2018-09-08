@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.base
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
@@ -16,7 +16,7 @@ import me.dmdev.rxpm.delegate.PmActivityDelegate
  * create a [PmActivityDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), AndroidPmView<PM> {
+abstract class PmActivity<PM : PresentationModel> : AppCompatActivity(), AndroidPmView<PM> {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmActivityDelegate(this) }
 

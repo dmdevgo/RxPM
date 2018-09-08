@@ -1,11 +1,11 @@
 package me.dmdev.rxpm.delegate
 
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.FragmentActivity
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import me.dmdev.rxpm.base.PmSupportFragment
+import me.dmdev.rxpm.base.PmFragment
 import me.dmdev.rxpm.util.SchedulersRule
 import org.junit.Before
 import org.junit.Rule
@@ -19,8 +19,8 @@ class PmSupportFragmentDelegateTest {
     private lateinit var pm: PresentationModel
     private lateinit var compositeDisposable: CompositeDisposable
     private lateinit var activity: FragmentActivity
-    private lateinit var view: PmSupportFragment<PresentationModel>
-    private lateinit var delegate: PmSupportFragmentDelegate<PresentationModel, PmSupportFragment<PresentationModel>>
+    private lateinit var view: PmFragment<PresentationModel>
+    private lateinit var delegate: PmFragmentDelegate<PresentationModel, PmFragment<PresentationModel>>
 
     @Before fun setUp() {
         pm = spy()
@@ -28,10 +28,10 @@ class PmSupportFragmentDelegateTest {
         activity = mock()
         view = mockView()
 
-        delegate = PmSupportFragmentDelegate(view)
+        delegate = PmFragmentDelegate(view)
     }
 
-    private fun mockView(): PmSupportFragment<PresentationModel> {
+    private fun mockView(): PmFragment<PresentationModel> {
         return mock {
             on { compositeUnbind } doReturn compositeDisposable
             on { providePresentationModel() } doReturn pm

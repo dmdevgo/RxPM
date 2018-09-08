@@ -41,10 +41,11 @@ android {
 dependencies {
 
     // For default implementations
-    compileOnly rootProject.supportAppCompat
-    compileOnly rootProject.supportDesign
+    compileOnly rootProject.appCompat
+    compileOnly rootProject.materialDesign
     compileOnly rootProject.conductor
     compileOnly rootProject.googleMaps
+    compileOnly rootProject.lifecycle
 
     // Rx
     api rootProject.rxJava2
@@ -57,14 +58,11 @@ dependencies {
         exclude module: 'support-core-ui'
     }
 
-    // Persistent PM
-    implementation rootProject.outlast
-
     // For tests
     testImplementation rootProject.junitKotlin
     testImplementation rootProject.mockitoKotlin
     testImplementation rootProject.conductor
-    testImplementation rootProject.supportAppCompat
+    testImplementation rootProject.appCompat
 }
 
 ext {

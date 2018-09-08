@@ -1,19 +1,19 @@
 package me.dmdev.rxpm.sample.main.ui.base
 
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import io.reactivex.functions.Consumer
-import me.dmdev.rxpm.base.PmSupportFragment
+import me.dmdev.rxpm.base.PmFragment
 import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.main.extensions.findScreen
 import me.dmdev.rxpm.sample.main.extensions.showDialog
 
 
 abstract class Screen<PM : ScreenPresentationModel> :
-    PmSupportFragment<PM>(),
+    PmFragment<PM>(),
     BackHandler {
 
     abstract val screenLayout: Int

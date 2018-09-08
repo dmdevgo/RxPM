@@ -5,15 +5,15 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.0-rc02'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
 
 allprojects {
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
 }
 
@@ -23,13 +23,16 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 16
-    compileSdkVersion = 27
-    targetSdkVersion = 27
-    buildToolsVersion = '27.0.3'
+    compileSdkVersion = 28
+    targetSdkVersion = 28
+    buildToolsVersion = '28.0.2'
+    androidxVersion = "1.0.0-rc02"
+    lifecycleVersion = "2.0.0-rc01"
 
-    supportVersion = '27.1.1'
-    supportAppCompat = "com.android.support:appcompat-v7:$supportVersion"
-    supportDesign = "com.android.support:design:$supportVersion"
+    appCompat = "androidx.appcompat:appcompat:$androidxVersion"
+    materialDesign = "com.google.android.material:material:$androidxVersion"
+
+    lifecycle = "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
 
     playServicesVersion = '11.4.2'
     googleMaps = "com.google.android.gms:play-services-maps:$playServicesVersion"
@@ -46,7 +49,6 @@ ext {
     rxBindingSupportV7Kotlin = "com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:$rxBinding2Version"
 
     conductor = "com.bluelinelabs:conductor:2.1.5"
-    outlast = "me.jeevuz.outlast:outlast:1.1"
 
     junitKotlin = "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
     mockitoKotlin = 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC1'

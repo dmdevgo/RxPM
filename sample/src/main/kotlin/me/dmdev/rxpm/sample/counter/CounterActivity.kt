@@ -4,10 +4,10 @@ import android.os.Bundle
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.text
 import kotlinx.android.synthetic.main.activity_counter.*
-import me.dmdev.rxpm.base.PmSupportActivity
+import me.dmdev.rxpm.base.PmActivity
 import me.dmdev.rxpm.sample.R
 
-class CounterActivity : PmSupportActivity<CounterPm>() {
+class CounterActivity : PmActivity<CounterPm>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

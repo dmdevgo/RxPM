@@ -27,15 +27,16 @@ dependencies {
 
     implementation project(':rxpm')
 
-    implementation rootProject.supportAppCompat
-    implementation rootProject.supportDesign
+    implementation rootProject.appCompat
+    implementation rootProject.materialDesign
+    implementation rootProject.lifecycle
 
     // Rx
     implementation rootProject.rxAndroid2
 
     // RxBindings
     implementation rootProject.rxBindingKotlin
-    implementation rootProject.rxBindingSupportV4Kotlin
+    implementation(rootProject.rxBindingSupportV4Kotlin)
     implementation rootProject.rxBindingSupportV7Kotlin
 
     implementation "com.jakewharton.timber:timber:4.7.1"

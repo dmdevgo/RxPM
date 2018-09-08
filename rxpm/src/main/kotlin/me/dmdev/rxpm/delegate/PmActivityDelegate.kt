@@ -2,49 +2,56 @@ package me.dmdev.rxpm.delegate
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProviders
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.base.PmSupportActivity
+import me.dmdev.rxpm.base.PmActivity
 import me.dmdev.rxpm.navigation.ActivityNavigationMessageDispatcher
-import me.jeevuz.outlast.Outlasting
-import me.jeevuz.outlast.predefined.ActivityOutlast
 
 /**
  * Delegate for the [Activity] that helps with creation and binding of
  * a [presentation model][PresentationModel] and a [view][PmView].
  *
- * Use this class only if you can't subclass the [PmSupportActivity].
+ * Use this class only if you can't subclass the [PmActivity].
  *
  * Users of this class must forward all the life cycle methods from the containing Activity
  * to the corresponding ones in this class.
  */
 class PmActivityDelegate<PM, A>(private val pmView: A)
         where PM : PresentationModel,
-              A : Activity, A : PmView<PM> {
+              A : FragmentActivity, A : PmView<PM> {
 
-    private lateinit var outlast: ActivityOutlast<PmWrapper<PM>>
-    internal lateinit var pmBinder: PmBinder<PM>
 
-    private lateinit var navigationMessagesDisposable: Disposable
+    private val pmHolder: PmHolder by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProviders.of(pmView).get(PmHolder::class.java)
+    }
+
+    internal val pmBinder: PmBinder<PM> by lazy(LazyThreadSafetyMode.NONE) {
+        PmBinder(presentationModel, pmView)
+    }
+
     private val navigationMessagesDispatcher = ActivityNavigationMessageDispatcher(pmView)
+    private lateinit var navigationMessagesDisposable: Disposable
 
-    val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) { outlast.outlasting.presentationModel }
+    val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) {
+        if (pmHolder.pm == null) {
+            pmHolder.pm = pmView.providePresentationModel()
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        pmHolder.pm as PM
+    }
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
-        outlast = ActivityOutlast(
-            pmView,
-            Outlasting.Creator<PmWrapper<PM>> {
-                PmWrapper(pmView.providePresentationModel())
-            },
-            savedInstanceState
-        )
-        presentationModel // Create lazy presentation model now
-        pmBinder = PmBinder(presentationModel, pmView)
+        if (presentationModel.currentLifecycleState == null) {
+            presentationModel.lifecycleConsumer.accept(PresentationModel.Lifecycle.CREATED)
+        }
         navigationMessagesDisposable = presentationModel.navigationMessages.observable
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -56,7 +63,6 @@ class PmActivityDelegate<PM, A>(private val pmView: A)
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onStart() {
-        outlast.onStart()
         pmBinder.bind()
     }
 
@@ -64,7 +70,6 @@ class PmActivityDelegate<PM, A>(private val pmView: A)
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onResume() {
-        outlast.onResume()
         pmBinder.bind()
     }
 
@@ -72,7 +77,6 @@ class PmActivityDelegate<PM, A>(private val pmView: A)
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onSaveInstanceState(outState: Bundle) {
-        outlast.onSaveInstanceState(outState)
         pmBinder.unbind()
     }
 
@@ -95,6 +99,5 @@ class PmActivityDelegate<PM, A>(private val pmView: A)
      */
     fun onDestroy() {
         navigationMessagesDisposable.dispose()
-        outlast.onDestroy()
     }
 }

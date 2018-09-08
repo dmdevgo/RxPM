@@ -4,21 +4,21 @@ import com.nhaarman.mockitokotlin2.*
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import me.dmdev.rxpm.base.PmSupportActivity
+import me.dmdev.rxpm.base.PmActivity
 import me.dmdev.rxpm.util.SchedulersRule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class PmSupportActivityDelegateTest {
+class PmActivityDelegateTest {
 
     @get:Rule val schedulers = SchedulersRule()
 
     private lateinit var pm: PresentationModel
     private lateinit var compositeDisposable: CompositeDisposable
-    private lateinit var view: PmSupportActivity<PresentationModel>
-    private lateinit var delegate: PmActivityDelegate<PresentationModel, PmSupportActivity<PresentationModel>>
+    private lateinit var view: PmActivity<PresentationModel>
+    private lateinit var delegate: PmActivityDelegate<PresentationModel, PmActivity<PresentationModel>>
 
     @Before fun setUp() {
         pm = spy()
@@ -28,7 +28,7 @@ class PmSupportActivityDelegateTest {
         delegate = PmActivityDelegate(view)
     }
 
-    private fun mockView(): PmSupportActivity<PresentationModel> {
+    private fun mockView(): PmActivity<PresentationModel> {
         return mock {
             on { compositeUnbind } doReturn compositeDisposable
             on { providePresentationModel() } doReturn pm

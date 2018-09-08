@@ -1,29 +1,32 @@
 package me.dmdev.rxpm.map.base
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.MapPmView
-import me.dmdev.rxpm.map.delegate.MapPmActivityDelegate
+import me.dmdev.rxpm.map.delegate.MapPmFragmentDelegate
 
 /**
- * Predefined [Activity][AppCompatActivity] implementing the [MapPmView].
+ * Predefined [Fragment] implementing the [MapPmView].
  *
  * Just override the [providePresentationModel], [onBindPresentationModel]
  * and [onBindMapPresentationModel] methods and you are good to go.
  *
  * If extending is not possible you can implement [MapPmView],
- * create a [MapPmActivityDelegate] and pass the lifecycle callbacks to it.
+ * create a [MapPmFragmentDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class MapPmSupportActivity<PM> : AppCompatActivity(), MapPmView<PM>
+abstract class MapPmFragment<PM> : Fragment(), MapPmView<PM>
         where PM : PresentationModel, PM : MapPmExtension {
 
-    private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmActivityDelegate(this) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmFragmentDelegate(this) }
 
     final override val compositeUnbind = CompositeDisposable()
 
@@ -37,9 +40,10 @@ abstract class MapPmSupportActivity<PM> : AppCompatActivity(), MapPmView<PM>
         delegate.onCreate(savedInstanceState)
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        delegate.onPostCreate(this.findViewById(android.R.id.content), savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return super.onCreateView(inflater, container, savedInstanceState).apply {
+            delegate.onCreateView(this!!, savedInstanceState)
+        }
     }
 
     override fun onStart() {
@@ -67,9 +71,9 @@ abstract class MapPmSupportActivity<PM> : AppCompatActivity(), MapPmView<PM>
         delegate.onStop()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        delegate.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        delegate.onDestroyView()
     }
 
     override fun onLowMemory() {

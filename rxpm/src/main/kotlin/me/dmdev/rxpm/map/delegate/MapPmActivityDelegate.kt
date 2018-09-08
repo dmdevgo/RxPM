@@ -3,24 +3,25 @@ package me.dmdev.rxpm.map.delegate
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.delegate.PmActivityDelegate
 import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.MapPmView
-import me.dmdev.rxpm.map.base.MapPmSupportActivity
+import me.dmdev.rxpm.map.base.MapPmActivity
 
 /**
  * Delegate for the [Activity] that helps with creation and binding of
  * a [presentation model][PresentationModel] and a [MapPmView].
  *
- * Use this class only if you can't subclass the [MapPmSupportActivity].
+ * Use this class only if you can't subclass the [MapPmActivity].
  *
  * Users of this class must forward all the life cycle methods from the containing Activity
  * to the corresponding ones in this class.
  */
 class MapPmActivityDelegate<PM, A>(private val mapPmView: A)
         where PM : PresentationModel, PM : MapPmExtension,
-              A : Activity, A : MapPmView<PM> {
+              A : FragmentActivity, A : MapPmView<PM> {
 
     private val pmDelegate = PmActivityDelegate(mapPmView)
     private val mapPmViewDelegate by lazy(LazyThreadSafetyMode.NONE) {

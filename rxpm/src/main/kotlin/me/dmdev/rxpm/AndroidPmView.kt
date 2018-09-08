@@ -1,9 +1,9 @@
 package me.dmdev.rxpm
 
 import android.app.Dialog
-import android.support.design.widget.TextInputLayout
 import android.widget.CompoundButton
 import android.widget.EditText
+import com.google.android.material.textfield.TextInputLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer

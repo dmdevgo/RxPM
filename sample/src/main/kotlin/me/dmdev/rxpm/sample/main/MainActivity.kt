@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.sample.main
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import me.dmdev.rxpm.navigation.NavigationMessage
 import me.dmdev.rxpm.navigation.NavigationMessageHandler
 import me.dmdev.rxpm.sample.R

@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.sample.main.util
 
 import android.content.Context
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 
 
 class ResourceProvider(private val context: Context) {
