@@ -7,8 +7,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.AndroidPmView
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.widget.DialogControl.State.Displayed
-import me.dmdev.rxpm.widget.DialogControl.State.NotDisplayed
+import me.dmdev.rxpm.widget.DialogControl.Display.Absent
+import me.dmdev.rxpm.widget.DialogControl.Display.Displayed
 
 /**
  *
@@ -35,7 +35,7 @@ import me.dmdev.rxpm.widget.DialogControl.State.NotDisplayed
  */
 class DialogControl<T, R> internal constructor(pm: PresentationModel) {
 
-    internal val displayed = pm.State<State>(NotDisplayed)
+    val displayed = pm.State<Display>(Absent)
     private val result = pm.Action<R>()
 
     /**
@@ -65,7 +65,7 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
             .takeUntil(
                 displayed.relay
                     .skip(1)
-                    .filter { it == NotDisplayed }
+                    .filter { it == Absent }
             )
             .firstElement()
     }
@@ -83,13 +83,13 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
      */
     fun dismiss() {
         if (displayed.valueOrNull is Displayed<*>) {
-            displayed.relay.accept(NotDisplayed)
+            displayed.relay.accept(Absent)
         }
     }
 
-    internal sealed class State {
-        class Displayed<T>(val data: T) : State()
-        object NotDisplayed : State()
+    sealed class Display {
+        data class Displayed<T>(val data: T) : Display()
+        object Absent : Display()
     }
 }
 
@@ -128,7 +128,7 @@ internal inline fun <T, R> DialogControl<T, R>.bind(
                     dialog = createDialog(it.data as T, this)
                     dialog?.setOnDismissListener { this.dismiss() }
                     dialog?.show()
-                } else if (it === NotDisplayed) {
+                } else if (it === Absent) {
                     closeDialog()
                 }
             }
