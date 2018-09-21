@@ -1,8 +1,8 @@
 package me.dmdev.rxpm.widget
 
 import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.widget.DialogControl.State.Displayed
-import me.dmdev.rxpm.widget.DialogControl.State.NotDisplayed
+import me.dmdev.rxpm.widget.DialogControl.Display.Displayed
+import me.dmdev.rxpm.widget.DialogControl.Display.Absent
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertTrue
@@ -28,7 +28,7 @@ class DialogControlTest {
     @Test fun removedOnResult() {
         dialogControl.showForResult(Unit).subscribe()
         dialogControl.sendResult(Unit)
-        assertTrue { dialogControl.displayed.value === NotDisplayed }
+        assertTrue { dialogControl.displayed.value === Absent }
     }
 
     @Test fun acceptOneResult() {
@@ -45,7 +45,7 @@ class DialogControlTest {
     @Test fun removedOnDismiss() {
         dialogControl.showForResult(Unit).subscribe()
         dialogControl.dismiss()
-        assertTrue { dialogControl.displayed.value === NotDisplayed }
+        assertTrue { dialogControl.displayed.value === Absent }
     }
 
     @Test fun cancelDialog() {
@@ -68,9 +68,9 @@ class DialogControlTest {
         displayedObserver
             .assertSubscribed()
             .assertValueCount(4)
-            .assertValueAt(0, NotDisplayed)
+            .assertValueAt(0, Absent)
             .assertValueAt(1) { it is Displayed<*> }
-            .assertValueAt(2, NotDisplayed)
+            .assertValueAt(2, Absent)
             .assertValueAt(3) { it is Displayed<*> }
             .assertNoErrors()
 
