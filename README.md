@@ -23,7 +23,7 @@ Add the dependency to your build.gradle:
 ```gradle
 dependencies {
 
-    implementation 'me.dmdev.rxpm:rxpm:1.2'
+    implementation 'me.dmdev.rxpm:rxpm:1.2.1'
     
     // RxBinding (optional)
     implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:$latest_version'
