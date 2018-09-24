@@ -23,22 +23,22 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 16
-    compileSdkVersion = 27
-    targetSdkVersion = 27
+    compileSdkVersion = 28
+    targetSdkVersion = 28
     buildToolsVersion = '27.0.3'
 
-    supportVersion = '27.1.1'
+    supportVersion = '28.0.0'
     supportAppCompat = "com.android.support:appcompat-v7:$supportVersion"
     supportDesign = "com.android.support:design:$supportVersion"
 
-    playServicesVersion = '11.4.2'
+    playServicesVersion = '12.0.0'
     googleMaps = "com.google.android.gms:play-services-maps:$playServicesVersion"
 
     kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
-    rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.1"
-    rxRelay2 = "com.jakewharton.rxrelay2:rxrelay:2.0.0"
-    rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.0.2"
+    rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.2"
+    rxRelay2 = "com.jakewharton.rxrelay2:rxrelay:2.1.0"
+    rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.1.0"
 
     rxBinding2Version = '2.1.1'
     rxBindingKotlin = "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBinding2Version"
@@ -49,5 +49,5 @@ ext {
     outlast = "me.jeevuz.outlast:outlast:1.1"
 
     junitKotlin = "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-    mockitoKotlin = 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC1'
+    mockitoKotlin = 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC2'
 }
