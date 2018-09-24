@@ -1,6 +1,6 @@
 # RxPM
 
-[ ![Download](https://api.bintray.com/packages/dmdev/maven/RxPM/images/download.svg?version=latest) ](https://bintray.com/dmdev/maven/RxPM/1.2/link)[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RxPM-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/7089)
+[ ![Download](https://api.bintray.com/packages/dmdev/maven/RxPM/images/download.svg) ](https://bintray.com/dmdev/maven/RxPM/_latestVersion)[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RxPM-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/7089)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Reactive implementation of [Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html) pattern in Android.
