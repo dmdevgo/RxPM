@@ -19,7 +19,8 @@ import me.dmdev.rxpm.navigation.ControllerNavigationMessageDispatcher
  * to the corresponding ones in this class.
  */
 class PmControllerDelegate<PM, C>(private val pmView: C)
-where PM : PresentationModel, C : Controller, C : PmView<PM> {
+        where PM : PresentationModel,
+              C : Controller, C : PmView<PM> {
 
     internal val pmBinder: PmBinder<PM> by lazy(LazyThreadSafetyMode.NONE) { PmBinder(presentationModel, pmView) }
     private var created = false

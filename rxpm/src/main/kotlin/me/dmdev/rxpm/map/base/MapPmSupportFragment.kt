@@ -24,7 +24,7 @@ import me.dmdev.rxpm.map.delegate.MapPmSupportFragmentDelegate
  * See this class's source code for the example.
  */
 abstract class MapPmSupportFragment<PM> : Fragment(), MapPmView<PM>
-where PM : PresentationModel, PM : MapPmExtension {
+        where PM : PresentationModel, PM : MapPmExtension {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmSupportFragmentDelegate(this) }
 

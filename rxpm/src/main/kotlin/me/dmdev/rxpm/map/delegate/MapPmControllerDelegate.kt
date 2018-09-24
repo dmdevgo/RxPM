@@ -19,13 +19,12 @@ import me.dmdev.rxpm.map.base.MapPmController
  * to the corresponding ones in this class.
  */
 class MapPmControllerDelegate<PM, C>(private val mapPmView: C)
-where PM : PresentationModel, PM : MapPmExtension, C : Controller, C : MapPmView<PM> {
+        where PM : PresentationModel, PM : MapPmExtension,
+              C : Controller, C : MapPmView<PM> {
 
     private val pmDelegate = PmControllerDelegate(mapPmView)
     private val mapPmViewDelegate by lazy(LazyThreadSafetyMode.NONE) {
-        MapPmViewDelegate(pmDelegate.presentationModel,
-                          mapPmView,
-                          pmDelegate.pmBinder)
+        MapPmViewDelegate(pmDelegate.presentationModel, mapPmView, pmDelegate.pmBinder)
     }
 
     val presentationModel get() = pmDelegate.presentationModel

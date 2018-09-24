@@ -21,7 +21,7 @@ import me.dmdev.rxpm.map.delegate.MapPmActivityDelegate
  * See this class's source code for the example.
  */
 abstract class MapPmSupportActivity<PM> : AppCompatActivity(), MapPmView<PM>
-where PM : PresentationModel, PM : MapPmExtension {
+        where PM : PresentationModel, PM : MapPmExtension {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmActivityDelegate(this) }
 

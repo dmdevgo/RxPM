@@ -24,8 +24,8 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      */
     infix fun <T> Observable<T>.bindTo(consumer: Consumer<in T>) {
         this.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(consumer)
-                .untilUnbind()
+            .subscribe(consumer)
+            .untilUnbind()
     }
 
     /**
@@ -35,8 +35,8 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      */
     infix fun <T> Observable<T>.bindTo(consumer: (T) -> Unit) {
         this.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(consumer)
-                .untilUnbind()
+            .subscribe(consumer)
+            .untilUnbind()
     }
 
     /**
@@ -48,8 +48,8 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      */
     infix fun <T> Observable<T>.bindTo(action: PresentationModel.Action<T>) {
         this.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(action.consumer)
-                .untilUnbind()
+            .subscribe(action.consumer)
+            .untilUnbind()
     }
 
     /**
@@ -61,9 +61,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      */
     infix fun <T> PresentationModel.State<T>.bindTo(consumer: Consumer<in T>) {
         this.observable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(consumer)
-                .untilUnbind()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(consumer)
+            .untilUnbind()
     }
 
 
@@ -76,9 +76,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      */
     infix fun <T> PresentationModel.State<T>.bindTo(consumer: (T) -> Unit) {
         this.observable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(consumer)
-                .untilUnbind()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(consumer)
+            .untilUnbind()
     }
 
     /**
@@ -90,9 +90,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      */
     infix fun <T> PresentationModel.Command<T>.bindTo(consumer: Consumer<in T>) {
         this.observable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(consumer)
-                .untilUnbind()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(consumer)
+            .untilUnbind()
     }
 
     /**
@@ -104,9 +104,9 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
      */
     infix fun <T> PresentationModel.Command<T>.bindTo(consumer: (T) -> Unit) {
         this.observable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(consumer)
-                .untilUnbind()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(consumer)
+            .untilUnbind()
     }
 
     /**
@@ -141,10 +141,19 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     }
 
     /**
-     * Local extension to pass an empty value to the [Consumer].
+     * Local function to pass an empty value to the [Consumer].
      */
     infix fun passTo(consumer: Consumer<Unit>) {
         consumer.accept(Unit)
+    }
+
+    /**
+     * Local function to pass an empty value to the [Action][PresentationModel.Action]
+     *
+     * @since 1.2
+     */
+    infix fun passTo(action: PresentationModel.Action<Unit>) {
+        action.consumer.accept(Unit)
     }
 
     /**

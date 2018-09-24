@@ -19,8 +19,9 @@ import me.dmdev.rxpm.delegate.PmControllerDelegate
  * create a [PmControllerDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class PmController<PM : PresentationModel>(args: Bundle? = null) : RestoreViewOnCreateController(args),
-                                                                            AndroidPmView<PM> {
+abstract class PmController<PM : PresentationModel>(args: Bundle? = null) :
+    RestoreViewOnCreateController(args),
+    AndroidPmView<PM> {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmControllerDelegate(this) }
 

@@ -3,8 +3,10 @@ package me.dmdev.rxpm.delegate
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 
-internal class PmBinder<out PM : PresentationModel>(private val pm: PM,
-                                                    private val pmView: PmView<PM>) {
+internal class PmBinder<out PM : PresentationModel>(
+    private val pm: PM,
+    private val pmView: PmView<PM>
+) {
 
     var viewBound = false
         private set

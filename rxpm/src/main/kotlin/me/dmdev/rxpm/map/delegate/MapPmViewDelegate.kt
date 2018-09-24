@@ -11,10 +11,11 @@ import me.dmdev.rxpm.map.MapPmExtension
 import me.dmdev.rxpm.map.MapPmView
 
 
-internal class MapPmViewDelegate<PM>(private val pm: PM,
-                                     private val mapPmView: MapPmView<PM>,
-                                     private val pmBinder: PmBinder<PM>)
-where PM : PresentationModel, PM : MapPmExtension {
+internal class MapPmViewDelegate<PM>(
+    private val pm: PM,
+    private val mapPmView: MapPmView<PM>,
+    private val pmBinder: PmBinder<PM>
+) where PM : PresentationModel, PM : MapPmExtension {
 
     companion object {
         private const val MAP_VIEW_BUNDLE_KEY = "map_view_bundle"
@@ -108,9 +109,9 @@ where PM : PresentationModel, PM : MapPmExtension {
             return view
         } else if (view is ViewGroup) {
             (0 until view.childCount)
-                    .map { findMapView(view.getChildAt(it)) }
-                    .filterIsInstance<MapView>()
-                    .forEach { return it }
+                .map { findMapView(view.getChildAt(it)) }
+                .filterIsInstance<MapView>()
+                .forEach { return it }
         }
         return null
     }

@@ -7,8 +7,7 @@ import me.dmdev.rxpm.PresentationModel
  *
  * If extending is not possible you can implement [MapPmExtension] by your [PresentationModel].
  */
-abstract class MapPresentationModel : PresentationModel(),
-                                      MapPmExtension {
+abstract class MapPresentationModel : PresentationModel(), MapPmExtension {
 
     override val mapReadyState = MapPmExtension.MapReadyState()
 }
