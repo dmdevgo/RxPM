@@ -59,23 +59,23 @@ abstract class MapPmController<PM>(args: Bundle? = null) :
     }
 
     override fun onDetach(view: View) {
-        super.onDetach(view)
         delegate.onDetach()
+        super.onDetach(view)
     }
 
     override fun onSaveViewState(view: View, outState: Bundle) {
-        super.onSaveViewState(view, outState)
         delegate.onSaveViewState(outState)
+        super.onSaveViewState(view, outState)
     }
 
     override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
         delegate.onDestroyView()
+        super.onDestroyView(view)
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         delegate.onDestroy()
+        super.onDestroy()
     }
 
     /**

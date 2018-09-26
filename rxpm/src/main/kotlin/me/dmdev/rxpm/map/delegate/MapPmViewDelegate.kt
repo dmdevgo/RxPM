@@ -14,7 +14,7 @@ import me.dmdev.rxpm.map.MapPmView
 internal class MapPmViewDelegate<PM>(
     private val pm: PM,
     private val mapPmView: MapPmView<PM>,
-    private val pmBinder: PmBinder<PM>
+    pmBinder: PmBinder<PM>
 ) where PM : PresentationModel, PM : MapPmExtension {
 
     companion object {
@@ -98,7 +98,7 @@ internal class MapPmViewDelegate<PM>(
     }
 
     private fun tryBindMapViewToPm() {
-        if (mapReady && pmBinder.viewBound) {
+        if (mapReady && pm.currentLifecycleState == PresentationModel.Lifecycle.BINDED) {
             mapPmView.onBindMapPresentationModel(pm, googleMap!!)
             pm.mapReadyState.consumer.accept(true)
         }

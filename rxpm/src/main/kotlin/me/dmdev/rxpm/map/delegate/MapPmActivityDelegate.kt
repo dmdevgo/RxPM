@@ -19,13 +19,13 @@ import me.dmdev.rxpm.map.base.MapPmActivity
  * Users of this class must forward all the life cycle methods from the containing Activity
  * to the corresponding ones in this class.
  */
-class MapPmActivityDelegate<PM, A>(private val mapPmView: A)
+class MapPmActivityDelegate<PM, A>(private val mapPmActivity: A)
         where PM : PresentationModel, PM : MapPmExtension,
               A : FragmentActivity, A : MapPmView<PM> {
 
-    private val pmDelegate = PmActivityDelegate(mapPmView)
+    private val pmDelegate = PmActivityDelegate(mapPmActivity)
     private val mapPmViewDelegate by lazy(LazyThreadSafetyMode.NONE) {
-        MapPmViewDelegate(pmDelegate.presentationModel, mapPmView, pmDelegate.pmBinder)
+        MapPmViewDelegate(pmDelegate.presentationModel, mapPmActivity, pmDelegate.pmBinder)
     }
 
     val presentationModel get() = pmDelegate.presentationModel

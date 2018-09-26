@@ -46,17 +46,17 @@ abstract class PmController<PM : PresentationModel>(args: Bundle? = null) :
     }
 
     override fun onDetach(view: View) {
-        super.onDetach(view)
         delegate.onDetach()
+        super.onDetach(view)
     }
 
     override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
         delegate.onDestroyView()
+        super.onDestroyView(view)
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         delegate.onDestroy()
+        super.onDestroy()
     }
 }

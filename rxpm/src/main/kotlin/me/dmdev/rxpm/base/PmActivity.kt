@@ -40,22 +40,22 @@ abstract class PmActivity<PM : PresentationModel> : AppCompatActivity(), Android
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         delegate.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
-        super.onPause()
         delegate.onPause()
+        super.onPause()
     }
 
     override fun onStop() {
-        super.onStop()
         delegate.onStop()
+        super.onStop()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         delegate.onDestroy()
+        super.onDestroy()
     }
 }

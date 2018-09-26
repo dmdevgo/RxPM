@@ -3,9 +3,9 @@ package me.dmdev.rxpm.delegate
 import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.base.PmActivity
@@ -20,27 +20,25 @@ import me.dmdev.rxpm.navigation.ActivityNavigationMessageDispatcher
  * Users of this class must forward all the life cycle methods from the containing Activity
  * to the corresponding ones in this class.
  */
-class PmActivityDelegate<PM, A>(private val pmView: A)
+class PmActivityDelegate<PM, A>(private val pmActivity: A)
         where PM : PresentationModel,
               A : FragmentActivity, A : PmView<PM> {
 
-
     private val pmHolder: PmHolder by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProviders.of(pmView).get(PmHolder::class.java)
+        ViewModelProviders.of(pmActivity, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return PmHolder(pmActivity.providePresentationModel()) as T
+            }
+
+        }).get(PmHolder::class.java)
     }
 
     internal val pmBinder: PmBinder<PM> by lazy(LazyThreadSafetyMode.NONE) {
-        PmBinder(presentationModel, pmView)
+        PmBinder(pmActivity, ActivityNavigationMessageDispatcher(pmActivity))
     }
 
-    private val navigationMessagesDispatcher = ActivityNavigationMessageDispatcher(pmView)
-    private lateinit var navigationMessagesDisposable: Disposable
-
     val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) {
-        if (pmHolder.pm == null) {
-            pmHolder.pm = pmView.providePresentationModel()
-        }
-
         @Suppress("UNCHECKED_CAST")
         pmHolder.pm as PM
     }
@@ -49,14 +47,7 @@ class PmActivityDelegate<PM, A>(private val pmView: A)
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
-        if (presentationModel.currentLifecycleState == null) {
-            presentationModel.lifecycleConsumer.accept(PresentationModel.Lifecycle.CREATED)
-        }
-        navigationMessagesDisposable = presentationModel.navigationMessages.observable
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                navigationMessagesDispatcher.dispatch(it)
-            }
+        presentationModel // lazy initialization
     }
 
     /**
@@ -98,6 +89,6 @@ class PmActivityDelegate<PM, A>(private val pmView: A)
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onDestroy() {
-        navigationMessagesDisposable.dispose()
+        // For symmetry, may be used in the future
     }
 }

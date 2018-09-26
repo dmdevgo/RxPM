@@ -4,12 +4,13 @@ import androidx.lifecycle.ViewModel
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.PresentationModel.Lifecycle
 
-internal class PmHolder : ViewModel() {
+internal class PmHolder(val pm: PresentationModel) : ViewModel() {
 
-    internal var pm: PresentationModel? = null
+    init {
+        pm.lifecycleConsumer.accept(Lifecycle.CREATED)
+    }
 
     override fun onCleared() {
-        pm?.lifecycleConsumer?.accept(Lifecycle.DESTROYED)
-        pm = null
+        pm.lifecycleConsumer.accept(Lifecycle.DESTROYED)
     }
 }

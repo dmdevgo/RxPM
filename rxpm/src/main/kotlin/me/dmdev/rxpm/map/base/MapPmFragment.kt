@@ -57,23 +57,23 @@ abstract class MapPmFragment<PM> : Fragment(), MapPmView<PM>
     }
 
     override fun onPause() {
-        super.onPause()
         delegate.onPause()
+        super.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         delegate.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onStop() {
-        super.onStop()
         delegate.onStop()
+        super.onStop()
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         delegate.onDestroyView()
+        super.onDestroyView()
     }
 
     override fun onLowMemory() {

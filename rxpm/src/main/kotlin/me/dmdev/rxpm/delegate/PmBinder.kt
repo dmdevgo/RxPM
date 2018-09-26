@@ -1,34 +1,45 @@
 package me.dmdev.rxpm.delegate
 
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.PresentationModel.*
+import me.dmdev.rxpm.navigation.NavigationMessageDispatcher
 
 internal class PmBinder<out PM : PresentationModel>(
-    private val pm: PM,
-    private val pmView: PmView<PM>
+    private val pmView: PmView<PM>,
+    private val navigationMessageDispatcher: NavigationMessageDispatcher
 ) {
 
-    var viewBound = false
-        private set
+    private val pm get() = pmView.presentationModel
 
     var listener: Callbacks? = null
 
+    private var navigationMessagesDisposable: Disposable? = null
+
     fun bind() {
-        if (!viewBound) {
+        if (pm.currentLifecycleState == Lifecycle.CREATED || pm.currentLifecycleState == Lifecycle.UNBINDED) {
+
+            navigationMessagesDisposable = pm.navigationMessages.observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    navigationMessageDispatcher.dispatch(it)
+                }
+
             pmView.onBindPresentationModel(pm)
-            pm.lifecycleConsumer.accept(PresentationModel.Lifecycle.BINDED)
-            viewBound = true
             listener?.onBindPm()
+            pm.lifecycleConsumer.accept(Lifecycle.BINDED)
         }
     }
 
     fun unbind() {
-        if (viewBound) {
+        if (pm.currentLifecycleState == Lifecycle.BINDED) {
+            pm.lifecycleConsumer.accept(Lifecycle.UNBINDED)
             listener?.onUnbindPm()
-            pm.lifecycleConsumer.accept(PresentationModel.Lifecycle.UNBINDED)
             pmView.onUnbindPresentationModel()
             pmView.compositeUnbind.clear()
-            viewBound = false
+            navigationMessagesDisposable?.dispose()
         }
     }
 
