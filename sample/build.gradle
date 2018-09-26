@@ -40,6 +40,6 @@ dependencies {
     implementation rootProject.rxBindingSupportV7Kotlin
 
     implementation "com.jakewharton.timber:timber:4.7.1"
-    implementation 'com.googlecode.libphonenumber:libphonenumber:8.9.9'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.9.14'
 
 }

@@ -1,11 +1,11 @@
 buildscript {
-    ext.kotlinVersion = '1.2.61'
+    ext.kotlinVersion = '1.2.71'
     repositories {
         jcenter()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-rc02'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
@@ -26,22 +26,22 @@ ext {
     compileSdkVersion = 28
     targetSdkVersion = 28
     buildToolsVersion = '28.0.2'
-    androidxVersion = "1.0.0-rc02"
-    lifecycleVersion = "2.0.0-rc01"
+    androidxVersion = "1.0.0"
+    lifecycleVersion = "2.0.0"
 
     appCompat = "androidx.appcompat:appcompat:$androidxVersion"
     materialDesign = "com.google.android.material:material:$androidxVersion"
 
     lifecycle = "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
 
-    playServicesVersion = '11.4.2'
+    playServicesVersion = '12.0.0'
     googleMaps = "com.google.android.gms:play-services-maps:$playServicesVersion"
 
     kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
-    rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.1"
-    rxRelay2 = "com.jakewharton.rxrelay2:rxrelay:2.0.0"
-    rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.0.2"
+    rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.2"
+    rxRelay2 = "com.jakewharton.rxrelay2:rxrelay:2.1.0"
+    rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.1.0"
 
     rxBinding2Version = '2.1.1'
     rxBindingKotlin = "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBinding2Version"
@@ -51,5 +51,5 @@ ext {
     conductor = "com.bluelinelabs:conductor:2.1.5"
 
     junitKotlin = "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-    mockitoKotlin = 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC1'
+    mockitoKotlin = 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC2'
 }
