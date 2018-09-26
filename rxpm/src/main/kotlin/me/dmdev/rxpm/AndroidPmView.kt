@@ -141,10 +141,19 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
     }
 
     /**
-     * Local extension to pass an empty value to the [Consumer].
+     * Local function to pass an empty value to the [Consumer].
      */
     infix fun passTo(consumer: Consumer<Unit>) {
         consumer.accept(Unit)
+    }
+
+    /**
+     * Local function to pass an empty value to the [Action][PresentationModel.Action]
+     *
+     * @since 1.2
+     */
+    infix fun passTo(action: PresentationModel.Action<Unit>) {
+        action.consumer.accept(Unit)
     }
 
     /**
