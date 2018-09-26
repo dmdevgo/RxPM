@@ -35,7 +35,7 @@ class PmActivityDelegate<PM, A>(private val pmActivity: A)
     }
 
     internal val pmBinder: PmBinder<PM> by lazy(LazyThreadSafetyMode.NONE) {
-        PmBinder(pmActivity, ActivityNavigationMessageDispatcher(pmActivity))
+        PmBinder(presentationModel, pmActivity, ActivityNavigationMessageDispatcher(pmActivity))
     }
 
     val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) {

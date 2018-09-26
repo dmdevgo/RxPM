@@ -21,7 +21,7 @@ class PmControllerDelegate<PM, C>(private val pmController: C)
               C : Controller, C : PmView<PM> {
 
     internal val pmBinder: PmBinder<PM> by lazy(LazyThreadSafetyMode.NONE) {
-        PmBinder(pmController, ControllerNavigationMessageDispatcher(pmController))
+        PmBinder(presentationModel, pmController, ControllerNavigationMessageDispatcher(pmController))
     }
 
     val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) {

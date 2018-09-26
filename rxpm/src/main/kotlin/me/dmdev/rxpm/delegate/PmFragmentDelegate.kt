@@ -34,7 +34,7 @@ class PmFragmentDelegate<PM, F>(private val pmFragment: F)
     }
 
     internal val pmBinder: PmBinder<PM> by lazy(LazyThreadSafetyMode.NONE) {
-        PmBinder(pmFragment, FragmentNavigationMessageDispatcher(pmFragment))
+        PmBinder(presentationModel, pmFragment, FragmentNavigationMessageDispatcher(pmFragment))
     }
 
     val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) {

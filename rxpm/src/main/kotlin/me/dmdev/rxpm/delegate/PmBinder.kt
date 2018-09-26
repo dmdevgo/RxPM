@@ -8,12 +8,10 @@ import me.dmdev.rxpm.PresentationModel.*
 import me.dmdev.rxpm.navigation.NavigationMessageDispatcher
 
 internal class PmBinder<out PM : PresentationModel>(
+    private val pm : PM,
     private val pmView: PmView<PM>,
     private val navigationMessageDispatcher: NavigationMessageDispatcher
 ) {
-
-    private val pm get() = pmView.presentationModel
-
     var listener: Callbacks? = null
 
     private var navigationMessagesDisposable: Disposable? = null
