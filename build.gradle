@@ -1,11 +1,11 @@
 buildscript {
-    ext.kotlinVersion = '1.2.70'
+    ext.kotlinVersion = '1.2.71'
     repositories {
         jcenter()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
@@ -25,7 +25,7 @@ ext {
     minSdkVersion = 16
     compileSdkVersion = 28
     targetSdkVersion = 28
-    buildToolsVersion = '27.0.3'
+    buildToolsVersion = '28.0.2'
 
     supportVersion = '28.0.0'
     supportAppCompat = "com.android.support:appcompat-v7:$supportVersion"
