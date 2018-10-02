@@ -4,6 +4,7 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import org.junit.Before
@@ -161,25 +162,6 @@ class PmExtensionsTest {
         testObserver.assertValuesOnly(1, 2, 3, 4)
     }
 
-    @Test fun bufferWhileIdlePassItemsAfterIdleEvenIfResubscribed() {
-        val relayWithBuffer = relay.bufferWhileIdle(isIdleObservable)
-        var testObserver = relayWithBuffer.test()
-
-        relay.accept(1)
-        relay.accept(2)
-
-        testObserver.assertValuesOnly(1, 2)
-
-        testObserver.dispose()
-        isIdleObservable.accept(true)
-        relay.accept(3)
-        relay.accept(4)
-        testObserver = relayWithBuffer.test()
-        isIdleObservable.accept(false)
-
-        testObserver.assertValuesOnly(3, 4)
-    }
-
     @Test fun bufferWhileIdleRestrictBufferedItemsCount() {
         val testObserver = relay.bufferWhileIdle(isIdleObservable, bufferSize = 1).test()
 
@@ -237,5 +219,11 @@ class PmExtensionsTest {
         isIdleObservable.accept(false)
 
         testObserver.assertValuesOnly(1, 2, 3, 4)
+    }
+
+    @Test fun bufferWhileIdleWithObservable() {
+        val testObserver = Observable.just(1).bufferWhileIdle(isIdleObservable).test()
+
+        testObserver.assertResult(1)
     }
 }
