@@ -341,6 +341,8 @@ abstract class PresentationModel {
                     relay.bufferWhileIdle(isIdle, bufferSize)
                 }
             }
+                .publish()
+                .apply { connect() }
     }
 
 }

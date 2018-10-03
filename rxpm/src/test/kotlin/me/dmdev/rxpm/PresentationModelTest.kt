@@ -1,6 +1,5 @@
 package me.dmdev.rxpm
 
-import com.jakewharton.rxrelay2.PublishRelay
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -76,86 +75,106 @@ class PresentationModelTest {
         assertEquals(DESTROYED, pm.currentLifecycleState)
     }
 
-    @Test fun bufferWhileUnbindBlockItemsBeforeCreated() {
-        val testObserver = pm.commands.test()
+    @Test fun commandBlocksItemsBeforeCreated() {
+        val testObserver = pm.commands.observable.test()
 
-        pm.relay.accept(1)
-
-        testObserver.assertEmpty()
-    }
-
-    @Test fun bufferWhileUnbindBlockItemsBeforeBinded() {
-        val testObserver = pm.commands.test()
-
-        pm.lifecycleConsumer.accept(CREATED)
-        pm.relay.accept(1)
+        pm.acceptCommand(1)
 
         testObserver.assertEmpty()
     }
 
-    @Test fun bufferWhileUnbindReceiveItemsWhenBinded() {
-        val testObserver = pm.commands.test()
+    @Test fun commandBlocksItemsBeforeBinded() {
+        val testObserver = pm.commands.observable.test()
+
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.acceptCommand(1)
+
+        testObserver.assertEmpty()
+    }
+
+    @Test fun commandPassItemsWhenBinded() {
+        val testObserver = pm.commands.observable.test()
 
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
-        pm.relay.accept(1)
-        pm.relay.accept(2)
+        pm.acceptCommand(1)
+        pm.acceptCommand(2)
 
         testObserver.assertValuesOnly(1, 2)
     }
 
-    @Test fun bufferWhileUnbindPassItemsAfterBinded() {
-        val testObserver = pm.commands.test()
+    @Test fun commandSendsBufferedItemsAfterBinded() {
+        val testObserver = pm.commands.observable.test()
 
-        pm.relay.accept(1)
+        pm.acceptCommand(1)
         pm.lifecycleConsumer.accept(CREATED)
-        pm.relay.accept(2)
+        pm.acceptCommand(2)
         pm.lifecycleConsumer.accept(BINDED)
 
         testObserver.assertValuesOnly(1, 2)
     }
 
-    @Test fun bufferWhileUnbindBlockItemsAfterUnbinded() {
-        val testObserver = pm.commands.test()
+    @Test fun commandBlocksItemsAfterUnbinded() {
+        val testObserver = pm.commands.observable.test()
 
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
         pm.lifecycleConsumer.accept(UNBINDED)
-        pm.relay.accept(1)
+        pm.acceptCommand(1)
 
         testObserver.assertEmpty()
     }
 
-    @Test fun bufferWhileUnbindPassItemsAfterBindedAgain() {
-        val testObserver = pm.commands.test()
+    @Test fun commandSendsBufferedItemsAfterBindedAgain() {
+        val testObserver = pm.commands.observable.test()
 
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
         pm.lifecycleConsumer.accept(UNBINDED)
-        pm.relay.accept(1)
-        pm.relay.accept(2)
+        pm.acceptCommand(1)
+        pm.acceptCommand(2)
         pm.lifecycleConsumer.accept(BINDED)
 
         testObserver.assertValuesOnly(1, 2)
     }
 
-    @Test fun bufferWhileUnbindBlockItemsAfterDestroyed() {
-        val testObserver = pm.commands.test()
+    @Test fun commandBlocksItemsAfterDestroyed() {
+        val testObserver = pm.commands.observable.test()
 
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
         pm.lifecycleConsumer.accept(UNBINDED)
         pm.lifecycleConsumer.accept(DESTROYED)
-        pm.relay.accept(1)
+        pm.acceptCommand(1)
 
         testObserver.assertEmpty()
+    }
+
+    @Test fun commandSendsBufferedItemsAfterResubscribedAndBindedAgain() {
+        val testObserver = pm.commands.observable.test()
+
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(UNBINDED)
+        testObserver.dispose()
+
+        pm.acceptCommand(1)
+
+        val testObserver2 = pm.commands.observable.test()
+        pm.lifecycleConsumer.accept(BINDED)
+
+        testObserver.assertEmpty()
+        testObserver2.assertValuesOnly(1)
     }
 }
 
 open class TestPm(private val callbacks: LifecycleCallbacks) : PresentationModel() {
 
-    val relay = PublishRelay.create<Int>()
-    val commands = relay.bufferWhileUnbind()
+    val commands = Command<Int>()
+
+    fun acceptCommand(i : Int) {
+        commands.consumer.accept(i)
+    }
 
     override fun onCreate() {
         callbacks.onCreate()
