@@ -115,6 +115,4 @@ inline fun <T> Observable<T>.bufferWhileIdle(
                 .flatMapIterable { it }
 
         )
-        .publish()
-        .refCount()
 }
