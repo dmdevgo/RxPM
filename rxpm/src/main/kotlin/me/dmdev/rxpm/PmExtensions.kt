@@ -85,26 +85,28 @@ inline fun <T> Observable<T>.bufferWhileIdle(
         this
             .withLatestFrom(
                 isIdle,
-                BiFunction { t: T, idle: Boolean ->
-                    Pair(t, idle)
-                }
+                BiFunction { t: T, idle: Boolean -> Pair(t, idle) }
             )
             .publish()
-            .autoConnect(2)
+            .refCount(2)
 
     return Observable
         .merge(
             itemsObservable
-                .filter { it.second.not() } // isIdle = false
-                .map { it.first }, // item
+                .filter { (_, isIdle) ->  isIdle.not() }
+                .map { (item, _) -> item },
 
             itemsObservable
-                .filter { it.second } // isIdle = true
-                .map { it.first } // item
+                .filter { (_, isIdle) -> isIdle }
+                .map { (item, _) -> item }
                 .buffer(
-                    isIdle.distinctUntilChanged().filter { it },
-                    Function<Boolean, Observable<Boolean>> {
-                        isIdle.distinctUntilChanged().filter { !it }
+                    isIdle
+                        .distinctUntilChanged()
+                        .filter { it },
+                    Function<Boolean, Observable<Boolean>> { _ ->
+                        isIdle
+                            .distinctUntilChanged()
+                            .filter { it.not() }
                     }
                 )
                 .map {
@@ -113,6 +115,4 @@ inline fun <T> Observable<T>.bufferWhileIdle(
                 .flatMapIterable { it }
 
         )
-        .publish()
-        .apply { connect() }
 }
