@@ -109,10 +109,8 @@ inline fun <T> Observable<T>.bufferWhileIdle(
                             .filter { it.not() }
                     }
                 )
-                .map {
+                .flatMapIterable {
                     if (bufferSize != null) it.takeLast(bufferSize) else it
                 }
-                .flatMapIterable { it }
-
         )
 }
