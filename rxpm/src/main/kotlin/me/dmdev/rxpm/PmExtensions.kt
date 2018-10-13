@@ -66,8 +66,8 @@ inline fun <T> Observable<T>.skipWhileInProgress(progressState: Observable<Boole
                 Pair(t, inProgress)
             }
         )
-        .filter { !it.second }
-        .map { it.first }
+        .filter { (_, inProgress) -> !inProgress }
+        .map { (item, _) -> item }
 }
 
 /**
