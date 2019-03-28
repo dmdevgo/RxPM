@@ -28,7 +28,7 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
 
     override fun providePresentationModel(): CodeConfirmationPm {
         return CodeConfirmationPm(
-            arguments!!.getString(ARG_PHONE),
+            arguments!!.getString(ARG_PHONE)!!,
             App.component.resourceProvider,
             App.component.authModel
         )

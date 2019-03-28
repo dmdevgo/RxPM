@@ -66,8 +66,8 @@ inline fun <T> Observable<T>.skipWhileInProgress(progressState: Observable<Boole
                 Pair(t, inProgress)
             }
         )
-        .filter { !it.second }
-        .map { it.first }
+        .filter { (_, inProgress) -> !inProgress }
+        .map { (item, _) -> item }
 }
 
 /**
@@ -103,16 +103,14 @@ inline fun <T> Observable<T>.bufferWhileIdle(
                     isIdle
                         .distinctUntilChanged()
                         .filter { it },
-                    Function<Boolean, Observable<Boolean>> { _ ->
+                    Function<Boolean, Observable<Boolean>> {
                         isIdle
                             .distinctUntilChanged()
                             .filter { it.not() }
                     }
                 )
-                .map {
+                .flatMapIterable {
                     if (bufferSize != null) it.takeLast(bufferSize) else it
                 }
-                .flatMapIterable { it }
-
         )
 }

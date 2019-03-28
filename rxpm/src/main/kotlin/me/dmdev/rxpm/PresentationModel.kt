@@ -53,25 +53,18 @@ abstract class PresentationModel {
                 @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
                 when (it) {
                     Lifecycle.CREATED -> onCreate()
-                    Lifecycle.BINDED -> onBind()
+                    Lifecycle.BINDED -> {
+                        unbind.accept(false)
+                        onBind()
+                    }
                     Lifecycle.UNBINDED -> {
+                        unbind.accept(true)
                         compositeUnbind.clear()
                         onUnbind()
                     }
                     Lifecycle.DESTROYED -> {
                         compositeDestroy.clear()
                         onDestroy()
-                    }
-                }
-            }
-
-        lifecycle
-            .takeUntil { it == Lifecycle.DESTROYED }
-            .subscribe {
-                when (it) {
-                    Lifecycle.BINDED -> unbind.accept(false)
-                    Lifecycle.UNBINDED -> unbind.accept(true)
-                    else -> {
                     }
                 }
             }
@@ -331,7 +324,7 @@ abstract class PresentationModel {
         /**
          * Observable of this [Command].
          */
-        val observable =
+        val observable: Observable<T> =
             if (bufferSize == 0) {
                 relay.asObservable()
             } else {
