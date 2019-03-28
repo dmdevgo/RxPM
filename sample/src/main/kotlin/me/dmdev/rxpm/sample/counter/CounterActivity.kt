@@ -18,8 +18,8 @@ class CounterActivity : PmSupportActivity<CounterPm>() {
     override fun onBindPresentationModel(pm: CounterPm) {
 
         pm.count.observable.map { it.toString() } bindTo counterText::setText
-        pm.minusButtonEnubled bindTo minusButton::setEnabled
-        pm.plusButtonEnubled bindTo plusButton::setEnabled
+        pm.minusButtonEnabled bindTo minusButton::setEnabled
+        pm.plusButtonEnabled bindTo plusButton::setEnabled
 
         minusButton.clicks() bindTo pm.minusButtonClicks
         plusButton.clicks() bindTo pm.plusButtonClicks

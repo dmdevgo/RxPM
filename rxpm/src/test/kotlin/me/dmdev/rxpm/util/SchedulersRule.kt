@@ -8,14 +8,14 @@ import org.junit.rules.ExternalResource
 
 class SchedulersRule : ExternalResource() {
 
-    lateinit var testScheduler: TestScheduler
+    private lateinit var testScheduler: TestScheduler
 
     override fun before() {
-        RxJavaPlugins.setIoSchedulerHandler { _ -> Schedulers.trampoline() }
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { _ -> Schedulers.trampoline() }
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
 
         testScheduler = TestScheduler()
-        RxJavaPlugins.setComputationSchedulerHandler { _ -> testScheduler }
+        RxJavaPlugins.setComputationSchedulerHandler { testScheduler }
     }
 
     override fun after() {

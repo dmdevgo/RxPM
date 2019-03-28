@@ -100,7 +100,7 @@ internal inline fun InputControl.bind(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 val editable = editText.text
-                if (!it.contentEquals(editable)) {
+                if (!it!!.contentEquals(editable)) {
                     editing = true
                     if (editable is Spanned) {
                         val ss = SpannableString(it)

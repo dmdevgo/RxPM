@@ -324,7 +324,7 @@ abstract class PresentationModel {
         /**
          * Observable of this [Command].
          */
-        val observable =
+        val observable: Observable<T> =
             if (bufferSize == 0) {
                 relay.asObservable()
             } else {

@@ -103,7 +103,7 @@ inline fun <T> Observable<T>.bufferWhileIdle(
                     isIdle
                         .distinctUntilChanged()
                         .filter { it },
-                    Function<Boolean, Observable<Boolean>> { _ ->
+                    Function<Boolean, Observable<Boolean>> {
                         isIdle
                             .distinctUntilChanged()
                             .filter { it.not() }

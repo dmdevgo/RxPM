@@ -9,8 +9,8 @@ class CounterPm : PresentationModel() {
     }
 
     val count = State(initialValue = 0)
-    val minusButtonEnubled = State(false)
-    val plusButtonEnubled = State(false)
+    val minusButtonEnabled = State(false)
+    val plusButtonEnabled = State(false)
 
     val minusButtonClicks = Action<Unit>()
     val plusButtonClicks = Action<Unit>()
@@ -20,12 +20,12 @@ class CounterPm : PresentationModel() {
 
         count.observable
             .map { it > 0 }
-            .subscribe(minusButtonEnubled.consumer)
+            .subscribe(minusButtonEnabled.consumer)
             .untilDestroy()
 
         count.observable
             .map { it < MAX_COUNT }
-            .subscribe(plusButtonEnubled.consumer)
+            .subscribe(plusButtonEnabled.consumer)
             .untilDestroy()
 
         minusButtonClicks.observable
