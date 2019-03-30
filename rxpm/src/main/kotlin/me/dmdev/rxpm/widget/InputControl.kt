@@ -9,8 +9,8 @@ import android.text.TextUtils
 import android.widget.EditText
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.AndroidPmView
+import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 
 /**
@@ -26,35 +26,38 @@ import me.dmdev.rxpm.PresentationModel
  * @see DialogControl
  */
 class InputControl internal constructor(
-    pm: PresentationModel,
     initialText: String,
-    formatter: (text: String) -> String,
-    hideErrorOnUserInput: Boolean
-) {
+    private val formatter: ((text: String) -> String)?,
+    private val hideErrorOnUserInput: Boolean = true
+) : PresentationModel() {
 
     /**
      * The input field text [state][PresentationModel.State].
      */
-    val text = pm.State(initialText)
+    val text = State(initialText)
 
     /**
      * The input field error [state][PresentationModel.State].
      */
-    val error = pm.State<String>()
+    val error = State<String>()
 
     /**
      * The input field text changes [events][PresentationModel.Action].
      */
-    val textChanges = pm.Action<String>()
+    val textChanges = Action<String>()
 
-    init {
-        textChanges.relay
-            .filter { it != text.value }
-            .map { formatter.invoke(it) }
-            .subscribe {
-                text.relay.accept(it)
-                if (hideErrorOnUserInput) error.relay.accept("")
-            }
+    override fun onCreate() {
+
+        if (formatter != null) {
+            textChanges.observable
+                .filter { it != text.value }
+                .map { formatter.invoke(it) }
+                .subscribe {
+                    text.consumer.accept(it)
+                    if (hideErrorOnUserInput) error.consumer.accept("")
+                }
+                .untilDestroy()
+        }
     }
 }
 
@@ -67,56 +70,61 @@ class InputControl internal constructor(
  */
 fun PresentationModel.inputControl(
     initialText: String = "",
-    formatter: (text: String) -> String = { it },
+    formatter: ((text: String) -> String)? = { it },
     hideErrorOnUserInput: Boolean = true
 ): InputControl {
-    return InputControl(this, initialText, formatter, hideErrorOnUserInput)
+    return InputControl(initialText, formatter, hideErrorOnUserInput).apply {
+        attachToParent(this@inputControl)
+    }
 }
 
-internal inline fun InputControl.bind(
-    textInputLayout: TextInputLayout, compositeDisposable: CompositeDisposable
-) {
+/**
+ * Bind the [InputControl] to the [TextInputLayout][textInputLayout], use it ONLY in [PmView.onBindPresentationModel].
+ */
+inline infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
 
     val edit = textInputLayout.editText!!
 
-    bind(edit, compositeDisposable)
-    compositeDisposable.add(
-        error.observable.subscribe { error ->
+    bindTo(edit)
+
+    error.observable
+        .subscribe { error ->
             textInputLayout.error = if (error.isEmpty()) null else error
         }
-    )
+        .untilUnbind()
 }
 
-internal inline fun InputControl.bind(
-    editText: EditText,
-    compositeDisposable: CompositeDisposable
-) {
+/**
+ * Bind the [InputControl] to the [EditText][editText], use it ONLY in [PmView.onBindPresentationModel].
+ *
+ * @since 2.0
+ */
+inline infix fun InputControl.bindTo(editText: EditText) {
 
     var editing = false
 
-    compositeDisposable.addAll(
-
-        text.observable
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                val editable = editText.text
-                if (!it!!.contentEquals(editable)) {
-                    editing = true
-                    if (editable is Spanned) {
-                        val ss = SpannableString(it)
-                        TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
-                        editable.replace(0, editable.length, ss)
-                    } else {
-                        editable.replace(0, editable.length, it)
-                    }
-                    editing = false
+    text.observable
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe {
+            val editable = editText.text
+            if (!it!!.contentEquals(editable)) {
+                editing = true
+                if (editable is Spanned) {
+                    val ss = SpannableString(it)
+                    TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
+                    editable.replace(0, editable.length, ss)
+                } else {
+                    editable.replace(0, editable.length, it)
                 }
-            },
+                editing = false
+            }
+        }
+        .untilUnbind()
 
-        editText.textChanges()
-            .skipInitialValue()
-            .filter { !editing }
-            .map { it.toString() }
-            .subscribe(textChanges.consumer)
-    )
+    editText.textChanges()
+        .skipInitialValue()
+        .filter { !editing }
+        .map { it.toString() }
+        .subscribe(textChanges.consumer)
+        .untilUnbind()
 }

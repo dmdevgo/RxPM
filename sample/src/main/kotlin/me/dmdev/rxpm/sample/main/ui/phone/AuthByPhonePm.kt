@@ -24,7 +24,7 @@ class AuthByPhonePm(
 ) : ScreenPresentationModel() {
 
     val chosenCountry = State<Country>()
-    val phoneNumber = inputControl()
+    val phoneNumber = inputControl(formatter = null)
     val countryCode = inputControl(
         initialText = "+7",
         formatter = {

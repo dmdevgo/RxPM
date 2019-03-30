@@ -32,7 +32,7 @@ class CodeConfirmationPm(
     override fun onCreate() {
         super.onCreate()
 
-        val codeFilledAction = code.textChanges.observable
+        val codeFilledAction = code.text.observable
             .filter { it.length == CODE_LENGTH }
             .distinctUntilChanged()
 

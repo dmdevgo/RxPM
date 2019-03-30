@@ -12,6 +12,7 @@ import me.dmdev.rxpm.sample.main.extensions.showKeyboard
 import me.dmdev.rxpm.sample.main.extensions.visible
 import me.dmdev.rxpm.sample.main.ui.base.Screen
 import me.dmdev.rxpm.sample.main.ui.country.ChooseCountryPm.Mode
+import me.dmdev.rxpm.widget.bindTo
 
 
 class ChooseCountryScreen : Screen<ChooseCountryPm>() {

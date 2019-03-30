@@ -10,6 +10,7 @@ import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.main.extensions.showKeyboard
 import me.dmdev.rxpm.sample.main.ui.base.Screen
 import me.dmdev.rxpm.sample.main.util.Country
+import me.dmdev.rxpm.widget.bindTo
 
 
 class AuthByPhoneScreen : Screen<AuthByPhonePm>() {

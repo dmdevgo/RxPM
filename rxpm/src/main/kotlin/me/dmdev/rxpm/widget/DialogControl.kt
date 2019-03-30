@@ -4,8 +4,8 @@ import android.app.Dialog
 import android.app.DialogFragment
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.AndroidPmView
+import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.widget.DialogControl.Display.Absent
 import me.dmdev.rxpm.widget.DialogControl.Display.Displayed
@@ -33,10 +33,10 @@ import me.dmdev.rxpm.widget.DialogControl.Display.Displayed
  *
  * @since 1.2
  */
-class DialogControl<T, R> internal constructor(pm: PresentationModel) {
+class DialogControl<T, R> internal constructor(): PresentationModel() {
 
-    val displayed = pm.State<Display>(Absent)
-    private val result = pm.Action<R>()
+    val displayed = State<Display>(Absent)
+    private val result = Action<R>()
 
     /**
      * Shows the dialog.
@@ -45,7 +45,7 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
      */
     fun show(data: T) {
         dismiss()
-        displayed.relay.accept(Displayed(data))
+        displayed.consumer.accept(Displayed(data))
     }
 
     /**
@@ -58,12 +58,12 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
 
         dismiss()
 
-        return result.relay
+        return result.observable
             .doOnSubscribe {
-                displayed.relay.accept(Displayed(data))
+                displayed.consumer.accept(Displayed(data))
             }
             .takeUntil(
-                displayed.relay
+                displayed.observable
                     .skip(1)
                     .filter { it == Absent }
             )
@@ -83,7 +83,7 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
      */
     fun dismiss() {
         if (displayed.valueOrNull is Displayed<*>) {
-            displayed.relay.accept(Absent)
+            displayed.consumer.accept(Absent)
         }
     }
 
@@ -102,13 +102,16 @@ class DialogControl<T, R> internal constructor(pm: PresentationModel) {
  * @since 1.2
  */
 fun <T, R> PresentationModel.dialogControl(): DialogControl<T, R> {
-    return DialogControl(this)
+    return DialogControl()
 }
 
-internal inline fun <T, R> DialogControl<T, R>.bind(
-    crossinline createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog,
-    compositeDisposable: CompositeDisposable
-) {
+/**
+ * Bind the [DialogControl] to the [Dialog], use it ONLY in [PmView.onBindPresentationModel].
+ * @param createDialog function that creates [Dialog] using passed data.
+ *
+ * @since 2.0
+ */
+inline infix fun <T, R> DialogControl<T, R>.bindTo(crossinline createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog) {
 
     var dialog: Dialog? = null
 
@@ -118,20 +121,20 @@ internal inline fun <T, R> DialogControl<T, R>.bind(
         dialog = null
     }
 
-    compositeDisposable.add(
-        displayed.observable
-            .observeOn(AndroidSchedulers.mainThread())
-            .doFinally { closeDialog() }
-            .subscribe {
-                @Suppress("UNCHECKED_CAST")
-                if (it is Displayed<*>) {
-                    dialog = createDialog(it.data as T, this)
-                    dialog?.setOnDismissListener { this.dismiss() }
-                    dialog?.show()
-                } else if (it === Absent) {
-                    closeDialog()
-                }
+    displayed.observable
+        .observeOn(AndroidSchedulers.mainThread())
+        .doFinally { closeDialog() }
+        .subscribe {
+            @Suppress("UNCHECKED_CAST")
+            if (it is Displayed<*>) {
+                dialog = createDialog(it.data as T, this)
+                dialog?.setOnDismissListener { this.dismiss() }
+                dialog?.show()
+            } else if (it === Absent) {
+                closeDialog()
             }
-    )
+        }
+        .untilUnbind()
+
 }
 

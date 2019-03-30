@@ -11,6 +11,7 @@ import me.dmdev.rxpm.sample.App
 import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.main.extensions.showKeyboard
 import me.dmdev.rxpm.sample.main.ui.base.Screen
+import me.dmdev.rxpm.widget.bindTo
 
 
 class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {

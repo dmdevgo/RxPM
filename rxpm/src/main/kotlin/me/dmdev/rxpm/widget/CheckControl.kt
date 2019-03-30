@@ -1,10 +1,12 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package me.dmdev.rxpm.widget
 
 import android.widget.CompoundButton
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import me.dmdev.rxpm.AndroidPmView
+import me.dmdev.rxpm.PmView
 import me.dmdev.rxpm.PresentationModel
 
 /**
@@ -19,22 +21,24 @@ import me.dmdev.rxpm.PresentationModel
  * @see InputControl
  * @see DialogControl
  */
-class CheckControl internal constructor(pm: PresentationModel, initialChecked: Boolean) {
+class CheckControl internal constructor(initialChecked: Boolean) : PresentationModel() {
 
     /**
      * The checked [state][PresentationModel.State].
      */
-    val checked = pm.State(initialChecked)
+    val checked = State(initialChecked)
 
     /**
      * The checked state change [events][PresentationModel.Action].
      */
-    val checkedChanges = pm.Action<Boolean>()
+    val checkedChanges = Action<Boolean>()
 
-    init {
-        checkedChanges.relay
+    override fun onCreate() {
+        super.onCreate()
+        checkedChanges.observable
             .filter { it != checked.value }
-            .subscribe(checked.relay)
+            .subscribe(checked.consumer)
+            .untilDestroy()
     }
 }
 
@@ -44,30 +48,32 @@ class CheckControl internal constructor(pm: PresentationModel, initialChecked: B
  * @param initialChecked initial checked state.
  */
 fun PresentationModel.checkControl(initialChecked: Boolean = false): CheckControl {
-    return CheckControl(this, initialChecked)
+    return CheckControl(initialChecked).apply {
+        attachToParent(this@checkControl)
+    }
 }
 
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun CheckControl.bind(
-    compoundButton: CompoundButton,
-    compositeDisposable: CompositeDisposable
-) {
+/**
+ * Bind the [CheckControl] to the [CompoundButton][compoundButton], use it ONLY in [PmView.onBindPresentationModel].
+ *
+ * @since 2.0
+ */
+inline infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
 
     var editing = false
 
-    compositeDisposable.addAll(
+    checked.observable
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe {
+            editing = true
+            compoundButton.isChecked = it
+            editing = false
+        }
+        .untilUnbind()
 
-        checked.observable
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                editing = true
-                compoundButton.isChecked = it
-                editing = false
-            },
-
-        compoundButton.checkedChanges()
-            .skipInitialValue()
-            .filter { !editing }
-            .subscribe(checkedChanges.consumer)
-    )
+    compoundButton.checkedChanges()
+        .skipInitialValue()
+        .filter { !editing }
+        .subscribe(checkedChanges.consumer)
+        .untilUnbind()
 }

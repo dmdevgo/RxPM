@@ -10,6 +10,7 @@ import me.dmdev.rxpm.base.PmSupportFragment
 import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.main.extensions.findScreen
 import me.dmdev.rxpm.sample.main.extensions.showDialog
+import me.dmdev.rxpm.widget.bindTo
 
 
 abstract class Screen<PM : ScreenPresentationModel> :

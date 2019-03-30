@@ -1,16 +1,8 @@
 package me.dmdev.rxpm
 
-import android.app.Dialog
-import android.support.design.widget.TextInputLayout
-import android.widget.CompoundButton
-import android.widget.EditText
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
-import me.dmdev.rxpm.widget.CheckControl
-import me.dmdev.rxpm.widget.DialogControl
-import me.dmdev.rxpm.widget.InputControl
-import me.dmdev.rxpm.widget.bind
 
 /**
  * Extends [PmView] by adding several useful extensions.
@@ -107,37 +99,6 @@ interface AndroidPmView<PM : PresentationModel> : PmView<PM> {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(consumer)
             .untilUnbind()
-    }
-
-    /**
-     * Local extension to bind the [InputControl] to the [EditText][editText], use it ONLY in [onBindPresentationModel].
-     */
-    infix fun InputControl.bindTo(editText: EditText) {
-        bind(editText, compositeUnbind)
-    }
-
-    /**
-     * Local extension to bind the [InputControl] to the [TextInputLayout][textInputLayout], use it ONLY in [onBindPresentationModel].
-     */
-    infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
-        bind(textInputLayout, compositeUnbind)
-    }
-
-    /**
-     * Local extension to bind the [CheckControl] to the [CompoundButton][compoundButton], use it ONLY in [onBindPresentationModel].
-     */
-    infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
-        bind(compoundButton, compositeUnbind)
-    }
-
-    /**
-     * Local extension to bind the [DialogControl] to the [Dialog], use it ONLY in [onBindPresentationModel].
-     * @param createDialog function that creates [Dialog] using passed data.
-     *
-     * @since 1.2
-     */
-    infix fun <T, R> DialogControl<T, R>.bindTo(createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog) {
-        bind({ data, dc -> createDialog(data, dc) }, compositeUnbind)
     }
 
     /**

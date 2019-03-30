@@ -10,6 +10,7 @@ import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.main.ui.base.Screen
 import me.dmdev.rxpm.sample.main.ui.main.MainPm.DialogResult.Cancel
 import me.dmdev.rxpm.sample.main.ui.main.MainPm.DialogResult.Ok
+import me.dmdev.rxpm.widget.bindTo
 
 
 class MainScreen : Screen<MainPm>() {

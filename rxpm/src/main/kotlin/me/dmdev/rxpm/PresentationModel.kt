@@ -181,7 +181,7 @@ abstract class PresentationModel {
      * Local extension to add this [Disposable] to the [CompositeDisposable][compositeUnbind]
      * that will be CLEARED ON [UNBIND][Lifecycle.UNBINDED].
      */
-    protected fun Disposable.untilUnbind() {
+    fun Disposable.untilUnbind() {
         compositeUnbind.add(this)
     }
 
@@ -189,7 +189,7 @@ abstract class PresentationModel {
      * Local extension to add this [Disposable] to the [CompositeDisposable][compositeDestroy]
      * that will be CLEARED ON [DESTROY][Lifecycle.DESTROYED].
      */
-    protected fun Disposable.untilDestroy() {
+    fun Disposable.untilDestroy() {
         compositeDestroy.add(this)
     }
 
@@ -236,7 +236,7 @@ abstract class PresentationModel {
      * @see Action
      * @see Command
      */
-    inner class State<T>(initialValue: T? = null) {
+     inner class State<T>(initialValue: T? = null) {
 
         internal val relay =
             if (initialValue != null) {
