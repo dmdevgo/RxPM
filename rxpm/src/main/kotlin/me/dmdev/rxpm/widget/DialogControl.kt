@@ -102,11 +102,13 @@ class DialogControl<T, R> internal constructor(): PresentationModel() {
  * @since 1.2
  */
 fun <T, R> PresentationModel.dialogControl(): DialogControl<T, R> {
-    return DialogControl()
+    return DialogControl<T, R>().apply {
+        attachToParent(this@dialogControl)
+    }
 }
 
 /**
- * Bind the [DialogControl] to the [Dialog], use it ONLY in [PmView.onBindPresentationModel].
+ * Binds the [DialogControl] to the [Dialog], use it ONLY in [PmView.onBindPresentationModel].
  * @param createDialog function that creates [Dialog] using passed data.
  *
  * @since 2.0

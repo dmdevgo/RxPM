@@ -79,7 +79,7 @@ fun PresentationModel.inputControl(
 }
 
 /**
- * Bind the [InputControl] to the [TextInputLayout][textInputLayout], use it ONLY in [PmView.onBindPresentationModel].
+ * Binds the [InputControl] to the [TextInputLayout][textInputLayout], use it ONLY in [PmView.onBindPresentationModel].
  */
 inline infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
 
@@ -95,7 +95,7 @@ inline infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
 }
 
 /**
- * Bind the [InputControl] to the [EditText][editText], use it ONLY in [PmView.onBindPresentationModel].
+ * Binds the [InputControl] to the [EditText][editText], use it ONLY in [PmView.onBindPresentationModel].
  *
  * @since 2.0
  */
