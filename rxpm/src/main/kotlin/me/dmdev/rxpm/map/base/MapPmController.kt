@@ -1,18 +1,12 @@
 package me.dmdev.rxpm.map.base
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.bluelinelabs.conductor.Controller
-import com.bluelinelabs.conductor.RestoreViewOnCreateController
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
-import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.map.MapPmExtension
-import me.dmdev.rxpm.map.MapPmView
-import me.dmdev.rxpm.map.delegate.MapPmControllerDelegate
+import android.os.*
+import android.view.*
+import com.bluelinelabs.conductor.*
+import com.google.android.gms.maps.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.map.*
+import me.dmdev.rxpm.map.delegate.*
 
 /**
  * Predefined [Conductor's Controller][RestoreViewOnCreateController] implementing the [MapPmView].
@@ -34,8 +28,6 @@ abstract class MapPmController<PM>(args: Bundle? = null) :
         where PM : PresentationModel, PM : MapPmExtension {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) { MapPmControllerDelegate(this) }
-
-    final override val compositeUnbind = CompositeDisposable()
 
     final override val presentationModel get() = delegate.presentationModel
 

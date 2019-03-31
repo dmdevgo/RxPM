@@ -1,15 +1,12 @@
 package me.dmdev.rxpm
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
-import io.reactivex.observers.TestObserver
-import me.dmdev.rxpm.PresentationModel.Lifecycle
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.observers.*
+import me.dmdev.rxpm.PresentationModel.*
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import org.junit.Before
+import org.junit.*
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.*
 
 class PresentationModelTest {
 
@@ -170,7 +167,7 @@ class PresentationModelTest {
 
 open class TestPm(private val callbacks: LifecycleCallbacks) : PresentationModel() {
 
-    val commands = Command<Int>()
+    val commands = command<Int>()
 
     fun acceptCommand(i : Int) {
         commands.consumer.accept(i)

@@ -1,16 +1,16 @@
 package me.dmdev.rxpm.sample.main.ui.base
 
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.navigation.NavigationMessage
-import me.dmdev.rxpm.sample.main.BackMessage
-import me.dmdev.rxpm.widget.dialogControl
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.navigation.*
+import me.dmdev.rxpm.sample.main.*
+import me.dmdev.rxpm.widget.*
 
 
 abstract class ScreenPresentationModel : PresentationModel() {
 
     val errorDialog = dialogControl<String, Unit>()
 
-    private val backActionDefault = Action<Unit>()
+    private val backActionDefault = action<Unit>()
 
     open val backAction: Action<Unit> = backActionDefault
 

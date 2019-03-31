@@ -1,31 +1,25 @@
 package me.dmdev.rxpm.base
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.bluelinelabs.conductor.RestoreViewOnCreateController
-import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.AndroidPmView
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.delegate.PmControllerDelegate
+import android.os.*
+import android.view.*
+import com.bluelinelabs.conductor.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.delegate.*
 
 /**
- * Predefined [Conductor's Controller][RestoreViewOnCreateController] implementing the [PmView][AndroidPmView].
+ * Predefined [Conductor's Controller][RestoreViewOnCreateController] implementing the [PmView][PmView].
  *
  * Just override the [providePresentationModel] and [onBindPresentationModel] methods and you are good to go.
  *
- * If extending is not possible you can implement [AndroidPmView],
+ * If extending is not possible you can implement [PmView],
  * create a [PmControllerDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
 abstract class PmController<PM : PresentationModel>(args: Bundle? = null) :
     RestoreViewOnCreateController(args),
-    AndroidPmView<PM> {
+    PmView<PM> {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmControllerDelegate(this) }
-
-    final override val compositeUnbind = CompositeDisposable()
 
     final override val presentationModel get() = delegate.presentationModel
 

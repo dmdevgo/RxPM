@@ -1,11 +1,10 @@
 package me.dmdev.rxpm.sample.main.ui.main
 
-import me.dmdev.rxpm.bindProgress
-import me.dmdev.rxpm.sample.main.LogoutCompletedMessage
-import me.dmdev.rxpm.sample.main.model.AuthModel
-import me.dmdev.rxpm.sample.main.ui.base.ScreenPresentationModel
-import me.dmdev.rxpm.skipWhileInProgress
-import me.dmdev.rxpm.widget.dialogControl
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.sample.main.*
+import me.dmdev.rxpm.sample.main.model.*
+import me.dmdev.rxpm.sample.main.ui.base.*
+import me.dmdev.rxpm.widget.*
 
 class MainPm(private val authModel: AuthModel) : ScreenPresentationModel() {
 
@@ -15,9 +14,9 @@ class MainPm(private val authModel: AuthModel) : ScreenPresentationModel() {
     }
 
     val logoutDialog = dialogControl<Unit, DialogResult>()
-    val inProgress = State(false)
+    val inProgress = state(false)
 
-    val logoutAction = Action<Unit>()
+    val logoutAction = action<Unit>()
 
     override fun onCreate() {
         super.onCreate()

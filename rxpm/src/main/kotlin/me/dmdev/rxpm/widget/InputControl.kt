@@ -1,24 +1,17 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package me.dmdev.rxpm.widget
 
-import android.support.design.widget.TextInputLayout
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextUtils
-import android.widget.EditText
-import com.jakewharton.rxbinding2.widget.textChanges
-import io.reactivex.android.schedulers.AndroidSchedulers
-import me.dmdev.rxpm.AndroidPmView
-import me.dmdev.rxpm.PmView
-import me.dmdev.rxpm.PresentationModel
+import android.support.design.widget.*
+import android.text.*
+import android.widget.*
+import com.jakewharton.rxbinding2.widget.*
+import io.reactivex.android.schedulers.*
+import me.dmdev.rxpm.*
 
 /**
  * Helps to bind a group of properties of an input field widget to a [presentation model][PresentationModel]
  * and also breaks the loop of two-way data binding to make the work with the input easier.
  *
- * You can bind this to an [EditText] or an [TextInputLayout] using the familiar `bindTo` methods
- * in the [AndroidPmView].
+ * You can bind this to an [EditText] or an [TextInputLayout] using the [bindTo][bindTo] extension.
  *
  * Instantiate this using the [inputControl] extension function of the presentation model.
  *
@@ -32,19 +25,19 @@ class InputControl internal constructor(
 ) : PresentationModel() {
 
     /**
-     * The input field text [state][PresentationModel.State].
+     * The input field text [state][State].
      */
-    val text = State(initialText)
+    val text = state(initialText)
 
     /**
-     * The input field error [state][PresentationModel.State].
+     * The input field error [state][State].
      */
-    val error = State<String>()
+    val error = state<String>()
 
     /**
-     * The input field text changes [events][PresentationModel.Action].
+     * The input field text changes [events][Action].
      */
-    val textChanges = Action<String>()
+    val textChanges = action<String>()
 
     override fun onCreate() {
 
@@ -81,7 +74,7 @@ fun PresentationModel.inputControl(
 /**
  * Binds the [InputControl] to the [TextInputLayout][textInputLayout], use it ONLY in [PmView.onBindPresentationModel].
  */
-inline infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
+infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
 
     val edit = textInputLayout.editText!!
 
@@ -99,7 +92,7 @@ inline infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
  *
  * @since 2.0
  */
-inline infix fun InputControl.bindTo(editText: EditText) {
+infix fun InputControl.bindTo(editText: EditText) {
 
     var editing = false
 

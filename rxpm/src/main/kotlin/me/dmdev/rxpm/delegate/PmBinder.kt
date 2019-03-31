@@ -1,7 +1,6 @@
 package me.dmdev.rxpm.delegate
 
-import me.dmdev.rxpm.PmView
-import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.*
 
 internal class PmBinder<out PM : PresentationModel>(
     private val pm: PM,
@@ -27,7 +26,6 @@ internal class PmBinder<out PM : PresentationModel>(
             listener?.onUnbindPm()
             pm.lifecycleConsumer.accept(PresentationModel.Lifecycle.UNBINDED)
             pmView.onUnbindPresentationModel()
-            pmView.compositeUnbind.clear()
             viewBound = false
         }
     }

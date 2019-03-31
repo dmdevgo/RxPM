@@ -1,16 +1,16 @@
 package me.dmdev.rxpm.sample.main.ui.main
 
-import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.view.View
-import com.jakewharton.rxbinding2.support.v7.widget.itemClicks
+import android.os.*
+import android.support.v7.app.*
+import android.view.*
+import com.jakewharton.rxbinding2.support.v7.widget.*
 import kotlinx.android.synthetic.main.screen_main.*
-import me.dmdev.rxpm.sample.App
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.sample.*
 import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.main.ui.base.Screen
-import me.dmdev.rxpm.sample.main.ui.main.MainPm.DialogResult.Cancel
-import me.dmdev.rxpm.sample.main.ui.main.MainPm.DialogResult.Ok
-import me.dmdev.rxpm.widget.bindTo
+import me.dmdev.rxpm.sample.main.ui.base.*
+import me.dmdev.rxpm.sample.main.ui.main.MainPm.DialogResult.*
+import me.dmdev.rxpm.widget.*
 
 
 class MainScreen : Screen<MainPm>() {

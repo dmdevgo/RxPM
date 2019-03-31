@@ -1,26 +1,22 @@
 package me.dmdev.rxpm.base
 
-import android.os.Bundle
-import android.support.v4.app.Fragment
-import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.AndroidPmView
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.delegate.PmSupportFragmentDelegate
+import android.os.*
+import android.support.v4.app.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.delegate.*
 
 /**
- * Predefined [Fragment] implementing the [PmView][AndroidPmView].
+ * Predefined [Fragment] implementing the [PmView][PmView].
  *
  * Just override the [providePresentationModel] and [onBindPresentationModel] methods and you are good to go.
  *
- * If extending is not possible you can implement [AndroidPmView],
+ * If extending is not possible you can implement [PmView],
  * create a [PmSupportFragmentDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class PmSupportFragment<PM : PresentationModel> : Fragment(), AndroidPmView<PM> {
+abstract class PmSupportFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmSupportFragmentDelegate(this) }
-
-    final override val compositeUnbind = CompositeDisposable()
 
     final override val presentationModel get() = delegate.presentationModel
 

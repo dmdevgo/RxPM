@@ -1,10 +1,8 @@
 package me.dmdev.rxpm.map
 
-import com.google.android.gms.maps.GoogleMap
-import com.jakewharton.rxrelay2.BehaviorRelay
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.asConsumer
-import me.dmdev.rxpm.asObservable
+import com.google.android.gms.maps.*
+import com.jakewharton.rxrelay2.*
+import me.dmdev.rxpm.*
 
 /**
  * This interface contains additions for [PresentationModel] that binds to the [MapPmView].
@@ -19,15 +17,15 @@ interface MapPmExtension {
     val mapReadyState: MapReadyState
 
     /**
-     * Returns a [command][PresentationModel.Command] that will buffer the values
+     * Returns a [command][Command] that will buffer the values
      * until the [view][MapPmView] will be bound to the [map][GoogleMap].
      *
      * Use to represent a command to the [MapPmView], e.g. pin moves or zoom changes.
      *
      * @param bufferSize how many values should be kept in buffer. Null means no restrictions.
      */
-    fun <T> PresentationModel.mapCommand(bufferSize: Int? = null): PresentationModel.Command<T> {
-        return Command(mapReadyState.observable.map { !it }, bufferSize)
+    fun <T> PresentationModel.mapCommand(bufferSize: Int? = null): Command<T> {
+        return command(mapReadyState.observable.map { !it }, bufferSize)
     }
 
     /**

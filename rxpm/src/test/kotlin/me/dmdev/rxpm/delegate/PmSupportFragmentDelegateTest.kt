@@ -1,16 +1,15 @@
 package me.dmdev.rxpm.delegate
 
-import android.support.v4.app.FragmentActivity
+import android.support.v4.app.*
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.PresentationModel
+import io.reactivex.disposables.*
+import me.dmdev.rxpm.*
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import me.dmdev.rxpm.base.PmSupportFragment
-import me.dmdev.rxpm.util.SchedulersRule
-import org.junit.Before
-import org.junit.Rule
+import me.dmdev.rxpm.base.*
+import me.dmdev.rxpm.util.*
+import org.junit.*
 import org.junit.Test
-import kotlin.test.assertEquals
+import kotlin.test.*
 
 class PmSupportFragmentDelegateTest {
 
@@ -33,7 +32,6 @@ class PmSupportFragmentDelegateTest {
 
     private fun mockView(): PmSupportFragment<PresentationModel> {
         return mock {
-            on { compositeUnbind } doReturn compositeDisposable
             on { providePresentationModel() } doReturn pm
             on { activity } doReturn activity
         }
@@ -54,7 +52,6 @@ class PmSupportFragmentDelegateTest {
         delegate.onStop()
 
         verify(view).onUnbindPresentationModel()
-        verify(compositeDisposable).clear()
 
         delegate.onDestroy()
     }

@@ -1,20 +1,15 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package me.dmdev.rxpm.widget
 
-import android.widget.CompoundButton
-import com.jakewharton.rxbinding2.widget.checkedChanges
-import io.reactivex.android.schedulers.AndroidSchedulers
-import me.dmdev.rxpm.AndroidPmView
-import me.dmdev.rxpm.PmView
-import me.dmdev.rxpm.PresentationModel
+import android.widget.*
+import com.jakewharton.rxbinding2.widget.*
+import io.reactivex.android.schedulers.*
+import me.dmdev.rxpm.*
 
 /**
  * Helps to bind a group of properties of a checkable widget to a [presentation model][PresentationModel]
  * and also breaks the loop of two-way data binding to make the work with the check easier.
  *
- * You can bind this to any [CompoundButton] subclass using the familiar `bindTo` method
- * in the [AndroidPmView].
+ * You can bind this to any [CompoundButton] subclass using the [bindTo][bindTo] extension.
  *
  * Instantiate this using the [checkControl] extension function of the presentation model.
  *
@@ -24,14 +19,14 @@ import me.dmdev.rxpm.PresentationModel
 class CheckControl internal constructor(initialChecked: Boolean) : PresentationModel() {
 
     /**
-     * The checked [state][PresentationModel.State].
+     * The checked [state][State].
      */
-    val checked = State(initialChecked)
+    val checked = state(initialChecked)
 
     /**
-     * The checked state change [events][PresentationModel.Action].
+     * The checked state change [events][Action].
      */
-    val checkedChanges = Action<Boolean>()
+    val checkedChanges = action<Boolean>()
 
     override fun onCreate() {
         super.onCreate()
@@ -58,7 +53,7 @@ fun PresentationModel.checkControl(initialChecked: Boolean = false): CheckContro
  *
  * @since 2.0
  */
-inline infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
+infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
 
     var editing = false
 

@@ -1,6 +1,6 @@
 package me.dmdev.rxpm.sample.counter
 
-import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.*
 
 class CounterPm : PresentationModel() {
 
@@ -8,12 +8,12 @@ class CounterPm : PresentationModel() {
         const val MAX_COUNT = 10
     }
 
-    val count = State(initialValue = 0)
-    val minusButtonEnabled = State(false)
-    val plusButtonEnabled = State(false)
+    val count = state(initialValue = 0)
+    val minusButtonEnabled = state(false)
+    val plusButtonEnabled = state(false)
 
-    val minusButtonClicks = Action<Unit>()
-    val plusButtonClicks = Action<Unit>()
+    val minusButtonClicks = action<Unit>()
+    val plusButtonClicks = action<Unit>()
 
     override fun onCreate() {
         super.onCreate()

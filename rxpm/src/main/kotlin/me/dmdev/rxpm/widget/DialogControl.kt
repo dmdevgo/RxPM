@@ -1,27 +1,22 @@
 package me.dmdev.rxpm.widget
 
-import android.app.Dialog
-import android.app.DialogFragment
-import io.reactivex.Maybe
-import io.reactivex.android.schedulers.AndroidSchedulers
-import me.dmdev.rxpm.AndroidPmView
-import me.dmdev.rxpm.PmView
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.widget.DialogControl.Display.Absent
-import me.dmdev.rxpm.widget.DialogControl.Display.Displayed
+import android.app.*
+import io.reactivex.*
+import io.reactivex.android.schedulers.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.widget.DialogControl.Display.*
 
 /**
  *
  * Helps to display a dialog and get the result in a reactive form.
  * Takes care of all lifecycle processing.
  *
- * The dialog attached using [AndroidPmView.bindTo] will be
+ * The dialog attached using [bindTo] will be
  * automatically dismissed and restored on config changes ([UNBINDED][PresentationModel.Lifecycle.UNBINDED]
  * and [BINDED][PresentationModel.Lifecycle.BINDED] states correspondingly).
  * So there is no need to use [DialogFragment] or something similar.
  *
- * You can bind this to any subclass of [Dialog] using the familiar `bindTo` methods
- * in the [AndroidPmView].
+ * You can bind this to any subclass of [Dialog] using the [bindTo][bindTo] extension.
  *
  * Instantiate this using the [dialogControl] extension function of the presentation model.
  *
@@ -35,8 +30,8 @@ import me.dmdev.rxpm.widget.DialogControl.Display.Displayed
  */
 class DialogControl<T, R> internal constructor(): PresentationModel() {
 
-    val displayed = State<Display>(Absent)
-    private val result = Action<R>()
+    val displayed = state<Display>(Absent)
+    private val result = action<R>()
 
     /**
      * Shows the dialog.
