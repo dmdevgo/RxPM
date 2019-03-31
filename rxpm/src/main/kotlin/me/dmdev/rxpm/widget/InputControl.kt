@@ -4,7 +4,6 @@ import android.support.design.widget.*
 import android.text.*
 import android.widget.*
 import com.jakewharton.rxbinding2.widget.*
-import io.reactivex.android.schedulers.*
 import me.dmdev.rxpm.*
 
 /**
@@ -76,15 +75,11 @@ fun PresentationModel.inputControl(
  */
 infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
 
-    val edit = textInputLayout.editText!!
+    bindTo(textInputLayout.editText!!)
 
-    bindTo(edit)
-
-    error.observable
-        .subscribe { error ->
-            textInputLayout.error = if (error.isEmpty()) null else error
-        }
-        .untilUnbind()
+    error bindTo { error ->
+        textInputLayout.error = if (error.isEmpty()) null else error
+    }
 }
 
 /**
@@ -96,28 +91,24 @@ infix fun InputControl.bindTo(editText: EditText) {
 
     var editing = false
 
-    text.observable
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe {
-            val editable = editText.text
-            if (!it!!.contentEquals(editable)) {
-                editing = true
-                if (editable is Spanned) {
-                    val ss = SpannableString(it)
-                    TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
-                    editable.replace(0, editable.length, ss)
-                } else {
-                    editable.replace(0, editable.length, it)
-                }
-                editing = false
+    text bindTo {
+        val editable = editText.text
+        if (!it!!.contentEquals(editable)) {
+            editing = true
+            if (editable is Spanned) {
+                val ss = SpannableString(it)
+                TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
+                editable.replace(0, editable.length, ss)
+            } else {
+                editable.replace(0, editable.length, it)
             }
+            editing = false
         }
-        .untilUnbind()
+    }
 
     editText.textChanges()
         .skipInitialValue()
         .filter { !editing }
         .map { it.toString() }
-        .subscribe(textChanges.consumer)
-        .untilUnbind()
+        .bindTo(textChanges)
 }

@@ -2,7 +2,6 @@ package me.dmdev.rxpm.widget
 
 import android.widget.*
 import com.jakewharton.rxbinding2.widget.*
-import io.reactivex.android.schedulers.*
 import me.dmdev.rxpm.*
 
 /**
@@ -57,18 +56,14 @@ infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
 
     var editing = false
 
-    checked.observable
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe {
-            editing = true
-            compoundButton.isChecked = it
-            editing = false
-        }
-        .untilUnbind()
+    checked bindTo {
+        editing = true
+        compoundButton.isChecked = it
+        editing = false
+    }
 
     compoundButton.checkedChanges()
         .skipInitialValue()
         .filter { !editing }
-        .subscribe(checkedChanges.consumer)
-        .untilUnbind()
+        .bindTo(checkedChanges)
 }

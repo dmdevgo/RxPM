@@ -132,6 +132,5 @@ inline infix fun <T, R> DialogControl<T, R>.bindTo(crossinline createDialog: (da
             }
         }
         .untilUnbind()
-
 }
 
