@@ -1,9 +1,10 @@
 package me.dmdev.rxpm
 
 import com.jakewharton.rxrelay2.*
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.*
 import io.reactivex.functions.*
-import java.util.concurrent.atomic.*
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Reactive property for the [view's][PmView] state.
@@ -15,29 +16,40 @@ import java.util.concurrent.atomic.*
  * @see Action
  * @see Command
  */
-class State<T> internal constructor(
+class State<T> constructor(
     internal val pm: PresentationModel,
-    initialValue: T? = null
+    initialValue: T? = null,
+    private val diffStrategy: DiffStrategy<T>? = null
 ) {
+
+    private val behaviorRelay: BehaviorRelay<T>
 
     internal val relay =
         if (initialValue != null) {
-            BehaviorRelay.createDefault<T>(initialValue).toSerialized()
+            behaviorRelay = BehaviorRelay.createDefault<T>(initialValue)
+            behaviorRelay.toSerialized()
         } else {
-            BehaviorRelay.create<T>().toSerialized()
-        }
-
-    private val cachedValue =
-        if (initialValue != null) {
-            AtomicReference<T?>(initialValue)
-        } else {
-            AtomicReference()
+            behaviorRelay = BehaviorRelay.create<T>()
+            behaviorRelay.toSerialized()
         }
 
     /**
      * Observable of this [State].
      */
-    val observable = relay.asObservable()
+    val observable: Observable<T>
+        get() {
+            return if (diffStrategy != null) {
+                if (diffStrategy.isAsync()) {
+                    relay
+                        .observeOn(Schedulers.computation())
+                        .distinctUntilChanged(diffStrategy::isTheSame)
+                } else {
+                    relay.distinctUntilChanged(diffStrategy::isTheSame)
+                }
+            } else {
+                relay.asObservable()
+            }
+        }
 
     /**
      * Returns a current value.
@@ -45,35 +57,34 @@ class State<T> internal constructor(
      */
     val value: T
         get() {
-            return cachedValue.get()
+            return behaviorRelay.value
                 ?: throw UninitializedPropertyAccessException("The State has no value yet. Use valueOrNull() or pass initialValue to the constructor.")
         }
 
     /**
      * Returns a current value or null.
      */
-    val valueOrNull: T? get() = cachedValue.get()
+    val valueOrNull: T? get() = behaviorRelay.value
 
-    init {
-        with(pm) {
-            relay.subscribe { cachedValue.set(it) }
-                .untilDestroy()
-        }
-    }
 
     /**
      * Returns true if the [State] has any value.
      */
-    fun hasValue() = cachedValue.get() != null
+    fun hasValue() = behaviorRelay.hasValue()
 }
 
 /**
  * Creates the [State].
  *
+ * todo doc
+ *
  * @since 2.0
  */
-fun <T> PresentationModel.state(initialValue: T? = null): State<T> {
-    return State(this, initialValue)
+inline fun <reified T> PresentationModel.state(
+    initialValue: T? = null,
+    diffStrategy: DiffStrategy<T>? = DefaultDiffStrategy()
+): State<T> {
+    return State(this, initialValue, diffStrategy)
 }
 
 /**
@@ -106,4 +117,28 @@ infix fun <T> State<T>.bindTo(consumer: (T) -> Unit) {
             .subscribe(consumer)
             .untilUnbind()
     }
+}
+
+/**
+ * todo doc
+ *
+ * @since 2.0
+ */
+interface DiffStrategy<T> {
+
+    fun isTheSame(new: T, old: T): Boolean
+
+    fun isAsync(): Boolean
+}
+
+/**
+ * todo doc
+ *
+ * @since 2.0
+ */
+class DefaultDiffStrategy<T> : DiffStrategy<T> {
+
+    override fun isTheSame(new: T, old: T) = new == old
+
+    override fun isAsync() = false
 }
