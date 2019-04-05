@@ -16,7 +16,7 @@ import io.reactivex.schedulers.Schedulers
  * @see Action
  * @see Command
  */
-class State<T> constructor(
+class State<T> internal constructor(
     internal val pm: PresentationModel,
     initialValue: T? = null,
     private val diffStrategy: DiffStrategy<T>? = null
@@ -39,12 +39,12 @@ class State<T> constructor(
     val observable: Observable<T>
         get() {
             return if (diffStrategy != null) {
-                if (diffStrategy.isAsync()) {
+                if (diffStrategy.computeAsync()) {
                     relay
                         .observeOn(Schedulers.computation())
-                        .distinctUntilChanged(diffStrategy::isTheSame)
+                        .distinctUntilChanged(diffStrategy::areTheSame)
                 } else {
-                    relay.distinctUntilChanged(diffStrategy::isTheSame)
+                    relay.distinctUntilChanged(diffStrategy::areTheSame)
                 }
             } else {
                 relay.asObservable()
@@ -80,9 +80,10 @@ class State<T> constructor(
  *
  * @since 2.0
  */
-inline fun <reified T> PresentationModel.state(
+@Suppress("UNCHECKED_CAST")
+fun <T> PresentationModel.state(
     initialValue: T? = null,
-    diffStrategy: DiffStrategy<T>? = DefaultDiffStrategy()
+    diffStrategy: DiffStrategy<T>? = DefaultDiffStrategy as DiffStrategy<T>
 ): State<T> {
     return State(this, initialValue, diffStrategy)
 }
@@ -126,9 +127,9 @@ infix fun <T> State<T>.bindTo(consumer: (T) -> Unit) {
  */
 interface DiffStrategy<T> {
 
-    fun isTheSame(new: T, old: T): Boolean
+    fun areTheSame(new: T, old: T): Boolean
 
-    fun isAsync(): Boolean
+    fun computeAsync(): Boolean
 }
 
 /**
@@ -136,9 +137,9 @@ interface DiffStrategy<T> {
  *
  * @since 2.0
  */
-class DefaultDiffStrategy<T> : DiffStrategy<T> {
+object DefaultDiffStrategy : DiffStrategy<Any> {
 
-    override fun isTheSame(new: T, old: T) = new == old
+    override fun areTheSame(new: Any, old: Any) = new == old
 
-    override fun isAsync() = false
+    override fun computeAsync() = false
 }

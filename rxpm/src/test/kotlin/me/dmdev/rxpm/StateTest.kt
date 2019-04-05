@@ -55,7 +55,7 @@ class StateTest {
         val pm = spy<PresentationModel>()
         val state = pm.state(diffStrategy = object : DiffStrategy<String> {
 
-            override fun isTheSame(new: String, old: String): Boolean {
+            override fun areTheSame(new: String, old: String): Boolean {
                 return if (new == "foo") {
                     false
                 } else {
@@ -63,7 +63,7 @@ class StateTest {
                 }
             }
 
-            override fun isAsync() = false
+            override fun computeAsync() = true
 
         })
 
