@@ -6,6 +6,9 @@ import me.dmdev.rxpm.PresentationModel.*
 import me.dmdev.rxpm.navigation.*
 import java.util.*
 
+/**
+ * todo docs and tests
+ */
 class CommonDelegate<PM, V>(
     private val pmView: PmView<PM>,
     private val navigationMessagesDispatcher: NavigationMessageDispatcher
@@ -26,20 +29,30 @@ class CommonDelegate<PM, V>(
 
     fun onCreate(savedInstanceState: Bundle?) {
         pmTag = savedInstanceState?.getString(SAVED_PM_TAG_KEY) ?: UUID.randomUUID().toString()
-        presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)
+        if (presentationModel.currentLifecycleState == null) {
+            presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)
+        }
     }
 
     fun onBind() {
-        presentationModel.lifecycleConsumer.accept(Lifecycle.BINDED)
-        pmView.onBindPresentationModel(presentationModel)
+        if (presentationModel.currentLifecycleState == Lifecycle.CREATED
+            || presentationModel.currentLifecycleState == Lifecycle.UNBINDED
+        ) {
+            presentationModel.lifecycleConsumer.accept(Lifecycle.BINDED)
+            pmView.onBindPresentationModel(presentationModel)
 
-        presentationModel.navigationMessages bindTo {
-            navigationMessagesDispatcher.dispatch(it)
+            presentationModel.navigationMessages bindTo {
+                navigationMessagesDispatcher.dispatch(it)
+            }
         }
     }
 
     fun onResume() {
-        presentationModel.lifecycleConsumer.accept(Lifecycle.RESUMED)
+        if (presentationModel.currentLifecycleState == Lifecycle.BINDED
+            || presentationModel.currentLifecycleState == Lifecycle.PAUSED
+        ) {
+            presentationModel.lifecycleConsumer.accept(Lifecycle.RESUMED)
+        }
     }
 
     fun onSaveInstanceState(outState: Bundle) {
@@ -47,16 +60,26 @@ class CommonDelegate<PM, V>(
     }
 
     fun onPause() {
-        presentationModel.lifecycleConsumer.accept(Lifecycle.PAUSED)
+        if (presentationModel.currentLifecycleState == Lifecycle.RESUMED) {
+            presentationModel.lifecycleConsumer.accept(Lifecycle.PAUSED)
+        }
     }
 
     fun onUnbind() {
-        pmView.onUnbindPresentationModel()
-        presentationModel.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+        if (presentationModel.currentLifecycleState == Lifecycle.PAUSED
+            || presentationModel.currentLifecycleState == Lifecycle.BINDED
+        ) {
+            pmView.onUnbindPresentationModel()
+            presentationModel.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+        }
     }
 
     fun onDestroy() {
-        PmStore.removePm(pmTag)
-        presentationModel.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        if (presentationModel.currentLifecycleState == Lifecycle.CREATED
+            || presentationModel.currentLifecycleState == Lifecycle.UNBINDED
+        ) {
+            PmStore.removePm(pmTag)
+            presentationModel.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+        }
     }
 }

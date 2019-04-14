@@ -50,19 +50,21 @@ abstract class PresentationModel {
             .subscribe {
                 @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
                 when (it) {
-                    Lifecycle.CREATED -> onCreate()
+                    Lifecycle.CREATED -> {
+                        onCreate()
+                    }
                     Lifecycle.BINDED -> {
                         unbind.accept(false)
                         onBind()
                     }
                     Lifecycle.RESUMED -> {
                         paused.accept(false)
-                        onBind()
+                        onResume()
                     }
                     Lifecycle.PAUSED -> {
                         paused.accept(true)
                         compositePause.clear()
-                        onUnbind()
+                        onPause()
                     }
                     Lifecycle.UNBINDED -> {
                         unbind.accept(true)
