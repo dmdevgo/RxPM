@@ -3,10 +3,8 @@ package me.dmdev.rxpm.delegate
 import android.app.*
 import android.os.*
 import me.dmdev.rxpm.*
-import me.dmdev.rxpm.PresentationModel.*
 import me.dmdev.rxpm.base.*
 import me.dmdev.rxpm.navigation.*
-import java.util.*
 
 /**
  * Delegate for the [Activity] that helps with creation and binding of
@@ -25,42 +23,25 @@ class PmActivityDelegate<PM, A>(
         where PM : PresentationModel,
               A : Activity, A : PmView<PM> {
 
-    companion object {
-        private const val SAVED_PM_TAG_KEY = "_rxpm_presentation_model_tag"
-    }
-
     // todo doc
     enum class RetainMode { FINISHING, CONFIGURATION_CHANGES }
 
-    private lateinit var pmTag: String
+    private val commonDelegate = CommonDelegate<PM, A>(pmActivity, ActivityNavigationMessageDispatcher(pmActivity))
 
-    private val navigationMessagesDispatcher = ActivityNavigationMessageDispatcher(pmActivity)
-
-    val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) {
-        @Suppress("UNCHECKED_CAST")
-        PmStore.getPm(pmTag) { pmActivity.providePresentationModel() } as PM
-    }
+    val presentationModel: PM get() = commonDelegate.presentationModel
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
-        pmTag = savedInstanceState?.getString(SAVED_PM_TAG_KEY) ?: UUID.randomUUID().toString()
-
-        presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)
+        commonDelegate.onCreate(savedInstanceState)
     }
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onPostCreate() {
-        presentationModel.lifecycleConsumer.accept(Lifecycle.BINDED)
-
-        presentationModel.navigationMessages bindTo {
-            navigationMessagesDispatcher.dispatch(it)
-        }
-
-        pmActivity.onBindPresentationModel(presentationModel)
+        commonDelegate.onBind()
     }
 
     /**
@@ -74,22 +55,22 @@ class PmActivityDelegate<PM, A>(
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onResume() {
-        presentationModel.lifecycleConsumer.accept(Lifecycle.RESUMED)
+        commonDelegate.onResume()
     }
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(SAVED_PM_TAG_KEY, pmTag)
-        presentationModel.lifecycleConsumer.accept(Lifecycle.PAUSED)
+        commonDelegate.onSaveInstanceState(outState)
+        commonDelegate.onPause()
     }
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onPause() {
-        presentationModel.lifecycleConsumer.accept(Lifecycle.PAUSED)
+        commonDelegate.onPause()
     }
 
     /**
@@ -103,19 +84,18 @@ class PmActivityDelegate<PM, A>(
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onDestroy() {
-        pmActivity.onUnbindPresentationModel()
-        presentationModel.lifecycleConsumer.accept(Lifecycle.UNBINDED)
+        commonDelegate.onUnbind()
 
         when (retainMode) {
             RetainMode.FINISHING -> {
                 if (pmActivity.isFinishing) {
-                    presentationModel.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+                    commonDelegate.onDestroy()
                 }
             }
 
             RetainMode.CONFIGURATION_CHANGES -> {
                 if (!pmActivity.isChangingConfigurations) {
-                    presentationModel.lifecycleConsumer.accept(Lifecycle.DESTROYED)
+                    commonDelegate.onDestroy()
                 }
             }
         }

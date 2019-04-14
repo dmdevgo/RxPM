@@ -5,7 +5,6 @@ import android.support.v4.app.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.base.*
 import me.dmdev.rxpm.navigation.*
-import java.util.*
 
 /**
  * Delegate for the [Fragment] that helps with creation and binding of
@@ -24,39 +23,25 @@ class PmFragmentDelegate<PM, F>(
         where PM : PresentationModel,
               F : Fragment, F : PmView<PM> {
 
-    companion object {
-        private const val SAVED_PM_TAG_KEY = "_rxpm_presentation_model_tag"
-    }
-
-    private lateinit var pmTag: String
-
     // todo doc
     enum class RetainMode { SAVED_STATE, CONFIGURATION_CHANGES }
 
-    private val navigationMessageDispatcher = SupportFragmentNavigationMessageDispatcher(pmFragment)
+    private val commonDelegate = CommonDelegate<PM, F>(pmFragment, FragmentNavigationMessageDispatcher(pmFragment))
 
-    val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) {
-        @Suppress("UNCHECKED_CAST")
-        PmStore.getPm(pmTag) { pmFragment.providePresentationModel() } as PM
-    }
+    val presentationModel: PM get() = commonDelegate.presentationModel
 
     /**
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
-        pmTag = savedInstanceState?.getString(SAVED_PM_TAG_KEY) ?: UUID.randomUUID().toString()
-        presentationModel.lifecycleConsumer.accept(PresentationModel.Lifecycle.CREATED)
+        commonDelegate.onCreate(savedInstanceState)
     }
 
     /**
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onViewCreated() {
-        presentationModel.lifecycleConsumer.accept(PresentationModel.Lifecycle.BINDED)
-        presentationModel.navigationMessages bindTo {
-            navigationMessageDispatcher.dispatch(it)
-        }
-        pmFragment.onBindPresentationModel(presentationModel)
+        commonDelegate.onBind()
     }
 
     /**
@@ -70,22 +55,22 @@ class PmFragmentDelegate<PM, F>(
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onResume() {
-        presentationModel.lifecycleConsumer.accept(PresentationModel.Lifecycle.RESUMED)
+        commonDelegate.onResume()
     }
 
     /**
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(SAVED_PM_TAG_KEY, pmTag)
-        presentationModel.lifecycleConsumer.accept(PresentationModel.Lifecycle.PAUSED)
+        commonDelegate.onSaveInstanceState(outState)
+        commonDelegate.onPause()
     }
 
     /**
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onPause() {
-        presentationModel.lifecycleConsumer.accept(PresentationModel.Lifecycle.PAUSED)
+        commonDelegate.onPause()
     }
 
     /**
@@ -99,8 +84,7 @@ class PmFragmentDelegate<PM, F>(
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onDestroyView() {
-        pmFragment.onUnbindPresentationModel()
-        presentationModel.lifecycleConsumer.accept(PresentationModel.Lifecycle.UNBINDED)
+        commonDelegate.onUnbind()
     }
 
     /**
@@ -112,13 +96,13 @@ class PmFragmentDelegate<PM, F>(
                 if (pmFragment.activity?.isFinishing == true
                     || (pmFragment.fragmentManager?.isStateSaved?.not() == true)
                 ) {
-                    presentationModel.lifecycleConsumer.accept(PresentationModel.Lifecycle.DESTROYED)
+                    commonDelegate.onDestroy()
                 }
             }
 
             RetainMode.CONFIGURATION_CHANGES -> {
                 if (pmFragment.activity?.isChangingConfigurations?.not() == true) {
-                    presentationModel.lifecycleConsumer.accept(PresentationModel.Lifecycle.DESTROYED)
+                    commonDelegate.onDestroy()
                 }
             }
         }
