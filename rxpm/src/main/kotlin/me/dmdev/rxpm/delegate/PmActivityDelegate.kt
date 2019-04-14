@@ -18,7 +18,7 @@ import me.dmdev.rxpm.navigation.*
  */
 class PmActivityDelegate<PM, A>(
     private val pmActivity: A,
-    private val retainMode: RetainMode = RetainMode.FINISHING
+    private val retainMode: RetainMode
 )
         where PM : PresentationModel,
               A : Activity, A : PmView<PM> {

@@ -4,6 +4,7 @@ import android.os.*
 import android.support.v7.app.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.delegate.*
+import me.dmdev.rxpm.delegate.PmActivityDelegate.*
 
 /**
  * Predefined [Activity][AppCompatActivity] implementing the [PmView][PmView].
@@ -16,7 +17,9 @@ import me.dmdev.rxpm.delegate.*
  */
 abstract class PmActivity<PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
 
-    private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmActivityDelegate(this, PmActivityDelegate.RetainMode.CONFIGURATION_CHANGES) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) {
+        PmActivityDelegate(this, RetainMode.CONFIGURATION_CHANGES)
+    }
 
     final override val presentationModel get() = delegate.presentationModel
 

@@ -18,7 +18,7 @@ import me.dmdev.rxpm.navigation.*
  */
 class PmFragmentDelegate<PM, F>(
     private val pmFragment: F,
-    private val retainMode: RetainMode = RetainMode.SAVED_STATE
+    private val retainMode: RetainMode
 )
         where PM : PresentationModel,
               F : Fragment, F : PmView<PM> {

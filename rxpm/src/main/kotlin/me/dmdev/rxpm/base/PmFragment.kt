@@ -5,6 +5,7 @@ import android.support.v4.app.*
 import android.view.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.delegate.*
+import me.dmdev.rxpm.delegate.PmFragmentDelegate.*
 
 /**
  * Predefined [Fragment] implementing the [PmView][PmView].
@@ -17,7 +18,9 @@ import me.dmdev.rxpm.delegate.*
  */
 abstract class PmFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
 
-    private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmFragmentDelegate(this) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) {
+        PmFragmentDelegate(this, RetainMode.CONFIGURATION_CHANGES)
+    }
 
     final override val presentationModel get() = delegate.presentationModel
 
