@@ -57,9 +57,6 @@ dependencies {
         exclude module: 'support-core-ui'
     }
 
-    // Persistent PM
-    implementation rootProject.outlast
-
     // For tests
     testImplementation rootProject.junitKotlin
     testImplementation rootProject.mockitoKotlin

@@ -11,15 +11,15 @@ import org.junit.*
 import org.junit.Test
 import kotlin.test.*
 
-class PmSupportFragmentDelegateTest {
+class PmFragmentDelegateTest {
 
     @get:Rule val schedulers = SchedulersRule()
 
     private lateinit var pm: PresentationModel
     private lateinit var compositeDisposable: CompositeDisposable
     private lateinit var activity: FragmentActivity
-    private lateinit var view: PmSupportFragment<PresentationModel>
-    private lateinit var delegate: PmSupportFragmentDelegate<PresentationModel, PmSupportFragment<PresentationModel>>
+    private lateinit var view: PmFragment<PresentationModel>
+    private lateinit var delegate: PmFragmentDelegate<PresentationModel, PmFragment<PresentationModel>>
 
     @Before fun setUp() {
         pm = spy()
@@ -27,10 +27,10 @@ class PmSupportFragmentDelegateTest {
         activity = mock()
         view = mockView()
 
-        delegate = PmSupportFragmentDelegate(view)
+        delegate = PmFragmentDelegate(view)
     }
 
-    private fun mockView(): PmSupportFragment<PresentationModel> {
+    private fun mockView(): PmFragment<PresentationModel> {
         return mock {
             on { providePresentationModel() } doReturn pm
             on { activity } doReturn activity

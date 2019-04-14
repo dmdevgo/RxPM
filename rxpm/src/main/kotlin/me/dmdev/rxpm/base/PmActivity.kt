@@ -14,15 +14,20 @@ import me.dmdev.rxpm.delegate.*
  * create a [PmActivityDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
+abstract class PmActivity<PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
 
-    private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmActivityDelegate(this) }
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmActivityDelegate(this, PmActivityDelegate.RetainMode.CONFIGURATION_CHANGES) }
 
     final override val presentationModel get() = delegate.presentationModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         delegate.onCreate(savedInstanceState)
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        delegate.onPostCreate()
     }
 
     override fun onStart() {
@@ -36,22 +41,22 @@ abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), 
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         delegate.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
-        super.onPause()
         delegate.onPause()
+        super.onPause()
     }
 
     override fun onStop() {
-        super.onStop()
         delegate.onStop()
+        super.onStop()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         delegate.onDestroy()
+        super.onDestroy()
     }
 }
