@@ -250,6 +250,15 @@ abstract class PresentationModel {
     }
 
     /**
+     * Returns the [Observable] that emits items when active, and buffers them when [paused][Lifecycle.PAUSED].
+     * Buffered items is emitted when this presentation model is resumed.
+     * @param bufferSize number of items the buffer can hold. `null` means not constrained.
+     */
+    protected fun <T> Observable<T>.bufferWhilePause(bufferSize: Int? = null): Observable<T> {
+        return this.bufferWhileIdle(paused, bufferSize)
+    }
+
+    /**
      * Returns the [Observable] that emits items when active, and buffers them when [unbinded][Lifecycle.UNBINDED].
      * Buffered items is emitted when this presentation model binds to the [view][PmView].
      * @param bufferSize number of items the buffer can hold. `null` means not constrained.
