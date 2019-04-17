@@ -6,6 +6,7 @@ import io.reactivex.disposables.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
 import me.dmdev.rxpm.base.*
+import me.dmdev.rxpm.delegate.PmFragmentDelegate.*
 import me.dmdev.rxpm.util.*
 import org.junit.*
 import org.junit.Test
@@ -27,7 +28,7 @@ class PmFragmentDelegateTest {
         activity = mock()
         view = mockView()
 
-        delegate = PmFragmentDelegate(view)
+        delegate = PmFragmentDelegate(view, RetainMode.CONFIGURATION_CHANGES)
     }
 
     private fun mockView(): PmFragment<PresentationModel> {
@@ -38,21 +39,21 @@ class PmFragmentDelegateTest {
     }
 
     @Test fun callViewMethods() {
+
         delegate.onCreate(null)
+        delegate.onViewCreated()
 
         verify(view).providePresentationModel()
         assertEquals(pm, delegate.presentationModel)
-
-        delegate.onStart()
         verify(view).onBindPresentationModel(pm)
 
+        delegate.onStart()
         delegate.onResume()
         delegate.onPause()
-
         delegate.onStop()
 
+        delegate.onDestroyView()
         verify(view).onUnbindPresentationModel()
-
         delegate.onDestroy()
     }
 
@@ -61,19 +62,22 @@ class PmFragmentDelegateTest {
         val testObserver = pm.lifecycleObservable.test()
 
         delegate.onCreate(null)
+        delegate.onViewCreated()
         delegate.onStart()
         delegate.onResume()
         delegate.onPause()
         delegate.onStop()
+        delegate.onDestroyView()
         whenever(activity.isFinishing).thenReturn(true)
         delegate.onDestroy()
 
         testObserver.assertValuesOnly(
             CREATED,
             BINDED,
+            RESUMED,
+            PAUSED,
             UNBINDED,
             DESTROYED
         )
     }
-
 }

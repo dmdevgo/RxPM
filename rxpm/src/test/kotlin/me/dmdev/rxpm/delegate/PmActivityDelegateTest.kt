@@ -5,6 +5,7 @@ import io.reactivex.disposables.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
 import me.dmdev.rxpm.base.*
+import me.dmdev.rxpm.delegate.PmActivityDelegate.*
 import me.dmdev.rxpm.util.*
 import org.junit.*
 import org.junit.Test
@@ -24,7 +25,7 @@ class PmActivityDelegateTest {
         compositeDisposable = mock()
         view = mockView()
 
-        delegate = PmActivityDelegate(view)
+        delegate = PmActivityDelegate(view, RetainMode.FINISHING)
     }
 
     private fun mockView(): PmActivity<PresentationModel> {
@@ -35,21 +36,20 @@ class PmActivityDelegateTest {
 
     @Test fun callViewMethods() {
         delegate.onCreate(null)
+        delegate.onPostCreate()
 
         verify(view).providePresentationModel()
         assertEquals(pm, delegate.presentationModel)
-
-        delegate.onStart()
         verify(view).onBindPresentationModel(pm)
 
+        delegate.onStart()
         delegate.onResume()
         delegate.onPause()
-
         delegate.onStop()
 
+        delegate.onDestroy()
         verify(view).onUnbindPresentationModel()
 
-        delegate.onDestroy()
     }
 
     @Test fun changePmLifecycle() {
@@ -66,6 +66,8 @@ class PmActivityDelegateTest {
         testObserver.assertValuesOnly(
             CREATED,
             BINDED,
+            RESUMED,
+            PAUSED,
             UNBINDED,
             DESTROYED
         )
