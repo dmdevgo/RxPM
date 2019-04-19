@@ -254,7 +254,7 @@ abstract class PresentationModel {
      * Buffered items is emitted when this presentation model is resumed.
      * @param bufferSize number of items the buffer can hold. `null` means not constrained.
      */
-    protected fun <T> Observable<T>.bufferWhilePause(bufferSize: Int? = null): Observable<T> {
+    fun <T> Observable<T>.bufferWhilePause(bufferSize: Int? = null): Observable<T> {
         return this.bufferWhileIdle(paused, bufferSize)
     }
 
@@ -263,7 +263,7 @@ abstract class PresentationModel {
      * Buffered items is emitted when this presentation model binds to the [view][PmView].
      * @param bufferSize number of items the buffer can hold. `null` means not constrained.
      */
-    protected fun <T> Observable<T>.bufferWhileUnbind(bufferSize: Int? = null): Observable<T> {
+    fun <T> Observable<T>.bufferWhileUnbind(bufferSize: Int? = null): Observable<T> {
         return this.bufferWhileIdle(unbind, bufferSize)
     }
 
