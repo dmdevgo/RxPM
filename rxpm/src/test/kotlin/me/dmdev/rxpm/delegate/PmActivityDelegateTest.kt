@@ -1,15 +1,16 @@
 package me.dmdev.rxpm.delegate
 
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.disposables.*
-import me.dmdev.rxpm.*
+import io.reactivex.disposables.CompositeDisposable
+import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import me.dmdev.rxpm.base.*
-import me.dmdev.rxpm.delegate.PmActivityDelegate.*
-import me.dmdev.rxpm.util.*
-import org.junit.*
+import me.dmdev.rxpm.base.PmActivity
+import me.dmdev.rxpm.delegate.PmActivityDelegate.RetainMode
+import me.dmdev.rxpm.util.SchedulersRule
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import kotlin.test.*
+import kotlin.test.assertEquals
 
 class PmActivityDelegateTest {
 
@@ -56,6 +57,7 @@ class PmActivityDelegateTest {
         val testObserver = pm.lifecycleObservable.test()
 
         delegate.onCreate(null)
+        delegate.onPostCreate()
         delegate.onStart()
         delegate.onResume()
         delegate.onPause()
