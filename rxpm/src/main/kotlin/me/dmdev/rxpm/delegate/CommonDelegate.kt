@@ -1,9 +1,12 @@
 package me.dmdev.rxpm.delegate
 
-import android.os.*
-import me.dmdev.rxpm.*
-import me.dmdev.rxpm.PresentationModel.*
-import me.dmdev.rxpm.navigation.*
+import android.os.Bundle
+import me.dmdev.rxpm.PmView
+import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.PresentationModel.Lifecycle
+import me.dmdev.rxpm.bindTo
+import me.dmdev.rxpm.navigation.NavigationMessageDispatcher
+import me.dmdev.rxpm.navigation.NavigationalPm
 import java.util.*
 
 /**
@@ -35,14 +38,19 @@ class CommonDelegate<PM, V>(
     }
 
     fun onBind() {
-        if (presentationModel.currentLifecycleState == Lifecycle.CREATED
-            || presentationModel.currentLifecycleState == Lifecycle.UNBINDED
-        ) {
-            presentationModel.lifecycleConsumer.accept(Lifecycle.BINDED)
-            pmView.onBindPresentationModel(presentationModel)
 
-            presentationModel.navigationMessages bindTo {
-                navigationMessagesDispatcher.dispatch(it)
+        val pm = presentationModel
+
+        if (pm.currentLifecycleState == Lifecycle.CREATED
+            || pm.currentLifecycleState == Lifecycle.UNBINDED
+        ) {
+            pm.lifecycleConsumer.accept(Lifecycle.BINDED)
+            pmView.onBindPresentationModel(pm)
+
+            if (pm is NavigationalPm) {
+                pm.navigationMessages bindTo {
+                    navigationMessagesDispatcher.dispatch(it)
+                }
             }
         }
     }

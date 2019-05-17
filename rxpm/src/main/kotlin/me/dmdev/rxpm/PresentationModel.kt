@@ -1,10 +1,11 @@
 package me.dmdev.rxpm
 
-import com.jakewharton.rxrelay2.*
-import io.reactivex.*
-import io.reactivex.disposables.*
-import io.reactivex.functions.*
-import me.dmdev.rxpm.navigation.*
+import com.jakewharton.rxrelay2.BehaviorRelay
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
+import me.dmdev.rxpm.navigation.NavigationalPm
 
 /**
  * Parent class for any Presentation Model.
@@ -22,12 +23,6 @@ abstract class PresentationModel {
     private val lifecycle = BehaviorRelay.create<Lifecycle>()
     internal val unbind = BehaviorRelay.createDefault<Boolean>(true)
     internal val paused = BehaviorRelay.createDefault<Boolean>(true)
-
-    /**
-     * Command to send [navigation message][NavigationMessage] to the [NavigationMessageHandler].
-     * @since 1.1
-     */
-    val navigationMessages = command<NavigationMessage>()
 
     /**
      * The [lifecycle][Lifecycle] of this presentation model.
@@ -180,9 +175,11 @@ abstract class PresentationModel {
 
         }.untilDestroy()
 
-        navigationMessages.observable
-            .subscribe(parent.navigationMessages.consumer)
-            .untilDestroy()
+        if (this is NavigationalPm && parent is NavigationalPm) {
+            navigationMessages.observable
+                .subscribe(parent.navigationMessages.consumer)
+                .untilDestroy()
+        }
     }
 
     /**
