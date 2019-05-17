@@ -13,7 +13,7 @@ import io.reactivex.functions.*
  *
  * @param isIdle observable, that shows when `command` need to buffer the values (while isIdle value is true).
  * Buffered values will be delivered later (when isIdle emits false).
- * By default (when null is passed) it will buffer while the [view][PmView] is unbind from the [PresentationModel].
+ * By default (when null is passed) it will buffer while the [view][PmView] is paused.
  *
  * @param bufferSize how many values should be kept in buffer. Null means no restrictions.
  *
@@ -35,7 +35,7 @@ class Command<T> internal constructor(
             relay.asObservable()
         } else {
             if (isIdle == null) {
-                relay.bufferWhileIdle(pm.unbind, bufferSize)
+                relay.bufferWhileIdle(pm.paused, bufferSize)
             } else {
                 relay.bufferWhileIdle(isIdle, bufferSize)
             }

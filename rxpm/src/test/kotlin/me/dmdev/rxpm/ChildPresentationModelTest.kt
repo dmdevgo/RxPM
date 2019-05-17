@@ -1,13 +1,13 @@
 package me.dmdev.rxpm
 
-import com.nhaarman.mockitokotlin2.spy
-import io.reactivex.observers.TestObserver
-import me.dmdev.rxpm.PresentationModel.Lifecycle
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.observers.*
+import me.dmdev.rxpm.PresentationModel.*
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import me.dmdev.rxpm.navigation.NavigationMessage
-import org.junit.Before
+import me.dmdev.rxpm.navigation.*
+import org.junit.*
 import org.junit.Test
-import kotlin.test.assertFailsWith
+import kotlin.test.*
 
 class ChildPresentationModelTest {
 
@@ -25,54 +25,74 @@ class ChildPresentationModelTest {
         childPm.attachToParent(pm)
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
         pm.lifecycleConsumer.accept(UNBINDED)
         pm.lifecycleConsumer.accept(DESTROYED)
 
-        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED, UNBINDED, DESTROYED)
     }
 
     @Test fun detachFromParent() {
         childPm.attachToParent(pm)
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
         childPm.detachFromParent()
 
-        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED, UNBINDED, DESTROYED)
     }
 
     @Test fun attachToParentAfterCreated() {
         pm.lifecycleConsumer.accept(CREATED)
         childPm.attachToParent(pm)
-        pm.lifecycleConsumer.accept(BINDED)
-        pm.lifecycleConsumer.accept(UNBINDED)
-        pm.lifecycleConsumer.accept(DESTROYED)
 
-        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
+        lifecycleObserver.assertValuesOnly(CREATED)
     }
 
     @Test fun attachToParentAfterBinded() {
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
         childPm.attachToParent(pm)
-        pm.lifecycleConsumer.accept(UNBINDED)
-        pm.lifecycleConsumer.accept(DESTROYED)
 
-        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED)
+    }
+
+    @Test fun attachToParentAfterResumed() {
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        childPm.attachToParent(pm)
+
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED)
+    }
+
+    @Test fun attachToParentAfterPaused() {
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
+        childPm.attachToParent(pm)
+
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED)
     }
 
     @Test fun attachToParentAfterUnbinded() {
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
         pm.lifecycleConsumer.accept(UNBINDED)
         childPm.attachToParent(pm)
-        pm.lifecycleConsumer.accept(DESTROYED)
 
-        lifecycleObserver.assertValuesOnly(CREATED, DESTROYED)
+        lifecycleObserver.assertValuesOnly(CREATED)
     }
 
     @Test fun throwOnAttachToParentAfterDestroyed() {
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
         pm.lifecycleConsumer.accept(UNBINDED)
         pm.lifecycleConsumer.accept(DESTROYED)
 
@@ -91,6 +111,7 @@ class ChildPresentationModelTest {
         childPm.attachToParent(pm)
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
         childPm.detachFromParent()
 
         assertFailsWith<IllegalStateException> {
@@ -104,6 +125,7 @@ class ChildPresentationModelTest {
         childPm.attachToParent(pm)
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
 
         childPm.navigationMessages.relay.accept(testMessage)
 

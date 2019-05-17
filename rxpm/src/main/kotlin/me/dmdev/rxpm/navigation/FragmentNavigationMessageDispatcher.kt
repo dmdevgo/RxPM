@@ -1,8 +1,8 @@
 package me.dmdev.rxpm.navigation
 
-import android.support.v4.app.Fragment
+import android.support.v4.app.*
 
-internal class SupportFragmentNavigationMessageDispatcher(
+class FragmentNavigationMessageDispatcher(
     fragment: Fragment
 ) : NavigationMessageDispatcher(fragment) {
 

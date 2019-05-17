@@ -12,14 +12,16 @@ import me.dmdev.rxpm.navigation.*
 abstract class PresentationModel {
 
     enum class Lifecycle {
-        CREATED, BINDED, UNBINDED, DESTROYED
+        CREATED, BINDED, RESUMED, PAUSED, UNBINDED, DESTROYED
     }
 
     private val compositeDestroy = CompositeDisposable()
     private val compositeUnbind = CompositeDisposable()
+    private val compositePause = CompositeDisposable()
 
     private val lifecycle = BehaviorRelay.create<Lifecycle>()
     internal val unbind = BehaviorRelay.createDefault<Boolean>(true)
+    internal val paused = BehaviorRelay.createDefault<Boolean>(true)
 
     /**
      * Command to send [navigation message][NavigationMessage] to the [NavigationMessageHandler].
@@ -31,7 +33,7 @@ abstract class PresentationModel {
      * The [lifecycle][Lifecycle] of this presentation model.
      * @since 1.1
      */
-    val lifecycleObservable = lifecycle.asObservable()
+    val lifecycleObservable = lifecycle.distinctUntilChanged()
     internal val lifecycleConsumer = lifecycle.asConsumer()
 
     /**
@@ -43,15 +45,26 @@ abstract class PresentationModel {
     val currentLifecycleState: Lifecycle? get() = lifecycle.value
 
     init {
-        lifecycle
+        lifecycleObservable
             .takeUntil { it == Lifecycle.DESTROYED }
             .subscribe {
                 @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
                 when (it) {
-                    Lifecycle.CREATED -> onCreate()
+                    Lifecycle.CREATED -> {
+                        onCreate()
+                    }
                     Lifecycle.BINDED -> {
                         unbind.accept(false)
                         onBind()
+                    }
+                    Lifecycle.RESUMED -> {
+                        paused.accept(false)
+                        onResume()
+                    }
+                    Lifecycle.PAUSED -> {
+                        paused.accept(true)
+                        compositePause.clear()
+                        onPause()
                     }
                     Lifecycle.UNBINDED -> {
                         unbind.accept(true)
@@ -83,6 +96,18 @@ abstract class PresentationModel {
     protected open fun onBind() {}
 
     /**
+     * docs todo
+     * @since 2.0
+     */
+    protected open fun onResume() {}
+
+    /**
+     * docs todo
+     * @since 2.0
+     */
+    protected open fun onPause() {}
+
+    /**
      * Called when the presentation model unbinds from the [view][PmView].
      * @see [onCreate]
      * @see [onBind]
@@ -92,7 +117,7 @@ abstract class PresentationModel {
 
     /**
      * Called just before the presentation model will be destroyed.
-     * @see [onCreate]]
+     * @see [onCreate]
      * @see [onBind]
      * @see [onUnbind]
      */
@@ -116,6 +141,19 @@ abstract class PresentationModel {
         }
 
         when (parent.lifecycle.value) {
+
+            Lifecycle.RESUMED -> {
+                parent.lifecycleObservable
+                    .startWithArray(Lifecycle.CREATED, Lifecycle.BINDED)
+                    .subscribe(lifecycleConsumer)
+            }
+
+            Lifecycle.PAUSED -> {
+                parent.lifecycleObservable
+                    .skip(1)
+                    .startWithArray(Lifecycle.CREATED, Lifecycle.BINDED)
+                    .subscribe(lifecycleConsumer)
+            }
 
             Lifecycle.BINDED -> {
                 parent.lifecycleObservable
@@ -156,8 +194,7 @@ abstract class PresentationModel {
 
         when (lifecycle.value) {
 
-            Lifecycle.CREATED,
-            Lifecycle.UNBINDED -> {
+            Lifecycle.CREATED -> {
                 lifecycleConsumer.accept(Lifecycle.DESTROYED)
             }
 
@@ -166,11 +203,34 @@ abstract class PresentationModel {
                 lifecycleConsumer.accept(Lifecycle.DESTROYED)
             }
 
+            Lifecycle.RESUMED -> {
+                lifecycleConsumer.accept(Lifecycle.PAUSED)
+                lifecycleConsumer.accept(Lifecycle.UNBINDED)
+                lifecycleConsumer.accept(Lifecycle.DESTROYED)
+            }
+
+            Lifecycle.PAUSED -> {
+                lifecycleConsumer.accept(Lifecycle.UNBINDED)
+                lifecycleConsumer.accept(Lifecycle.DESTROYED)
+            }
+
+            Lifecycle.UNBINDED -> {
+                lifecycleConsumer.accept(Lifecycle.DESTROYED)
+            }
+
             null,
             Lifecycle.DESTROYED -> {
                 //  do nothing
             }
         }
+    }
+
+    /**
+     * doc todo
+     * @since 2.0
+     */
+    fun Disposable.untilPause() {
+        compositePause.add(this)
     }
 
     /**
@@ -190,11 +250,20 @@ abstract class PresentationModel {
     }
 
     /**
+     * Returns the [Observable] that emits items when active, and buffers them when [paused][Lifecycle.PAUSED].
+     * Buffered items is emitted when this presentation model is resumed.
+     * @param bufferSize number of items the buffer can hold. `null` means not constrained.
+     */
+    fun <T> Observable<T>.bufferWhilePause(bufferSize: Int? = null): Observable<T> {
+        return this.bufferWhileIdle(paused, bufferSize)
+    }
+
+    /**
      * Returns the [Observable] that emits items when active, and buffers them when [unbinded][Lifecycle.UNBINDED].
      * Buffered items is emitted when this presentation model binds to the [view][PmView].
      * @param bufferSize number of items the buffer can hold. `null` means not constrained.
      */
-    protected fun <T> Observable<T>.bufferWhileUnbind(bufferSize: Int? = null): Observable<T> {
+    fun <T> Observable<T>.bufferWhileUnbind(bufferSize: Int? = null): Observable<T> {
         return this.bufferWhileIdle(unbind, bufferSize)
     }
 

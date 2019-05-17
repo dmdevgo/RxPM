@@ -11,6 +11,8 @@ import me.dmdev.rxpm.PresentationModel.Lifecycle.*
  */
 class PmTestHelper(val pm: PresentationModel) {
 
+    enum class LifecycleSteps { ALL, BYPASS_BINDING, BYPASS_RESUMING }
+
     private val lifecycleStates = PresentationModel.Lifecycle.values()
 
     /**
@@ -26,33 +28,65 @@ class PmTestHelper(val pm: PresentationModel) {
      * long (created, binded, unbinded, destroyed), and short (created, destroyed).
      * By default is false, means the long sequence is used.
      *
+     * todo fixed docs
+     *
      * @throws IllegalStateException if requested state is not acceptable considering the current state.
      */
     fun setLifecycleTo(
         lifecycleState: PresentationModel.Lifecycle,
-        shortSequence: Boolean = false
+        lifecycleSteps: LifecycleSteps = LifecycleSteps.ALL
     ) {
 
         checkStateAllowed(lifecycleState)
 
-        val sequenceOfLifecycleStateOrdinals = when {
-            isBindedAgain(lifecycleState) -> listOf(BINDED.ordinal)
+        when {
+            isResumedAgain(lifecycleState) -> pm.lifecycleConsumer.accept(RESUMED)
+            isBindedAgain(lifecycleState) -> pm.lifecycleConsumer.accept(BINDED)
+            else -> {
 
-            isShortDestroyed(lifecycleState, shortSequence) -> {
-                listOf(CREATED.ordinal, DESTROYED.ordinal)
+                val currentLifecycleState = pm.currentLifecycleState
+
+                PresentationModel.Lifecycle.values()
+                    .filter {
+                        if (currentLifecycleState != null) {
+                            it > currentLifecycleState
+                        } else {
+                            true
+                        }
+                    }
+                    .filter { it <= lifecycleState }
+                    .filter {
+                        when (lifecycleSteps) {
+                            LifecycleSteps.BYPASS_RESUMING -> {
+                                if (lifecycleState > PAUSED) {
+                                    it < RESUMED || it > PAUSED
+                                } else {
+                                    true
+                                }
+                            }
+                            LifecycleSteps.BYPASS_BINDING -> {
+                                if (lifecycleState > UNBINDED) {
+                                    it < BINDED || it > UNBINDED
+                                } else {
+                                    true
+                                }
+                            }
+                            LifecycleSteps.ALL -> true
+                        }
+                    }
+                    .forEach {
+                        pm.lifecycleConsumer.accept(it)
+                    }
             }
-
-            else -> listOfSequencedStateOrdinals(lifecycleState)
-        }
-
-        sequenceOfLifecycleStateOrdinals.forEach { ordinal ->
-            pm.lifecycleConsumer.accept(lifecycleStates[ordinal])
         }
     }
 
     private fun checkStateAllowed(lifecycleState: PresentationModel.Lifecycle) {
         pm.currentLifecycleState?.let { currentState ->
-            if (lifecycleState <= currentState && !isBindedAgain(lifecycleState)) {
+            if (lifecycleState <= currentState
+                && !isBindedAgain(lifecycleState)
+                && !isResumedAgain((lifecycleState))
+            ) {
                 throw IllegalStateException(
                     "You can't set lifecycle state as $lifecycleState when it already is $pm.currentLifecycleState."
                 )
@@ -60,20 +94,11 @@ class PmTestHelper(val pm: PresentationModel) {
         }
     }
 
+    private fun isResumedAgain(lifecycleState: PresentationModel.Lifecycle): Boolean {
+        return pm.currentLifecycleState == PAUSED && lifecycleState == RESUMED
+    }
+
     private fun isBindedAgain(lifecycleState: PresentationModel.Lifecycle): Boolean {
         return pm.currentLifecycleState == UNBINDED && lifecycleState == BINDED
-    }
-
-    private fun isShortDestroyed(
-        lifecycleState: PresentationModel.Lifecycle,
-        shortSequence: Boolean
-    ): Boolean {
-        return lifecycleState == DESTROYED && shortSequence
-    }
-
-    private fun listOfSequencedStateOrdinals(lifecycleState: PresentationModel.Lifecycle): List<Int> {
-        val nextStateOrdinal = pm.currentLifecycleState?.let { it.ordinal + 1 } ?: 0
-        val wantedStateOrdinal = lifecycleState.ordinal
-        return (nextStateOrdinal..wantedStateOrdinal).toList()
     }
 }

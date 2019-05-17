@@ -1,13 +1,10 @@
 package me.dmdev.rxpm.delegate
 
-import com.bluelinelabs.conductor.Controller
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import me.dmdev.rxpm.PmView
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.PresentationModel.Lifecycle
-import me.dmdev.rxpm.base.PmController
-import me.dmdev.rxpm.navigation.ControllerNavigationMessageDispatcher
+import android.view.*
+import com.bluelinelabs.conductor.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.base.*
+import me.dmdev.rxpm.navigation.*
 
 /**
  * Delegate for the [Controller] that helps with creation and binding of
@@ -18,65 +15,49 @@ import me.dmdev.rxpm.navigation.ControllerNavigationMessageDispatcher
  * Users of this class must forward all the life cycle methods from the containing Controller
  * to the corresponding ones in this class.
  */
-class PmControllerDelegate<PM, C>(private val pmView: C)
+class PmControllerDelegate<PM, C>(pmController: C)
         where PM : PresentationModel,
               C : Controller, C : PmView<PM> {
 
-    internal val pmBinder: PmBinder<PM> by lazy(LazyThreadSafetyMode.NONE) { PmBinder(presentationModel, pmView) }
     private var created = false
 
-    private val navigationMessageDispatcher = ControllerNavigationMessageDispatcher(pmView)
-    private var navigationMessagesDisposable: Disposable? = null
+    private val commonDelegate =
+        CommonDelegate<PM, C>(pmController, ControllerNavigationMessageDispatcher(pmController))
 
-    val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) { pmView.providePresentationModel() }
+    val presentationModel: PM get() = commonDelegate.presentationModel
 
-    private fun onCreate() {
-        presentationModel.lifecycleConsumer.accept(Lifecycle.CREATED)
-        navigationMessagesDisposable = presentationModel.navigationMessages.observable
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                navigationMessageDispatcher.dispatch(it)
+    init {
+        pmController.addLifecycleListener(object : Controller.LifecycleListener() {
+
+            override fun preCreateView(controller: Controller) {
+                super.preCreateView(controller)
+                if (!created) {
+                    commonDelegate.onCreate(null)
+                    created = true
+                }
             }
-    }
 
-    /**
-     * You must call this method from the containing [Controller]'s corresponding method.
-     */
-    fun onCreateView() {
-        if (!created) {
-            onCreate()
-            created = true
-        }
-    }
+            override fun postCreateView(controller: Controller, view: View) {
+                commonDelegate.onBind()
+            }
 
-    /**
-     * You must call this method from the containing [Controller]'s corresponding method.
-     */
-    fun onAttach() {
-        pmBinder.bind()
-    }
+            override fun postAttach(controller: Controller, view: View) {
+                commonDelegate.onResume()
+            }
 
-    /**
-     * You must call this method from the containing [Controller]'s corresponding method.
-     */
-    fun onDetach() {
-        pmBinder.unbind()
-    }
+            override fun preDetach(controller: Controller, view: View) {
+                commonDelegate.onPause()
+            }
 
-    /**
-     * You must call this method from the containing [Controller]'s corresponding method.
-     */
-    fun onDestroyView() {
-        // May be used in the future
-    }
+            override fun preDestroyView(controller: Controller, view: View) {
+                commonDelegate.onUnbind()
+            }
 
-    /**
-     * You must call this method from the containing [Controller]'s corresponding method.
-     */
-    fun onDestroy() {
-        if (created) {
-            navigationMessagesDisposable?.dispose()
-            presentationModel.lifecycleConsumer.accept(Lifecycle.DESTROYED)
-        }
+            override fun preDestroy(controller: Controller) {
+                if (created) {
+                    commonDelegate.onDestroy()
+                }
+            }
+        })
     }
 }

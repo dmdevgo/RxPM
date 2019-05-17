@@ -7,7 +7,7 @@ import me.dmdev.rxpm.*
 import me.dmdev.rxpm.base.*
 import me.dmdev.rxpm.sample.R
 
-class CounterActivity : PmSupportActivity<CounterPm>() {
+class CounterActivity : PmActivity<CounterPm>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
