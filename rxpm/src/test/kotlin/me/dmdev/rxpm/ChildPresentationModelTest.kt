@@ -1,16 +1,18 @@
 package me.dmdev.rxpm
 
-import com.nhaarman.mockitokotlin2.spy
-import io.reactivex.observers.TestObserver
-import me.dmdev.rxpm.PresentationModel.Lifecycle
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.observers.*
+import me.dmdev.rxpm.PresentationModel.*
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import me.dmdev.rxpm.navigation.NavigationMessage
-import me.dmdev.rxpm.navigation.NavigationalPm
-import org.junit.Before
+import me.dmdev.rxpm.navigation.*
+import me.dmdev.rxpm.util.*
+import org.junit.*
 import org.junit.Test
-import kotlin.test.assertFailsWith
+import kotlin.test.*
 
 class ChildPresentationModelTest {
+
+    @get:Rule val schedulers = SchedulersRule()
 
     private class ScreenPm : PresentationModel(), NavigationalPm {
         override val navigationMessages = command<NavigationMessage>()

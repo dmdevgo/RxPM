@@ -1,30 +1,34 @@
 package me.dmdev.rxpm.util
 
 import io.reactivex.*
+import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.disposables.*
 import io.reactivex.plugins.*
+import java.util.*
 
-internal class BufferSingleValueWhileIdleOperator<T>(
-    private val idleObserver: Observable<Boolean>
+internal class BufferWhileIdleOperator<T>(
+    private val idleObserver: Observable<Boolean>,
+    private val bufferSize: Int? = null
 ) : ObservableOperator<T, T> {
 
     override fun apply(observer: Observer<in T>): Observer<in T> {
-        return ObserverWithBuffer(idleObserver, observer)
+        return ObserverWithBuffer(idleObserver, observer, bufferSize)
     }
 
     class ObserverWithBuffer<T>(
         private val idleObserver: Observable<Boolean>,
-        private val downstream: Observer<in T>
+        private val downstream: Observer<in T>,
+        private val bufferSize: Int? = null
     ) : Observer<T> {
 
         private val compositeDisposable = CompositeDisposable()
         private var done = false
 
         private var isIdle = false
-        private var bufferedValue: T? = null
+        private var bufferedValues: Queue<T> = LinkedList()
 
         override fun onSubscribe(disposable: Disposable) {
-
             compositeDisposable.addAll(
                 disposable,
                 idleObserver.subscribe {
@@ -32,10 +36,10 @@ internal class BufferSingleValueWhileIdleOperator<T>(
                         isIdle = true
                     } else {
                         isIdle = false
-                        bufferedValue?.let { value ->
-                            onNext(value)
+                        bufferedValues.forEach { v ->
+                            onNext(v)
                         }
-                        bufferedValue = null
+                        bufferedValues.clear()
                     }
                 }
             )
@@ -49,7 +53,13 @@ internal class BufferSingleValueWhileIdleOperator<T>(
             }
 
             if (isIdle) {
-                bufferedValue = v
+
+                if (bufferedValues.size == bufferSize) {
+                    bufferedValues.poll()
+                }
+
+                bufferedValues.offer(v)
+
             } else {
                 downstream.onNext(v)
             }

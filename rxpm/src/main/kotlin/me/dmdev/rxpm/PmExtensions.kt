@@ -2,14 +2,11 @@
 
 package me.dmdev.rxpm
 
-import com.jakewharton.rxrelay2.Relay
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Consumer
-import io.reactivex.functions.Function
+import com.jakewharton.rxrelay2.*
+import io.reactivex.*
+import io.reactivex.android.schedulers.*
+import io.reactivex.functions.*
+import me.dmdev.rxpm.util.*
 
 
 /**
@@ -76,41 +73,16 @@ inline fun <T> Observable<T>.skipWhileInProgress(progressState: Observable<Boole
  * @param isIdle shows when the idle state begins (`true`) and ends (`false`).
  * @param bufferSize number of items the buffer can hold. `null` means not constrained.
  */
-inline fun <T> Observable<T>.bufferWhileIdle(
+fun <T> Observable<T>.bufferWhileIdle(
     isIdle: Observable<Boolean>,
     bufferSize: Int? = null
 ): Observable<T> {
-
-    val itemsObservable =
-        this
-            .withLatestFrom(
-                isIdle,
-                BiFunction { t: T, idle: Boolean -> Pair(t, idle) }
-            )
-            .publish()
-            .refCount(2)
-
-    return Observable
-        .merge(
-            itemsObservable
-                .filter { (_, isIdle) ->  isIdle.not() }
-                .map { (item, _) -> item },
-
-            itemsObservable
-                .filter { (_, isIdle) -> isIdle }
-                .map { (item, _) -> item }
-                .buffer(
-                    isIdle
-                        .distinctUntilChanged()
-                        .filter { it },
-                    Function<Boolean, Observable<Boolean>> {
-                        isIdle
-                            .distinctUntilChanged()
-                            .filter { it.not() }
-                    }
-                )
-                .flatMapIterable {
-                    if (bufferSize != null) it.takeLast(bufferSize) else it
-                }
+    return this.observeOn(AndroidSchedulers.mainThread())
+        .lift(
+            if (bufferSize == 1) {
+                BufferSingleValueWhileIdleOperator(isIdle)
+            } else {
+                BufferWhileIdleOperator(isIdle, bufferSize)
+            }
         )
 }

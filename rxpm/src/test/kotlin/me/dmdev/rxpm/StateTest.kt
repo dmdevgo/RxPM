@@ -9,8 +9,7 @@ import org.junit.*
 
 class StateTest {
 
-    @get:Rule
-    val schedulers = SchedulersRule()
+    @get:Rule val schedulers = SchedulersRule()
 
     private lateinit var pm: PresentationModel
     private lateinit var pmTestHelper: PmTestHelper

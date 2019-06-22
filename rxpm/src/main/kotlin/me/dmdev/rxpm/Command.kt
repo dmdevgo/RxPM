@@ -2,7 +2,6 @@ package me.dmdev.rxpm
 
 import com.jakewharton.rxrelay2.*
 import io.reactivex.*
-import io.reactivex.android.schedulers.*
 import io.reactivex.functions.*
 
 /**
@@ -72,7 +71,6 @@ fun <T> PresentationModel.command(
 infix fun <T> Command<T>.bindTo(consumer: Consumer<in T>) {
     with(pm) {
         this@bindTo.observable
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(consumer)
             .untilUnbind()
     }
@@ -88,7 +86,6 @@ infix fun <T> Command<T>.bindTo(consumer: Consumer<in T>) {
 infix fun <T> Command<T>.bindTo(consumer: (T) -> Unit) {
     with(pm) {
         this@bindTo.observable
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(consumer)
             .untilUnbind()
     }

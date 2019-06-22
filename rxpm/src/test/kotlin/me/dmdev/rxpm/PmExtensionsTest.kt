@@ -1,16 +1,14 @@
 package me.dmdev.rxpm
 
-import com.jakewharton.rxrelay2.BehaviorRelay
-import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.observers.TestObserver
-import org.junit.Before
-import org.junit.Test
+import com.jakewharton.rxrelay2.*
+import io.reactivex.*
+import io.reactivex.observers.*
+import me.dmdev.rxpm.util.*
+import org.junit.*
 
 class PmExtensionsTest {
+
+    @get:Rule val schedulers = SchedulersRule()
 
     private lateinit var progress: BehaviorRelay<Boolean>
 
