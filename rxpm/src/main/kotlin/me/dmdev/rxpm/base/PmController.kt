@@ -18,7 +18,8 @@ abstract class PmController<PM : PresentationModel>(args: Bundle? = null) :
     RestoreViewOnCreateController(args),
     PmView<PM> {
 
-    private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmControllerDelegate(this) }
+    @Suppress("LeakingThis")
+    private val delegate = PmControllerDelegate(this)
 
     final override val presentationModel get() = delegate.presentationModel
 }
