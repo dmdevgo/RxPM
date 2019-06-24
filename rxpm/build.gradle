@@ -13,7 +13,6 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
@@ -44,14 +43,11 @@ dependencies {
     compileOnly rootProject.appCompat
     compileOnly rootProject.materialDesign
     compileOnly rootProject.conductor
-    compileOnly rootProject.googleMaps
 
     // Rx
     api rootProject.rxJava2
     implementation rootProject.rxRelay2
     implementation rootProject.rxAndroid2
-
-    // RxBindings
     implementation rootProject.rxBinding
 
     // For tests
