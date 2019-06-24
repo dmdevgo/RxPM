@@ -1,20 +1,17 @@
 package me.dmdev.rxpm.delegate
 
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.PmView
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.navigation.NavigationMessageDispatcher
-import me.dmdev.rxpm.util.SchedulersRule
-import org.junit.Before
-import org.junit.Rule
+import io.reactivex.disposables.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.navigation.*
+import me.dmdev.rxpm.util.*
+import org.junit.*
 import org.junit.Test
-import kotlin.test.assertEquals
+import kotlin.test.*
 
 class CommonDelegateTest {
 
-    @get:Rule
-    val schedulers = SchedulersRule()
+    @get:Rule val schedulers = SchedulersRule()
 
     private lateinit var pm: PresentationModel
     private lateinit var compositeDisposable: CompositeDisposable

@@ -14,6 +14,9 @@ import me.dmdev.rxpm.util.*
  * Use to represent a view state. It can be something simple, like some widget's text, or complex,
  * like inProgress or data.
  *
+ * @param [initialValue] initial value.
+ * @param [diffStrategy] diff strategy.
+ *
  * @see Action
  * @see Command
  */
@@ -77,14 +80,15 @@ class State<T> internal constructor(
 /**
  * Creates the [State].
  *
- * todo doc
+ * @param [initialValue] initial value.
+ * @param [diffStrategy] diff strategy.
  *
  * @since 2.0
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> PresentationModel.state(
     initialValue: T? = null,
-    diffStrategy: DiffStrategy<T>? = DefaultDiffStrategy as DiffStrategy<T>
+    diffStrategy: DiffStrategy<T>? = DiffByEquals as DiffStrategy<T>
 ): State<T> {
     return State(this, initialValue, diffStrategy)
 }
@@ -124,25 +128,38 @@ infix fun <T> State<T>.bindTo(consumer: (T) -> Unit) {
 }
 
 /**
- * todo doc
+ * Describes a strategy for comparing old and new values.
  *
+ * It is used to optimize updates of the state[State] to avoid unnecessary UI redrawing.
+ *
+ * @see [DiffByEquals]
+ * @see [DiffByReference]
  * @since 2.0
  */
 interface DiffStrategy<T> {
 
+    /**
+     * Сompares the old and the new values.
+     * @return [true] if both values ​​are identical or [false] if they are different.
+     */
     fun areTheSame(new: T, old: T): Boolean
 
+    /**
+     * Defines a diff calculation on [the main thread][AndroidSchedulers.mainThread] or on [a computation thread][Schedulers.computation].
+     */
     fun computeAsync(): Boolean
 }
 
-/**
- * todo doc
- *
- * @since 2.0
- */
-object DefaultDiffStrategy : DiffStrategy<Any> {
+object DiffByEquals : DiffStrategy<Any> {
 
     override fun areTheSame(new: Any, old: Any) = new == old
+
+    override fun computeAsync() = false
+}
+
+object DiffByReference : DiffStrategy<Any> {
+
+    override fun areTheSame(new: Any, old: Any) = new === old
 
     override fun computeAsync() = false
 }

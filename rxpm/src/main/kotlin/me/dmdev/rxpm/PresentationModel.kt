@@ -1,11 +1,10 @@
 package me.dmdev.rxpm
 
-import com.jakewharton.rxrelay2.BehaviorRelay
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
-import me.dmdev.rxpm.navigation.NavigationalPm
+import com.jakewharton.rxrelay2.*
+import io.reactivex.*
+import io.reactivex.disposables.*
+import io.reactivex.functions.*
+import me.dmdev.rxpm.navigation.*
 
 /**
  * Parent class for any Presentation Model.
@@ -21,8 +20,8 @@ abstract class PresentationModel {
     private val compositePause = CompositeDisposable()
 
     private val lifecycle = BehaviorRelay.create<Lifecycle>()
-    internal val unbind = BehaviorRelay.createDefault<Boolean>(true)
-    internal val paused = BehaviorRelay.createDefault<Boolean>(true)
+    private val unbind = BehaviorRelay.createDefault(true)
+    internal val paused = BehaviorRelay.createDefault(true)
 
     /**
      * The [lifecycle][Lifecycle] of this presentation model.
@@ -72,49 +71,44 @@ abstract class PresentationModel {
                     }
                 }
             }
+            .untilDestroy()
     }
 
     /**
      * Called when the presentation model is created.
-     * @see [onBind]
-     * @see [onUnbind]
      * @see [onDestroy]
      */
     protected open fun onCreate() {}
 
     /**
      * Called when the presentation model binds to the [view][PmView].
-     * @see [onCreate]
      * @see [onUnbind]
-     * @see [onDestroy]
      */
     protected open fun onBind() {}
 
     /**
-     * docs todo
+     * Called when the presentation model is resumed.
+     * @see [onPause]
      * @since 2.0
      */
     protected open fun onResume() {}
 
     /**
-     * docs todo
+     * Called when the presentation model is paused.
+     * @see [onResume]
      * @since 2.0
      */
     protected open fun onPause() {}
 
     /**
      * Called when the presentation model unbinds from the [view][PmView].
-     * @see [onCreate]
      * @see [onBind]
-     * @see [onDestroy]
      */
     protected open fun onUnbind() {}
 
     /**
      * Called just before the presentation model will be destroyed.
      * @see [onCreate]
-     * @see [onBind]
-     * @see [onUnbind]
      */
     protected open fun onDestroy() {}
 
@@ -223,7 +217,8 @@ abstract class PresentationModel {
     }
 
     /**
-     * doc todo
+     * Local extension to add this [Disposable] to the [CompositeDisposable][compositePause]
+     * that will be CLEARED ON [PAUSED][Lifecycle.PAUSED].
      * @since 2.0
      */
     fun Disposable.untilPause() {

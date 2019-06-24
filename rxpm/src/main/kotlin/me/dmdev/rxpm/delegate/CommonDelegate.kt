@@ -1,16 +1,18 @@
 package me.dmdev.rxpm.delegate
 
-import android.os.Bundle
-import me.dmdev.rxpm.PmView
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.PresentationModel.Lifecycle
-import me.dmdev.rxpm.bindTo
-import me.dmdev.rxpm.navigation.NavigationMessageDispatcher
-import me.dmdev.rxpm.navigation.NavigationalPm
+import android.os.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.PresentationModel.*
+import me.dmdev.rxpm.navigation.*
 import java.util.*
 
 /**
- * todo docs and tests
+ *  Common delegate serves for forwarding the lifecycle[PresentationModel.Lifecycle] directly into the [PresentationModel][PresentationModel].
+ *  Can be used to implement your own delegate for the View[PmView].
+ *
+ *  @see PmActivityDelegate
+ *  @see PmFragmentDelegate
+ *  @see PmControllerDelegate
  */
 class CommonDelegate<PM, V>(
     private val pmView: PmView<PM>,

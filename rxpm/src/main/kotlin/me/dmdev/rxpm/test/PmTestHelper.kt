@@ -20,15 +20,12 @@ class PmTestHelper(val pm: PresentationModel) {
      * This will also create natural sequence of states before the requested one.
      *
      * **Note** that because of it's nature [Command][Command] emits items right away
-     * only in [BINDED] lifecycle state. So if you want to test it, be sure to set the state.
+     * only in [RESUMED] lifecycle state. So if you want to test it, be sure to set the state.
      *
      * @param lifecycleState lifecycle state to set to.
-     * @param shortSequence defines if the sequence of states should be short.
-     * It makes sense for the [DESTROYED] state, because there is two possible sequences of states:
-     * long (created, binded, unbinded, destroyed), and short (created, destroyed).
-     * By default is false, means the long sequence is used.
-     *
-     * todo fixed docs
+     * @param lifecycleSteps lifecycle path.
+     * Sometimes when testing you may need a shorter lifecycle path: bypassing [resuming][LifecycleSteps.BYPASS_BINDING] or [binding][LifecycleSteps.BYPASS_RESUMING].
+     * By default it is [all steps][LifecycleSteps.ALL]
      *
      * @throws IllegalStateException if requested state is not acceptable considering the current state.
      */

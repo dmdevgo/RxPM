@@ -4,6 +4,7 @@ import android.os.*
 import android.support.v4.app.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.base.*
+import me.dmdev.rxpm.delegate.PmFragmentDelegate.RetainMode.*
 import me.dmdev.rxpm.navigation.*
 
 /**
@@ -12,9 +13,8 @@ import me.dmdev.rxpm.navigation.*
  *
  * Use this class only if you can't subclass the [PmFragment].
  *
- * Users of this class must forward all the life cycle methods from the containing Fragment
+ * Users of this class must forward all the lifecycle methods from the containing Fragment
  * to the corresponding ones in this class.
- * todo doc
  */
 class PmFragmentDelegate<PM, F>(
     private val pmFragment: F,
@@ -23,7 +23,11 @@ class PmFragmentDelegate<PM, F>(
         where PM : PresentationModel,
               F : Fragment, F : PmView<PM> {
 
-    // todo doc
+    /**
+     * Strategies for retaining the PresentationModel[PresentationModel].
+     * [SAVED_STATE] - the PresentationModel will be destroyed if the Activity is finishing or the Fragment state has not been saved.
+     * [CONFIGURATION_CHANGES] - Retain the PresentationModel during a configuration change.
+     */
     enum class RetainMode { SAVED_STATE, CONFIGURATION_CHANGES }
 
     private val commonDelegate = CommonDelegate<PM, F>(pmFragment, FragmentNavigationMessageDispatcher(pmFragment))

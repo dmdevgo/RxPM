@@ -1,16 +1,15 @@
 package me.dmdev.rxpm.delegate
 
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.PresentationModel
+import io.reactivex.disposables.*
+import me.dmdev.rxpm.*
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import me.dmdev.rxpm.base.PmActivity
-import me.dmdev.rxpm.delegate.PmActivityDelegate.RetainMode
-import me.dmdev.rxpm.util.SchedulersRule
-import org.junit.Before
-import org.junit.Rule
+import me.dmdev.rxpm.base.*
+import me.dmdev.rxpm.delegate.PmActivityDelegate.*
+import me.dmdev.rxpm.util.*
+import org.junit.*
 import org.junit.Test
-import kotlin.test.assertEquals
+import kotlin.test.*
 
 class PmActivityDelegateTest {
 
@@ -26,7 +25,7 @@ class PmActivityDelegateTest {
         compositeDisposable = mock()
         view = mockView()
 
-        delegate = PmActivityDelegate(view, RetainMode.FINISHING)
+        delegate = PmActivityDelegate(view, RetainMode.IS_FINISHING)
     }
 
     private fun mockView(): PmActivity<PresentationModel> {
