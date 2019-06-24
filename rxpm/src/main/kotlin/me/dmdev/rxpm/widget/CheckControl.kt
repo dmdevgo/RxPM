@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.widget
 
 import android.widget.*
-import com.jakewharton.rxbinding2.widget.*
+import com.jakewharton.rxbinding3.widget.*
 import me.dmdev.rxpm.*
 
 /**

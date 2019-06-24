@@ -1,9 +1,9 @@
 package me.dmdev.rxpm.widget
 
-import android.support.design.widget.*
 import android.text.*
 import android.widget.*
-import com.jakewharton.rxbinding2.widget.*
+import com.google.android.material.textfield.*
+import com.jakewharton.rxbinding3.widget.*
 import me.dmdev.rxpm.*
 
 /**
@@ -93,7 +93,7 @@ infix fun InputControl.bindTo(editText: EditText) {
 
     text bindTo {
         val editable = editText.text
-        if (!it!!.contentEquals(editable)) {
+        if (!it.contentEquals(editable)) {
             editing = true
             if (editable is Spanned) {
                 val ss = SpannableString(it)

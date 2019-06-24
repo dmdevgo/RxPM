@@ -1,9 +1,9 @@
 package me.dmdev.rxpm.sample.main.ui.country
 
 import android.os.*
-import android.support.v7.widget.*
 import android.view.*
-import com.jakewharton.rxbinding2.view.*
+import androidx.recyclerview.widget.*
+import com.jakewharton.rxbinding3.view.*
 import kotlinx.android.synthetic.main.screen_choose_country.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.sample.*

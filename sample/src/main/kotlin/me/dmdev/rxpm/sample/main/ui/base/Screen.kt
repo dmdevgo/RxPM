@@ -1,8 +1,8 @@
 package me.dmdev.rxpm.sample.main.ui.base
 
 import android.os.*
-import android.support.v7.app.*
 import android.view.*
+import androidx.appcompat.app.*
 import io.reactivex.functions.*
 import me.dmdev.rxpm.base.*
 import me.dmdev.rxpm.sample.*

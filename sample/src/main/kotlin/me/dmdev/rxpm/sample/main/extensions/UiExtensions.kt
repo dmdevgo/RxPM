@@ -1,11 +1,9 @@
 package me.dmdev.rxpm.sample.main.extensions
 
-import android.content.Context
-import android.support.annotation.LayoutRes
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
+import android.content.*
+import android.view.*
+import android.view.inputmethod.*
+import androidx.annotation.*
 
 
 fun View.visible(visible: Boolean) {

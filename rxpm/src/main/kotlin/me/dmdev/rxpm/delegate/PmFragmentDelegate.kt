@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.delegate
 
 import android.os.*
-import android.support.v4.app.*
+import androidx.fragment.app.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.base.*
 import me.dmdev.rxpm.delegate.PmFragmentDelegate.RetainMode.*

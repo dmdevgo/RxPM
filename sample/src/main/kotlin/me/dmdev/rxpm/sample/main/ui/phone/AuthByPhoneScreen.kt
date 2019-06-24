@@ -1,8 +1,8 @@
 package me.dmdev.rxpm.sample.main.ui.phone
 
 import android.view.inputmethod.*
-import com.jakewharton.rxbinding2.view.*
-import com.jakewharton.rxbinding2.widget.*
+import com.jakewharton.rxbinding3.view.*
+import com.jakewharton.rxbinding3.widget.*
 import io.reactivex.*
 import kotlinx.android.synthetic.main.screen_auth_by_phone.*
 import me.dmdev.rxpm.*

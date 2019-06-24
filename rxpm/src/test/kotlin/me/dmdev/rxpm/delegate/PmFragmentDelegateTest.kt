@@ -1,6 +1,6 @@
 package me.dmdev.rxpm.delegate
 
-import android.support.v4.app.*
+import androidx.fragment.app.*
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.disposables.*
 import me.dmdev.rxpm.*

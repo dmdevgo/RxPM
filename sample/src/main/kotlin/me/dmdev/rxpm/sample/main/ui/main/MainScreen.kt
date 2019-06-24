@@ -1,9 +1,9 @@
 package me.dmdev.rxpm.sample.main.ui.main
 
 import android.os.*
-import android.support.v7.app.*
 import android.view.*
-import com.jakewharton.rxbinding2.support.v7.widget.*
+import androidx.appcompat.app.*
+import com.jakewharton.rxbinding3.appcompat.*
 import kotlinx.android.synthetic.main.screen_main.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.sample.*

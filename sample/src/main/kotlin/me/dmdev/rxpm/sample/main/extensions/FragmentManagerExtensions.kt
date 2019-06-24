@@ -2,10 +2,8 @@
 
 package me.dmdev.rxpm.sample.main.extensions
 
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import me.dmdev.rxpm.sample.R
+import androidx.fragment.app.*
+import me.dmdev.rxpm.sample.*
 
 
 inline fun FragmentManager.openScreen(

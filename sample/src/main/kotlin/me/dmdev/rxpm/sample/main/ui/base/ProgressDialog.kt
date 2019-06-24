@@ -1,10 +1,10 @@
 package me.dmdev.rxpm.sample.main.ui.base
 
-import android.app.Dialog
-import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.widget.ProgressBar
-import me.dmdev.rxpm.sample.R
+import android.app.*
+import android.os.*
+import android.widget.*
+import androidx.fragment.app.DialogFragment
+import me.dmdev.rxpm.sample.*
 
 
 class ProgressDialog : DialogFragment() {

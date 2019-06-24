@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.base
 
 import android.os.*
-import android.support.v7.app.*
+import androidx.appcompat.app.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.delegate.*
 import me.dmdev.rxpm.delegate.PmActivityDelegate.*

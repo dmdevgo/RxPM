@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.sample.counter
 
 import android.os.*
-import com.jakewharton.rxbinding2.view.*
+import com.jakewharton.rxbinding3.view.*
 import kotlinx.android.synthetic.main.activity_counter.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.base.*

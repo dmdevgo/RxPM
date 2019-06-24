@@ -2,9 +2,9 @@ package me.dmdev.rxpm.sample.main.ui.confirmation
 
 import android.os.*
 import android.view.inputmethod.*
-import com.jakewharton.rxbinding2.support.v7.widget.*
-import com.jakewharton.rxbinding2.view.*
-import com.jakewharton.rxbinding2.widget.*
+import com.jakewharton.rxbinding3.appcompat.*
+import com.jakewharton.rxbinding3.view.*
+import com.jakewharton.rxbinding3.widget.*
 import io.reactivex.*
 import kotlinx.android.synthetic.main.screen_code_confirmation.*
 import me.dmdev.rxpm.*

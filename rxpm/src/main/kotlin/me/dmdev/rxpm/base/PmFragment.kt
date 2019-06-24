@@ -1,8 +1,8 @@
 package me.dmdev.rxpm.base
 
 import android.os.*
-import android.support.v4.app.*
 import android.view.*
+import androidx.fragment.app.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.delegate.*
 import me.dmdev.rxpm.delegate.PmFragmentDelegate.*
