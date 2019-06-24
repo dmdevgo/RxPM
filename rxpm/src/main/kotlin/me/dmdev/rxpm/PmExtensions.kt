@@ -73,7 +73,7 @@ inline fun <T> Observable<T>.skipWhileInProgress(progressState: Observable<Boole
  * @param isIdle shows when the idle state begins (`true`) and ends (`false`).
  * @param bufferSize number of items the buffer can hold. `null` means not constrained.
  */
-fun <T> Observable<T>.bufferWhileIdle(
+internal fun <T> Observable<T>.bufferWhileIdle(
     isIdle: Observable<Boolean>,
     bufferSize: Int? = null
 ): Observable<T> {
