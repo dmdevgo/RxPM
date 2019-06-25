@@ -1,17 +1,13 @@
 package me.dmdev.rxpm.map.base
 
-import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
-import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.map.MapPmExtension
-import me.dmdev.rxpm.map.MapPmView
-import me.dmdev.rxpm.map.delegate.MapPmSupportFragmentDelegate
+import android.os.*
+import android.support.v4.app.*
+import android.view.*
+import com.google.android.gms.maps.*
+import io.reactivex.disposables.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.map.*
+import me.dmdev.rxpm.map.delegate.*
 
 /**
  * Predefined [Fragment] implementing the [MapPmView].
@@ -40,11 +36,16 @@ abstract class MapPmSupportFragment<PM> : Fragment(), MapPmView<PM>
         delegate.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState).apply {
-            delegate.onCreateView(this!!, savedInstanceState)
-        }
+    final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view =  createView(inflater, container, savedInstanceState)
+        delegate.onCreateView(view, savedInstanceState)
+        return view
     }
+
+    /**
+     * Replaces the [onCreateView] that the library hides for internal use.
+     */
+    abstract fun createView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
 
     override fun onStart() {
         super.onStart()
