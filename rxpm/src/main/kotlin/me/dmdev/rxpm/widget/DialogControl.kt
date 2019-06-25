@@ -25,8 +25,6 @@ import me.dmdev.rxpm.widget.DialogControl.Display.*
  *
  * @see InputControl
  * @see CheckControl
- *
- * @since 1.2
  */
 class DialogControl<T, R> internal constructor(): PresentationModel() {
 
@@ -93,8 +91,6 @@ class DialogControl<T, R> internal constructor(): PresentationModel() {
  *
  * @param T the type of the data to display in the dialog.
  * @param R the type of the result we get from the dialog.
- *
- * @since 1.2
  */
 fun <T, R> PresentationModel.dialogControl(): DialogControl<T, R> {
     return DialogControl<T, R>().apply {
@@ -105,8 +101,6 @@ fun <T, R> PresentationModel.dialogControl(): DialogControl<T, R> {
 /**
  * Binds the [DialogControl] to the [Dialog], use it ONLY in [PmView.onBindPresentationModel].
  * @param createDialog function that creates [Dialog] using passed data.
- *
- * @since 2.0
  */
 inline infix fun <T, R> DialogControl<T, R>.bindTo(crossinline createDialog: (data: T, dc: DialogControl<T, R>) -> Dialog) {
 

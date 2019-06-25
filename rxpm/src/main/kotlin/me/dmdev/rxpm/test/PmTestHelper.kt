@@ -7,7 +7,6 @@ import me.dmdev.rxpm.PresentationModel.Lifecycle.*
  * Helps to test [PresentationModel].
  *
  * @param pm presentation model under test.
- * @since 1.2
  */
 class PmTestHelper(val pm: PresentationModel) {
 

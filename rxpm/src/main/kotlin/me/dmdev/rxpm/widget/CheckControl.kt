@@ -49,8 +49,6 @@ fun PresentationModel.checkControl(initialChecked: Boolean = false): CheckContro
 
 /**
  * Binds the [CheckControl] to the [CompoundButton][compoundButton], use it ONLY in [PmView.onBindPresentationModel].
- *
- * @since 2.0
  */
 infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
 

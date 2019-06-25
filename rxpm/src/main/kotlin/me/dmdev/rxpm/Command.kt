@@ -51,8 +51,6 @@ class Command<T> internal constructor(
  * By default (when null is passed) it will buffer while the [view][PmView] is unbind from the [PresentationModel].
  *
  * @param bufferSize how many values should be kept in buffer. Null means no restrictions.
- *
- * @since 2.0
  */
 fun <T> PresentationModel.command(
     isIdle: Observable<Boolean>? = null,
@@ -65,8 +63,6 @@ fun <T> PresentationModel.command(
  * Subscribes to the [Command][Command] and adds it to the subscriptions list
  * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
  * so use it ONLY in [PmView.onBindPresentationModel].
- *
- * @since 2.0
  */
 infix fun <T> Command<T>.bindTo(consumer: Consumer<in T>) {
     with(pm) {
@@ -80,8 +76,6 @@ infix fun <T> Command<T>.bindTo(consumer: Consumer<in T>) {
  * Subscribe to the [Command][Command] and adds it to the subscriptions list
  * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
  * so use it ONLY in [PmView.onBindPresentationModel].
- *
- * @since 2.0
  */
 infix fun <T> Command<T>.bindTo(consumer: (T) -> Unit) {
     with(pm) {

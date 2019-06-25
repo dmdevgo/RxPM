@@ -82,8 +82,6 @@ class State<T> internal constructor(
  *
  * @param [initialValue] initial value.
  * @param [diffStrategy] diff strategy.
- *
- * @since 2.0
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> PresentationModel.state(
@@ -97,8 +95,6 @@ fun <T> PresentationModel.state(
  * Subscribes to the [State][State] and adds it to the subscriptions list
  * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
  * so use it ONLY in [PmView.onBindPresentationModel].
- *
- * @since 2.0
  */
 infix fun <T> State<T>.bindTo(consumer: Consumer<in T>) {
     with(pm) {
@@ -114,8 +110,6 @@ infix fun <T> State<T>.bindTo(consumer: Consumer<in T>) {
  * Subscribes to the [State][State] and adds it to the subscriptions list
  * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
  * so use it ONLY in [PmView.onBindPresentationModel].
- *
- * @since 2.0
  */
 infix fun <T> State<T>.bindTo(consumer: (T) -> Unit) {
     with(pm) {
@@ -134,7 +128,6 @@ infix fun <T> State<T>.bindTo(consumer: (T) -> Unit) {
  *
  * @see [DiffByEquals]
  * @see [DiffByReference]
- * @since 2.0
  */
 interface DiffStrategy<T> {
 

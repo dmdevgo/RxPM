@@ -25,7 +25,6 @@ abstract class PresentationModel {
 
     /**
      * The [lifecycle][Lifecycle] of this presentation model.
-     * @since 1.1
      */
     val lifecycleObservable = lifecycle.distinctUntilChanged()
     internal val lifecycleConsumer = lifecycle.asConsumer()
@@ -34,7 +33,6 @@ abstract class PresentationModel {
      * Current state of this presentation model lifecycle.
      *
      * @return [lifecycle state][Lifecycle] or null if this presentation model is not created yet.
-     * @since 1.2
      */
     val currentLifecycleState: Lifecycle? get() = lifecycle.value
 
@@ -89,14 +87,12 @@ abstract class PresentationModel {
     /**
      * Called when the presentation model is resumed.
      * @see [onPause]
-     * @since 2.0
      */
     protected open fun onResume() {}
 
     /**
      * Called when the presentation model is paused.
      * @see [onResume]
-     * @since 2.0
      */
     protected open fun onPause() {}
 
@@ -117,7 +113,6 @@ abstract class PresentationModel {
      * This presentation model will be bind to the lifecycle of the [parent] presentation model.
      *
      * @see [detachFromParent]
-     * @since 1.1.2
      */
     fun attachToParent(parent: PresentationModel) {
 
@@ -179,7 +174,6 @@ abstract class PresentationModel {
     /**
      * Detaches this presentation model from parent.
      * @see [attachToParent]
-     * @since 1.1.2
      */
     fun detachFromParent() {
 
@@ -219,7 +213,6 @@ abstract class PresentationModel {
     /**
      * Local extension to add this [Disposable] to the [CompositeDisposable][compositePause]
      * that will be CLEARED ON [PAUSED][Lifecycle.PAUSED].
-     * @since 2.0
      */
     fun Disposable.untilPause() {
         compositePause.add(this)

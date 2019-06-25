@@ -84,8 +84,6 @@ infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
 
 /**
  * Binds the [InputControl] to the [EditText][editText], use it ONLY in [PmView.onBindPresentationModel].
- *
- * @since 2.0
  */
 infix fun InputControl.bindTo(editText: EditText) {
 

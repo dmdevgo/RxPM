@@ -25,8 +25,6 @@ class Action<T> internal constructor(internal val pm: PresentationModel) {
 
 /**
  * Creates the [Action].
- *
- * @since 2.0
  */
 fun <T> PresentationModel.action(): Action<T> {
     return Action(this)
@@ -36,8 +34,6 @@ fun <T> PresentationModel.action(): Action<T> {
  * Subscribes [Action][Action] to the observable and adds it to the subscriptions list
  * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
  * so use it ONLY in [PmView.onBindPresentationModel].
- *
- * @since 2.0
  */
 infix fun <T> Observable<T>.bindTo(action: Action<T>) {
     with(action.pm) {
@@ -49,8 +45,6 @@ infix fun <T> Observable<T>.bindTo(action: Action<T>) {
 
 /**
  * Pass the value to the [Action][Action].
- *
- * @since 2.0
  */
 infix fun <T> T.passTo(action: Action<T>) {
     action.consumer.accept(this)
@@ -58,8 +52,6 @@ infix fun <T> T.passTo(action: Action<T>) {
 
 /**
  * Pass an empty value to the [Action][Action].
- *
- * @since 2.0
  */
 infix fun Unit.passTo(action: Action<Unit>) {
     action.consumer.accept(Unit)
