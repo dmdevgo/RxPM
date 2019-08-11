@@ -20,6 +20,7 @@
 
         <activity android:name=".main.MainActivity"/>
         <activity android:name=".counter.CounterActivity"/>
+        <activity android:name=".recyclerview.RecyclerViewActivity"/>
 
     </application>
 

@@ -7,6 +7,7 @@ import androidx.appcompat.app.*
 import kotlinx.android.synthetic.main.activity_launch.*
 import me.dmdev.rxpm.sample.counter.*
 import me.dmdev.rxpm.sample.main.*
+import me.dmdev.rxpm.sample.recyclerview.*
 
 class LaunchActivity : AppCompatActivity() {
 
@@ -16,6 +17,10 @@ class LaunchActivity : AppCompatActivity() {
 
         counterSample.setOnClickListener {
             launchActivity(CounterActivity::class.java)
+        }
+
+        recyclerViewSample.setOnClickListener {
+            launchActivity(RecyclerViewActivity::class.java)
         }
 
         mainSample.setOnClickListener {

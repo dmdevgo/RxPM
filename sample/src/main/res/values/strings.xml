@@ -7,6 +7,7 @@
     <string name="launch_title">RxPM samples</string>
     <string name="launch_main_sample">Main Sample</string>
     <string name="launch_counter_sample">Counter Sample</string>
+    <string name="launch_recycler_view_sample">RecyclerView Sample</string>
 
     <!-- Auth by phone -->
     <string name="auth_by_phone_screen_text">Please confirm your country code and enter your phone number.</string>
