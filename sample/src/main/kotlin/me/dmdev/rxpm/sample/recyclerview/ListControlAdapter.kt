@@ -7,9 +7,9 @@ import me.dmdev.rxpm.*
 abstract class ListControlAdapter<T : Any>(
     private val listControl: ListControl<T>,
     diffCallback: DiffUtil.ItemCallback<T> = SimpleItemDiffCallback()
-) : ListAdapter<T, ListControlAdapter.ItemViewHolder<T>>(diffCallback) {
+) : ListAdapter<T, ListControlAdapter<T>.ItemViewHolder<ItemPresentationModel<T>>>(diffCallback) {
 
-    final override fun onCreateViewHolder(parent: ViewGroup, type: Int): ItemViewHolder<T> {
+    final override fun onCreateViewHolder(parent: ViewGroup, type: Int): ItemViewHolder<ItemPresentationModel<T>> {
         return createViewHolderForPresentationModel(parent, listControl.getItemPresentationModelForType(type)).apply {
             this.onBindPresentationModel()
         }
@@ -18,22 +18,21 @@ abstract class ListControlAdapter<T : Any>(
     abstract fun createViewHolderForPresentationModel(
         parent: ViewGroup,
         pm: PresentationModel
-    ): ItemViewHolder<T>
-
-    override fun onViewAttachedToWindow(holder: ItemViewHolder<T>) {
-        super.onViewAttachedToWindow(holder)
-    }
+    ): ItemViewHolder<ItemPresentationModel<T>>
 
     override fun getItemViewType(position: Int): Int {
         return listControl.getType(listControl.items.value[position])
     }
 
-    override fun onBindViewHolder(holder: ItemViewHolder<T>, position: Int) {
+    override fun onBindViewHolder(holder: ItemViewHolder<ItemPresentationModel<T>>, position: Int) {
         holder.itemPm.changeItem.consumer.accept(listControl.items.value[position])
     }
 
-    open class ItemViewHolder<T: Any>(itemView: View, val itemPm: ItemPresentationModel<T>) :
-        RecyclerView.ViewHolder(itemView) {
+    open inner class ItemViewHolder<PM : ItemPresentationModel<T>>(
+        val itemPm: PM,
+        itemView: View
+    ) : RecyclerView.ViewHolder(itemView) {
+
         open fun onBindPresentationModel() {}
     }
 }

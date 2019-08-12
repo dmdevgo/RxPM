@@ -2,16 +2,10 @@ package me.dmdev.rxpm.sample.recyclerview
 
 import me.dmdev.rxpm.*
 
-class ItemPmProvider<T : Any>(
-    val clazz: Class<T>,
-    val pmProvider: () -> ItemPresentationModel<T>
+class ItemPmProvider<T: Any>(
+    val clazz: Class<out T>,
+    val pmProvider: () -> ItemPresentationModel<out T>
 )
-
-inline fun <reified T : Any, reified PM : ItemPresentationModel<T>> itemPmProvider(
-    noinline pmProvider: () -> PM
-): ItemPmProvider<T> {
-    return ItemPmProvider(T::class.java, pmProvider)
-}
 
 open class ItemPresentationModel<T : Any> : PresentationModel() {
 
@@ -48,13 +42,13 @@ class ListControl<T : Any> : PresentationModel() {
             this.attachToParent(this@ListControl)
         }
     }
-
 }
 
-fun <T : Any> PresentationModel.listControl(): ListControl<T> {
-    return ListControl<T>().apply {
-        attachToParent(this@listControl)
-    }
+inline fun <T : Any> PresentationModel.listControl(init: ListControl<T>.() -> Unit): ListControl<T> {
+    val lc = ListControl<T>()
+    lc.init()
+    lc.attachToParent(this)
+    return lc
 }
 
 infix fun <T : Any> ListControl<T>.bindTo(listControlAdapter: ListControlAdapter<T>) {

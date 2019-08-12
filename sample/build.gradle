@@ -41,6 +41,9 @@ dependencies {
     implementation rootProject.rxBinding
     implementation rootProject.rxBindingAppCompat
 
+    implementation rootProject.rxRelay2
+    implementation rootProject.rxKotlin2
+
     implementation "com.jakewharton.timber:timber:4.7.1"
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.14'
 
