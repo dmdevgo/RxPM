@@ -1,6 +1,6 @@
 package me.dmdev.rxpm.navigation
 
-internal abstract class NavigationMessageDispatcher(private val firstNode: Any) {
+abstract class NavigationMessageDispatcher(private val firstNode: Any) {
 
     fun dispatch(message: NavigationMessage) {
 

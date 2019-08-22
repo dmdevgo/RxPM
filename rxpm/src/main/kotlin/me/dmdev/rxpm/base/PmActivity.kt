@@ -1,32 +1,36 @@
 package me.dmdev.rxpm.base
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.AndroidPmView
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.delegate.PmActivityDelegate
+import android.os.*
+import androidx.appcompat.app.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.delegate.*
+import me.dmdev.rxpm.delegate.PmActivityDelegate.*
 
 /**
- * Predefined [Activity][AppCompatActivity] implementing the [PmView][AndroidPmView].
+ * Predefined [Activity][AppCompatActivity] implementing the [PmView][PmView].
  *
  * Just override the [providePresentationModel] and [onBindPresentationModel] methods and you are good to go.
  *
- * If extending is not possible you can implement [AndroidPmView],
+ * If extending is not possible you can implement [PmView],
  * create a [PmActivityDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), AndroidPmView<PM> {
+abstract class PmActivity<PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
 
-    private val delegate by lazy(LazyThreadSafetyMode.NONE) { PmActivityDelegate(this) }
-
-    final override val compositeUnbind = CompositeDisposable()
+    private val delegate by lazy(LazyThreadSafetyMode.NONE) {
+        PmActivityDelegate(this, RetainMode.CONFIGURATION_CHANGES)
+    }
 
     final override val presentationModel get() = delegate.presentationModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         delegate.onCreate(savedInstanceState)
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        delegate.onPostCreate()
     }
 
     override fun onStart() {
@@ -40,22 +44,22 @@ abstract class PmSupportActivity<PM : PresentationModel> : AppCompatActivity(), 
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         delegate.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
-        super.onPause()
         delegate.onPause()
+        super.onPause()
     }
 
     override fun onStop() {
-        super.onStop()
         delegate.onStop()
+        super.onStop()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         delegate.onDestroy()
+        super.onDestroy()
     }
 }

@@ -1,12 +1,13 @@
 package me.dmdev.rxpm.sample.counter
 
-import android.os.Bundle
-import com.jakewharton.rxbinding2.view.clicks
+import android.os.*
+import com.jakewharton.rxbinding3.view.*
 import kotlinx.android.synthetic.main.activity_counter.*
-import me.dmdev.rxpm.base.PmSupportActivity
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.base.*
 import me.dmdev.rxpm.sample.R
 
-class CounterActivity : PmSupportActivity<CounterPm>() {
+class CounterActivity : PmActivity<CounterPm>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +18,7 @@ class CounterActivity : PmSupportActivity<CounterPm>() {
 
     override fun onBindPresentationModel(pm: CounterPm) {
 
-        pm.count.observable.map { it.toString() } bindTo counterText::setText
+        pm.count bindTo { counterText.text = it.toString() }
         pm.minusButtonEnabled bindTo minusButton::setEnabled
         pm.plusButtonEnabled bindTo plusButton::setEnabled
 

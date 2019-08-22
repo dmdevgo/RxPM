@@ -1,15 +1,13 @@
 package me.dmdev.rxpm.sample.main.api
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
-import android.support.v4.app.NotificationCompat
-import io.reactivex.Completable
-import io.reactivex.Single
-import me.dmdev.rxpm.sample.R
+import android.app.*
+import android.content.*
+import android.os.*
+import androidx.core.app.*
+import io.reactivex.*
+import me.dmdev.rxpm.sample.*
 import java.util.*
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 
 class ServerApiSimulator(private val context: Context) : ServerApi {

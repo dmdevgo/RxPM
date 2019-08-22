@@ -5,7 +5,6 @@ apply plugin: 'kotlin-android-extensions'
 android {
 
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         applicationId "me.dmdev.rxpm.sample"
@@ -32,18 +31,17 @@ dependencies {
 
     implementation project(':rxpm')
 
-    implementation rootProject.supportAppCompat
-    implementation rootProject.supportDesign
+    implementation rootProject.appCompat
+    implementation rootProject.materialDesign
 
     // Rx
     implementation rootProject.rxAndroid2
 
     // RxBindings
-    implementation rootProject.rxBindingKotlin
-    implementation rootProject.rxBindingSupportV4Kotlin
-    implementation rootProject.rxBindingSupportV7Kotlin
+    implementation rootProject.rxBinding
+    implementation rootProject.rxBindingAppCompat
 
     implementation "com.jakewharton.timber:timber:4.7.1"
-    implementation 'com.googlecode.libphonenumber:libphonenumber:8.9.14'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.14'
 
 }

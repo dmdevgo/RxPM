@@ -1,8 +1,8 @@
 package me.dmdev.rxpm.navigation
 
-import android.app.Activity
+import android.app.*
 
-internal class ActivityNavigationMessageDispatcher(
+class ActivityNavigationMessageDispatcher(
     activity: Activity
 ) : NavigationMessageDispatcher(activity) {
 

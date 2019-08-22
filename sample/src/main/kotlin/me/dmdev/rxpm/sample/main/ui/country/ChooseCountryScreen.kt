@@ -1,17 +1,17 @@
 package me.dmdev.rxpm.sample.main.ui.country
 
-import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.view.View
-import com.jakewharton.rxbinding2.view.clicks
+import android.os.*
+import android.view.*
+import androidx.recyclerview.widget.*
+import com.jakewharton.rxbinding3.view.*
 import kotlinx.android.synthetic.main.screen_choose_country.*
-import me.dmdev.rxpm.sample.App
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.sample.*
 import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.main.extensions.hideKeyboard
-import me.dmdev.rxpm.sample.main.extensions.showKeyboard
-import me.dmdev.rxpm.sample.main.extensions.visible
-import me.dmdev.rxpm.sample.main.ui.base.Screen
-import me.dmdev.rxpm.sample.main.ui.country.ChooseCountryPm.Mode
+import me.dmdev.rxpm.sample.main.extensions.*
+import me.dmdev.rxpm.sample.main.ui.base.*
+import me.dmdev.rxpm.sample.main.ui.country.ChooseCountryPm.*
+import me.dmdev.rxpm.widget.*
 
 
 class ChooseCountryScreen : Screen<ChooseCountryPm>() {

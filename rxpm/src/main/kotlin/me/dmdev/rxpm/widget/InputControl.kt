@@ -1,24 +1,16 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package me.dmdev.rxpm.widget
 
-import android.support.design.widget.TextInputLayout
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextUtils
-import android.widget.EditText
-import com.jakewharton.rxbinding2.widget.textChanges
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.AndroidPmView
-import me.dmdev.rxpm.PresentationModel
+import android.text.*
+import android.widget.*
+import com.google.android.material.textfield.*
+import com.jakewharton.rxbinding3.widget.*
+import me.dmdev.rxpm.*
 
 /**
  * Helps to bind a group of properties of an input field widget to a [presentation model][PresentationModel]
  * and also breaks the loop of two-way data binding to make the work with the input easier.
  *
- * You can bind this to an [EditText] or an [TextInputLayout] using the familiar `bindTo` methods
- * in the [AndroidPmView].
+ * You can bind this to an [EditText] or an [TextInputLayout] using the [bindTo][bindTo] extension.
  *
  * Instantiate this using the [inputControl] extension function of the presentation model.
  *
@@ -26,35 +18,38 @@ import me.dmdev.rxpm.PresentationModel
  * @see DialogControl
  */
 class InputControl internal constructor(
-    pm: PresentationModel,
     initialText: String,
-    formatter: (text: String) -> String,
-    hideErrorOnUserInput: Boolean
-) {
+    private val formatter: ((text: String) -> String)?,
+    private val hideErrorOnUserInput: Boolean = true
+) : PresentationModel() {
 
     /**
-     * The input field text [state][PresentationModel.State].
+     * The input field text [state][State].
      */
-    val text = pm.State(initialText)
+    val text = state(initialText)
 
     /**
-     * The input field error [state][PresentationModel.State].
+     * The input field error [state][State].
      */
-    val error = pm.State<String>()
+    val error = state<String>()
 
     /**
-     * The input field text changes [events][PresentationModel.Action].
+     * The input field text changes [events][Action].
      */
-    val textChanges = pm.Action<String>()
+    val textChanges = action<String>()
 
-    init {
-        textChanges.relay
-            .filter { it != text.value }
-            .map { formatter.invoke(it) }
-            .subscribe {
-                text.relay.accept(it)
-                if (hideErrorOnUserInput) error.relay.accept("")
-            }
+    override fun onCreate() {
+
+        if (formatter != null) {
+            textChanges.observable
+                .filter { it != text.value }
+                .map { formatter.invoke(it) }
+                .subscribe {
+                    text.consumer.accept(it)
+                    if (hideErrorOnUserInput) error.consumer.accept("")
+                }
+                .untilDestroy()
+        }
     }
 }
 
@@ -67,56 +62,51 @@ class InputControl internal constructor(
  */
 fun PresentationModel.inputControl(
     initialText: String = "",
-    formatter: (text: String) -> String = { it },
+    formatter: ((text: String) -> String)? = { it },
     hideErrorOnUserInput: Boolean = true
 ): InputControl {
-    return InputControl(this, initialText, formatter, hideErrorOnUserInput)
+    return InputControl(initialText, formatter, hideErrorOnUserInput).apply {
+        attachToParent(this@inputControl)
+    }
 }
 
-internal inline fun InputControl.bind(
-    textInputLayout: TextInputLayout, compositeDisposable: CompositeDisposable
-) {
+/**
+ * Binds the [InputControl] to the [TextInputLayout][textInputLayout], use it ONLY in [PmView.onBindPresentationModel].
+ */
+infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
 
-    val edit = textInputLayout.editText!!
+    bindTo(textInputLayout.editText!!)
 
-    bind(edit, compositeDisposable)
-    compositeDisposable.add(
-        error.observable.subscribe { error ->
-            textInputLayout.error = if (error.isEmpty()) null else error
-        }
-    )
+    error bindTo { error ->
+        textInputLayout.error = if (error.isEmpty()) null else error
+    }
 }
 
-internal inline fun InputControl.bind(
-    editText: EditText,
-    compositeDisposable: CompositeDisposable
-) {
+/**
+ * Binds the [InputControl] to the [EditText][editText], use it ONLY in [PmView.onBindPresentationModel].
+ */
+infix fun InputControl.bindTo(editText: EditText) {
 
     var editing = false
 
-    compositeDisposable.addAll(
+    text bindTo {
+        val editable = editText.text
+        if (!it.contentEquals(editable)) {
+            editing = true
+            if (editable is Spanned) {
+                val ss = SpannableString(it)
+                TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
+                editable.replace(0, editable.length, ss)
+            } else {
+                editable.replace(0, editable.length, it)
+            }
+            editing = false
+        }
+    }
 
-        text.observable
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                val editable = editText.text
-                if (!it!!.contentEquals(editable)) {
-                    editing = true
-                    if (editable is Spanned) {
-                        val ss = SpannableString(it)
-                        TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
-                        editable.replace(0, editable.length, ss)
-                    } else {
-                        editable.replace(0, editable.length, it)
-                    }
-                    editing = false
-                }
-            },
-
-        editText.textChanges()
-            .skipInitialValue()
-            .filter { !editing }
-            .map { it.toString() }
-            .subscribe(textChanges.consumer)
-    )
+    editText.textChanges()
+        .skipInitialValue()
+        .filter { !editing }
+        .map { it.toString() }
+        .bindTo(textChanges)
 }

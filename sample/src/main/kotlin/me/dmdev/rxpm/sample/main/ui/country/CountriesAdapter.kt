@@ -1,13 +1,12 @@
 package me.dmdev.rxpm.sample.main.ui.country
 
-import android.annotation.SuppressLint
-import android.support.v7.widget.RecyclerView
-import android.view.View
-import android.view.ViewGroup
+import android.annotation.*
+import android.view.*
+import androidx.recyclerview.widget.*
 import kotlinx.android.synthetic.main.item_country.view.*
-import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.main.extensions.inflate
-import me.dmdev.rxpm.sample.main.util.Country
+import me.dmdev.rxpm.sample.*
+import me.dmdev.rxpm.sample.main.extensions.*
+import me.dmdev.rxpm.sample.main.util.*
 
 
 class CountriesAdapter(

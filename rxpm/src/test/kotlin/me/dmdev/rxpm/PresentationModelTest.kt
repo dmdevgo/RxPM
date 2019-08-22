@@ -1,15 +1,12 @@
 package me.dmdev.rxpm
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
-import io.reactivex.observers.TestObserver
-import me.dmdev.rxpm.PresentationModel.Lifecycle
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.observers.*
+import me.dmdev.rxpm.PresentationModel.*
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import org.junit.Before
+import org.junit.*
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.*
 
 class PresentationModelTest {
 
@@ -26,20 +23,26 @@ class PresentationModelTest {
     @Test fun observingLifecycle() {
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
         pm.lifecycleConsumer.accept(UNBINDED)
         pm.lifecycleConsumer.accept(DESTROYED)
 
-        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED, UNBINDED, DESTROYED)
     }
 
     @Test fun invokeLifecycleCallbacks() {
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
         pm.lifecycleConsumer.accept(UNBINDED)
         pm.lifecycleConsumer.accept(DESTROYED)
 
         verify(lifecycleCallbacks).onCreate()
         verify(lifecycleCallbacks).onBind()
+        verify(lifecycleCallbacks).onResume()
+        verify(lifecycleCallbacks).onPause()
         verify(lifecycleCallbacks).onUnbind()
         verify(lifecycleCallbacks).onDestroy()
     }
@@ -50,11 +53,15 @@ class PresentationModelTest {
 
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
         pm.lifecycleConsumer.accept(UNBINDED)
         pm.lifecycleConsumer.accept(DESTROYED)
 
         verify(lifecycleCallbacks).onCreate()
         verify(lifecycleCallbacks).onBind()
+        verify(lifecycleCallbacks).onResume()
+        verify(lifecycleCallbacks).onPause()
         verify(lifecycleCallbacks).onUnbind()
         verify(lifecycleCallbacks).onDestroy()
     }
@@ -67,6 +74,12 @@ class PresentationModelTest {
 
         pm.lifecycleConsumer.accept(BINDED)
         assertEquals(BINDED, pm.currentLifecycleState)
+
+        pm.lifecycleConsumer.accept(RESUMED)
+        assertEquals(RESUMED, pm.currentLifecycleState)
+
+        pm.lifecycleConsumer.accept(PAUSED)
+        assertEquals(PAUSED, pm.currentLifecycleState)
 
         pm.lifecycleConsumer.accept(UNBINDED)
         assertEquals(UNBINDED, pm.currentLifecycleState)
@@ -92,48 +105,64 @@ class PresentationModelTest {
         testObserver.assertEmpty()
     }
 
-    @Test fun commandPassItemsWhenBinded() {
+    @Test fun commandBlocksItemsBeforeResumed() {
         val testObserver = pm.commands.observable.test()
 
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
-        pm.acceptCommand(1)
-        pm.acceptCommand(2)
 
-        testObserver.assertValuesOnly(1, 2)
-    }
-
-    @Test fun commandSendsBufferedItemsAfterBinded() {
-        val testObserver = pm.commands.observable.test()
-
-        pm.acceptCommand(1)
-        pm.lifecycleConsumer.accept(CREATED)
-        pm.acceptCommand(2)
-        pm.lifecycleConsumer.accept(BINDED)
-
-        testObserver.assertValuesOnly(1, 2)
-    }
-
-    @Test fun commandBlocksItemsAfterUnbinded() {
-        val testObserver = pm.commands.observable.test()
-
-        pm.lifecycleConsumer.accept(CREATED)
-        pm.lifecycleConsumer.accept(BINDED)
-        pm.lifecycleConsumer.accept(UNBINDED)
         pm.acceptCommand(1)
 
         testObserver.assertEmpty()
     }
 
-    @Test fun commandSendsBufferedItemsAfterBindedAgain() {
+    @Test fun commandPassItemsWhenResumed() {
         val testObserver = pm.commands.observable.test()
 
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
-        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
         pm.acceptCommand(1)
         pm.acceptCommand(2)
+
+        testObserver.assertValuesOnly(1, 2)
+    }
+
+    @Test fun commandSendsBufferedItemsAfterResumed() {
+        val testObserver = pm.commands.observable.test()
+
+        pm.acceptCommand(1)
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.acceptCommand(2)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.acceptCommand(3)
+        pm.lifecycleConsumer.accept(RESUMED)
+
+        testObserver.assertValuesOnly(1, 2, 3)
+    }
+
+    @Test fun commandBlocksItemsAfterPaused() {
+        val testObserver = pm.commands.observable.test()
+
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
+        pm.acceptCommand(1)
+
+        testObserver.assertEmpty()
+    }
+
+    @Test fun commandSendsBufferedItemsAfterResumedAgain() {
+        val testObserver = pm.commands.observable.test()
+
+        pm.lifecycleConsumer.accept(CREATED)
+        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
+        pm.acceptCommand(1)
+        pm.acceptCommand(2)
+        pm.lifecycleConsumer.accept(RESUMED)
 
         testObserver.assertValuesOnly(1, 2)
     }
@@ -143,6 +172,8 @@ class PresentationModelTest {
 
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
         pm.lifecycleConsumer.accept(UNBINDED)
         pm.lifecycleConsumer.accept(DESTROYED)
         pm.acceptCommand(1)
@@ -150,18 +181,19 @@ class PresentationModelTest {
         testObserver.assertEmpty()
     }
 
-    @Test fun commandSendsBufferedItemsAfterResubscribedAndBindedAgain() {
+    @Test fun commandSendsBufferedItemsAfterResubscribedAndResumedAgain() {
         val testObserver = pm.commands.observable.test()
 
         pm.lifecycleConsumer.accept(CREATED)
         pm.lifecycleConsumer.accept(BINDED)
-        pm.lifecycleConsumer.accept(UNBINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
+        pm.lifecycleConsumer.accept(PAUSED)
         testObserver.dispose()
 
         pm.acceptCommand(1)
 
         val testObserver2 = pm.commands.observable.test()
-        pm.lifecycleConsumer.accept(BINDED)
+        pm.lifecycleConsumer.accept(RESUMED)
 
         testObserver.assertEmpty()
         testObserver2.assertValuesOnly(1)
@@ -170,7 +202,7 @@ class PresentationModelTest {
 
 open class TestPm(private val callbacks: LifecycleCallbacks) : PresentationModel() {
 
-    val commands = Command<Int>()
+    val commands = command<Int>()
 
     fun acceptCommand(i : Int) {
         commands.consumer.accept(i)
@@ -182,6 +214,14 @@ open class TestPm(private val callbacks: LifecycleCallbacks) : PresentationModel
 
     override fun onBind() {
         callbacks.onBind()
+    }
+
+    override fun onResume() {
+        callbacks.onResume()
+    }
+
+    override fun onPause() {
+        callbacks.onPause()
     }
 
     override fun onUnbind() {
@@ -196,6 +236,8 @@ open class TestPm(private val callbacks: LifecycleCallbacks) : PresentationModel
 interface LifecycleCallbacks {
     fun onCreate() {}
     fun onBind() {}
+    fun onResume() {}
+    fun onPause() {}
     fun onUnbind() {}
     fun onDestroy() {}
 }

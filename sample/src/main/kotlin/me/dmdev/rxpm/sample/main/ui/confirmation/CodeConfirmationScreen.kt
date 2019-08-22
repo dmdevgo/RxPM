@@ -1,16 +1,18 @@
 package me.dmdev.rxpm.sample.main.ui.confirmation
 
-import android.os.Bundle
-import android.view.inputmethod.EditorInfo
-import com.jakewharton.rxbinding2.support.v7.widget.navigationClicks
-import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.widget.editorActions
-import io.reactivex.Observable
+import android.os.*
+import android.view.inputmethod.*
+import com.jakewharton.rxbinding3.appcompat.*
+import com.jakewharton.rxbinding3.view.*
+import com.jakewharton.rxbinding3.widget.*
+import io.reactivex.*
 import kotlinx.android.synthetic.main.screen_code_confirmation.*
-import me.dmdev.rxpm.sample.App
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.sample.*
 import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.main.extensions.showKeyboard
-import me.dmdev.rxpm.sample.main.ui.base.Screen
+import me.dmdev.rxpm.sample.main.extensions.*
+import me.dmdev.rxpm.sample.main.ui.base.*
+import me.dmdev.rxpm.widget.*
 
 
 class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
