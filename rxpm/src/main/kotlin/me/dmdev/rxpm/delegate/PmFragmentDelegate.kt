@@ -96,7 +96,7 @@ class PmFragmentDelegate<PM, F>(
      */
     fun onDestroy() {
         when (retainMode) {
-            RetainMode.SAVED_STATE -> {
+            SAVED_STATE -> {
                 if (pmFragment.activity?.isFinishing == true
                     || (pmFragment.fragmentManager?.isStateSaved?.not() == true)
                 ) {
@@ -104,7 +104,7 @@ class PmFragmentDelegate<PM, F>(
                 }
             }
 
-            RetainMode.CONFIGURATION_CHANGES -> {
+            CONFIGURATION_CHANGES -> {
                 if (pmFragment.activity?.isChangingConfigurations?.not() == true) {
                     commonDelegate.onDestroy()
                 }

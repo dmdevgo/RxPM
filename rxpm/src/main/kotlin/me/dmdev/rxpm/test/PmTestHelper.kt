@@ -12,8 +12,6 @@ class PmTestHelper(val pm: PresentationModel) {
 
     enum class LifecycleSteps { ALL, BYPASS_BINDING, BYPASS_RESUMING }
 
-    private val lifecycleStates = PresentationModel.Lifecycle.values()
-
     /**
      * Sets the lifecycle of the [presentation model][pm] under test to the specified [state][lifecycleState].
      * This will also create natural sequence of states before the requested one.
@@ -79,14 +77,10 @@ class PmTestHelper(val pm: PresentationModel) {
 
     private fun checkStateAllowed(lifecycleState: PresentationModel.Lifecycle) {
         pm.currentLifecycleState?.let { currentState ->
-            if (lifecycleState <= currentState
-                && !isBindedAgain(lifecycleState)
-                && !isResumedAgain((lifecycleState))
-            ) {
-                throw IllegalStateException(
-                    "You can't set lifecycle state as $lifecycleState when it already is $pm.currentLifecycleState."
-                )
-            }
+            check(!(lifecycleState <= currentState
+            && !isBindedAgain(lifecycleState)
+            && !isResumedAgain((lifecycleState)))
+            ) { "You can't set lifecycle state as $lifecycleState when it already is $pm.currentLifecycleState." }
         }
     }
 

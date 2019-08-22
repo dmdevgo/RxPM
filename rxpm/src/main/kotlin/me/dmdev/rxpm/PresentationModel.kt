@@ -26,7 +26,7 @@ abstract class PresentationModel {
     /**
      * The [lifecycle][Lifecycle] of this presentation model.
      */
-    val lifecycleObservable = lifecycle.distinctUntilChanged()
+    val lifecycleObservable: Observable<Lifecycle> = lifecycle.distinctUntilChanged()
     internal val lifecycleConsumer = lifecycle.asConsumer()
 
     /**
@@ -116,13 +116,9 @@ abstract class PresentationModel {
      */
     fun attachToParent(parent: PresentationModel) {
 
-        if (parent == this) {
-            throw IllegalArgumentException("Presentation model can't be attached to itself.")
-        }
+        require(parent != this) { "Presentation model can't be attached to itself." }
 
-        if (lifecycle.hasValue()) {
-            throw IllegalStateException("Presentation model can't be a child more than once. It must not be reused.")
-        }
+        check(!lifecycle.hasValue()) { "Presentation model can't be a child more than once. It must not be reused." }
 
         when (parent.lifecycle.value) {
 

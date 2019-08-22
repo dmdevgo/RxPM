@@ -132,7 +132,7 @@ infix fun <T> State<T>.bindTo(consumer: (T) -> Unit) {
 interface DiffStrategy<T> {
 
     /**
-     * Сompares the old and the new values.
+     * Compares the old and the new values.
      * @return [true] if both values ​​are identical or [false] if they are different.
      */
     fun areTheSame(new: T, old: T): Boolean

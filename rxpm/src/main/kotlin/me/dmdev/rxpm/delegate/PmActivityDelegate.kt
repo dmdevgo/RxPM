@@ -91,13 +91,13 @@ class PmActivityDelegate<PM, A>(
         commonDelegate.onUnbind()
 
         when (retainMode) {
-            RetainMode.IS_FINISHING -> {
+            IS_FINISHING -> {
                 if (pmActivity.isFinishing) {
                     commonDelegate.onDestroy()
                 }
             }
 
-            RetainMode.CONFIGURATION_CHANGES -> {
+            CONFIGURATION_CHANGES -> {
                 if (!pmActivity.isChangingConfigurations) {
                     commonDelegate.onDestroy()
                 }

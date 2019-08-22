@@ -1,10 +1,9 @@
 package me.dmdev.rxpm.util
 
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.schedulers.TestScheduler
-import org.junit.rules.ExternalResource
+import io.reactivex.android.plugins.*
+import io.reactivex.plugins.*
+import io.reactivex.schedulers.*
+import org.junit.rules.*
 
 class SchedulersRule(private val useTestScheduler: Boolean = false) : ExternalResource() {
 
@@ -12,7 +11,7 @@ class SchedulersRule(private val useTestScheduler: Boolean = false) : ExternalRe
 
     val testScheduler: TestScheduler
         get() {
-            if (!useTestScheduler) throw IllegalStateException("TestScheduler is switched off.")
+            check(useTestScheduler) { "TestScheduler is switched off." }
             return _testScheduler
         }
 
