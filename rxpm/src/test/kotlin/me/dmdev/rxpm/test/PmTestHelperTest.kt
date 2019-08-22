@@ -1,12 +1,13 @@
 package me.dmdev.rxpm.test
 
-import com.nhaarman.mockitokotlin2.spy
-import io.reactivex.observers.TestObserver
-import me.dmdev.rxpm.PresentationModel
+import com.nhaarman.mockitokotlin2.*
+import io.reactivex.observers.*
+import me.dmdev.rxpm.*
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import org.junit.Before
+import me.dmdev.rxpm.test.PmTestHelper.*
+import org.junit.*
 import org.junit.Test
-import kotlin.test.assertFailsWith
+import kotlin.test.*
 
 class PmTestHelperTest {
 
@@ -31,38 +32,69 @@ class PmTestHelperTest {
         lifecycleObserver.assertValuesOnly(CREATED, BINDED)
     }
 
+    @Test fun initToResumed() {
+        pmTestHelper.setLifecycleTo(RESUMED)
+
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED)
+    }
+
+    @Test fun initToPaused() {
+        pmTestHelper.setLifecycleTo(PAUSED)
+
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED)
+    }
+
     @Test fun initToUnbinded() {
         pmTestHelper.setLifecycleTo(UNBINDED)
 
-        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED)
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED, UNBINDED)
     }
 
     @Test fun initToDestroyed() {
         pmTestHelper.setLifecycleTo(DESTROYED)
 
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED, UNBINDED, DESTROYED)
+    }
+
+    @Test fun initToDestroyedAllSteps() {
+        pmTestHelper.setLifecycleTo(DESTROYED, LifecycleSteps.ALL)
+
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED, UNBINDED, DESTROYED)
+    }
+
+    @Test fun initToDestroyedBypassResuming() {
+        pmTestHelper.setLifecycleTo(DESTROYED, LifecycleSteps.BYPASS_RESUMING)
+
         lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
     }
 
-    @Test fun initToDestroyedShort() {
-        pmTestHelper.setLifecycleTo(DESTROYED, shortSequence = true)
+    @Test fun initToDestroyedBypassBinding() {
+        pmTestHelper.setLifecycleTo(DESTROYED, LifecycleSteps.BYPASS_BINDING)
 
         lifecycleObserver.assertValuesOnly(CREATED, DESTROYED)
     }
 
-    @Test fun noShortForOthers() {
-        // UNBINDED as an example
-        pmTestHelper.setLifecycleTo(UNBINDED, shortSequence = true)
+    @Test fun ignoreBypassResumingWhenInitToPaused() {
+        pmTestHelper.setLifecycleTo(PAUSED, LifecycleSteps.BYPASS_RESUMING)
 
-        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED)
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED)
+    }
+
+    @Test fun ignoreBypassBindingWhenInitToUnbinded() {
+        pmTestHelper.setLifecycleTo(UNBINDED, LifecycleSteps.BYPASS_BINDING)
+
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED, UNBINDED)
     }
 
     @Test fun setOneByOne() {
         pmTestHelper.setLifecycleTo(CREATED)
         pmTestHelper.setLifecycleTo(BINDED)
+        pmTestHelper.setLifecycleTo(RESUMED)
+        pmTestHelper.setLifecycleTo(PAUSED)
         pmTestHelper.setLifecycleTo(UNBINDED)
         pmTestHelper.setLifecycleTo(DESTROYED)
 
-        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, DESTROYED)
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED, UNBINDED, DESTROYED)
     }
 
     @Test fun throwOnDuplicateState() {
@@ -79,6 +111,26 @@ class PmTestHelperTest {
 
         assertFailsWith<IllegalStateException>(
             "You can't set lifecycle state as CREATED when it already is BINDED."
+        ) {
+            pmTestHelper.setLifecycleTo(CREATED)
+        }
+    }
+
+    @Test fun throwOnCreatedAfterResumed() {
+        pmTestHelper.setLifecycleTo(RESUMED)
+
+        assertFailsWith<IllegalStateException>(
+            "You can't set lifecycle state as CREATED when it already is RESUMED."
+        ) {
+            pmTestHelper.setLifecycleTo(CREATED)
+        }
+    }
+
+    @Test fun throwOnCreatedAfterPaused() {
+        pmTestHelper.setLifecycleTo(PAUSED)
+
+        assertFailsWith<IllegalStateException>(
+            "You can't set lifecycle state as CREATED when it already is PAUSED."
         ) {
             pmTestHelper.setLifecycleTo(CREATED)
         }
@@ -104,27 +156,36 @@ class PmTestHelperTest {
         }
     }
 
+    @Test fun setResumedAfterPaused() {
+        pmTestHelper.setLifecycleTo(PAUSED)
+        pmTestHelper.setLifecycleTo(RESUMED)
+
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED, RESUMED)
+    }
+
     @Test fun setBindedAfterUnbinded() {
         pmTestHelper.setLifecycleTo(UNBINDED)
         pmTestHelper.setLifecycleTo(BINDED)
 
-        lifecycleObserver.assertValuesOnly(CREATED, BINDED, UNBINDED, BINDED)
+        lifecycleObserver.assertValuesOnly(CREATED, BINDED, RESUMED, PAUSED, UNBINDED, BINDED)
     }
 
-    @Test fun setMultipleBindedAndUnbinded() {
-        pmTestHelper.setLifecycleTo(UNBINDED)
-        pmTestHelper.setLifecycleTo(BINDED)
-        pmTestHelper.setLifecycleTo(UNBINDED)
-        pmTestHelper.setLifecycleTo(BINDED)
+    @Test fun setMultipleResumedAndPaused() {
+        pmTestHelper.setLifecycleTo(PAUSED)
+        pmTestHelper.setLifecycleTo(RESUMED)
+        pmTestHelper.setLifecycleTo(PAUSED)
+        pmTestHelper.setLifecycleTo(RESUMED)
         pmTestHelper.setLifecycleTo(DESTROYED)
 
         lifecycleObserver.assertValuesOnly(
             CREATED,
             BINDED,
-            UNBINDED,
-            BINDED,
-            UNBINDED,
-            BINDED,
+            RESUMED,
+            PAUSED,
+            RESUMED,
+            PAUSED,
+            RESUMED,
+            PAUSED,
             UNBINDED,
             DESTROYED
         )

@@ -13,7 +13,6 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
@@ -41,30 +40,21 @@ android {
 dependencies {
 
     // For default implementations
-    compileOnly rootProject.supportAppCompat
-    compileOnly rootProject.supportDesign
+    compileOnly rootProject.appCompat
+    compileOnly rootProject.materialDesign
     compileOnly rootProject.conductor
-    compileOnly rootProject.googleMaps
 
     // Rx
     api rootProject.rxJava2
     implementation rootProject.rxRelay2
     implementation rootProject.rxAndroid2
-
-    // RxBindings
-    implementation rootProject.rxBindingKotlin
-    implementation(rootProject.rxBindingSupportV4Kotlin) {
-        exclude module: 'support-core-ui'
-    }
-
-    // Persistent PM
-    implementation rootProject.outlast
+    implementation rootProject.rxBinding
 
     // For tests
     testImplementation rootProject.junitKotlin
     testImplementation rootProject.mockitoKotlin
     testImplementation rootProject.conductor
-    testImplementation rootProject.supportAppCompat
+    testImplementation rootProject.appCompat
 }
 
 ext {
@@ -72,7 +62,7 @@ ext {
     bintrayName = 'RxPM'
     publishedGroupId = 'me.dmdev.rxpm'
     artifact = 'rxpm'
-    libraryVersion = '1.2.5'
+    libraryVersion = '2.0'
     gitUrl = 'https://github.com/dmdevgo/RxPM'
     allLicenses = ['MIT']
 }

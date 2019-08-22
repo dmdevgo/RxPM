@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.sample.main
 
 import android.os.*
-import android.support.v7.app.*
+import androidx.appcompat.app.*
 import me.dmdev.rxpm.navigation.*
 import me.dmdev.rxpm.sample.*
 import me.dmdev.rxpm.sample.main.extensions.*
@@ -44,8 +44,8 @@ class MainActivity : AppCompatActivity(), NavigationMessageHandler {
             is ChooseCountryMessage -> sfm.openScreen(ChooseCountryScreen())
 
             is CountryChosenMessage -> {
-                sfm.back()
                 sfm.findScreen<AuthByPhoneScreen>()?.onCountryChosen(message.country)
+                sfm.back()
             }
 
             is PhoneSentSuccessfullyMessage -> sfm.openScreen(

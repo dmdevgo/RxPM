@@ -1,15 +1,13 @@
 package me.dmdev.rxpm.sample.main.ui.confirmation
 
-import io.reactivex.Observable
-import me.dmdev.rxpm.bindProgress
+import io.reactivex.*
+import me.dmdev.rxpm.*
 import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.main.PhoneConfirmedMessage
-import me.dmdev.rxpm.sample.main.model.AuthModel
-import me.dmdev.rxpm.sample.main.ui.base.ScreenPresentationModel
-import me.dmdev.rxpm.sample.main.util.ResourceProvider
-import me.dmdev.rxpm.sample.main.util.onlyDigits
-import me.dmdev.rxpm.skipWhileInProgress
-import me.dmdev.rxpm.widget.inputControl
+import me.dmdev.rxpm.sample.main.*
+import me.dmdev.rxpm.sample.main.model.*
+import me.dmdev.rxpm.sample.main.ui.base.*
+import me.dmdev.rxpm.sample.main.util.*
+import me.dmdev.rxpm.widget.*
 
 class CodeConfirmationPm(
     private val phone: String,
@@ -24,15 +22,15 @@ class CodeConfirmationPm(
     val code = inputControl(
         formatter = { it.onlyDigits().take(CODE_LENGTH) }
     )
-    val inProgress = State(false)
-    val sendButtonEnabled = State(false)
+    val inProgress = state(false)
+    val sendButtonEnabled = state(false)
 
-    val sendAction = Action<Unit>()
+    val sendAction = action<Unit>()
 
     override fun onCreate() {
         super.onCreate()
 
-        val codeFilledAction = code.textChanges.observable
+        val codeFilledAction = code.text.observable
             .filter { it.length == CODE_LENGTH }
             .distinctUntilChanged()
 

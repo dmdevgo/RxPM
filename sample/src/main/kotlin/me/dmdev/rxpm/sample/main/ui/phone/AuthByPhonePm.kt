@@ -1,20 +1,15 @@
 package me.dmdev.rxpm.sample.main.ui.phone
 
-import com.google.i18n.phonenumbers.NumberParseException
-import io.reactivex.Observable
-import io.reactivex.functions.BiFunction
-import me.dmdev.rxpm.bindProgress
+import com.google.i18n.phonenumbers.*
+import io.reactivex.*
+import io.reactivex.functions.*
+import me.dmdev.rxpm.*
 import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.main.ChooseCountryMessage
-import me.dmdev.rxpm.sample.main.PhoneSentSuccessfullyMessage
-import me.dmdev.rxpm.sample.main.model.AuthModel
-import me.dmdev.rxpm.sample.main.ui.base.ScreenPresentationModel
-import me.dmdev.rxpm.sample.main.util.Country
-import me.dmdev.rxpm.sample.main.util.PhoneUtil
-import me.dmdev.rxpm.sample.main.util.ResourceProvider
-import me.dmdev.rxpm.sample.main.util.onlyDigits
-import me.dmdev.rxpm.skipWhileInProgress
-import me.dmdev.rxpm.widget.inputControl
+import me.dmdev.rxpm.sample.main.*
+import me.dmdev.rxpm.sample.main.model.*
+import me.dmdev.rxpm.sample.main.ui.base.*
+import me.dmdev.rxpm.sample.main.util.*
+import me.dmdev.rxpm.widget.*
 
 
 class AuthByPhonePm(
@@ -23,8 +18,8 @@ class AuthByPhonePm(
     private val authModel: AuthModel
 ) : ScreenPresentationModel() {
 
-    val chosenCountry = State<Country>()
-    val phoneNumber = inputControl()
+    val chosenCountry = state<Country>()
+    val phoneNumber = inputControl(formatter = null)
     val countryCode = inputControl(
         initialText = "+7",
         formatter = {
@@ -44,13 +39,13 @@ class AuthByPhonePm(
         }
     )
 
-    val inProgress = State(false)
-    val sendButtonEnabled = State(false)
-    val phoneNumberFocus = Command<Unit>(bufferSize = 1)
+    val inProgress = state(false)
+    val sendButtonEnabled = state(false)
+    val phoneNumberFocus = command<Unit>(bufferSize = 1)
 
-    val sendAction = Action<Unit>()
-    val countryClicks = Action<Unit>()
-    val chooseCountryAction = Action<Country>()
+    val sendAction = action<Unit>()
+    val countryClicks = action<Unit>()
+    val chooseCountryAction = action<Country>()
 
     override fun onCreate() {
         super.onCreate()

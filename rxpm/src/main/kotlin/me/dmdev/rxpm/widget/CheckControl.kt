@@ -1,40 +1,38 @@
 package me.dmdev.rxpm.widget
 
-import android.widget.CompoundButton
-import com.jakewharton.rxbinding2.widget.checkedChanges
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import me.dmdev.rxpm.AndroidPmView
-import me.dmdev.rxpm.PresentationModel
+import android.widget.*
+import com.jakewharton.rxbinding3.widget.*
+import me.dmdev.rxpm.*
 
 /**
  * Helps to bind a group of properties of a checkable widget to a [presentation model][PresentationModel]
  * and also breaks the loop of two-way data binding to make the work with the check easier.
  *
- * You can bind this to any [CompoundButton] subclass using the familiar `bindTo` method
- * in the [AndroidPmView].
+ * You can bind this to any [CompoundButton] subclass using the [bindTo][bindTo] extension.
  *
  * Instantiate this using the [checkControl] extension function of the presentation model.
  *
  * @see InputControl
  * @see DialogControl
  */
-class CheckControl internal constructor(pm: PresentationModel, initialChecked: Boolean) {
+class CheckControl internal constructor(initialChecked: Boolean) : PresentationModel() {
 
     /**
-     * The checked [state][PresentationModel.State].
+     * The checked [state][State].
      */
-    val checked = pm.State(initialChecked)
+    val checked = state(initialChecked)
 
     /**
-     * The checked state change [events][PresentationModel.Action].
+     * The checked state change [events][Action].
      */
-    val checkedChanges = pm.Action<Boolean>()
+    val checkedChanges = action<Boolean>()
 
-    init {
-        checkedChanges.relay
+    override fun onCreate() {
+        super.onCreate()
+        checkedChanges.observable
             .filter { it != checked.value }
-            .subscribe(checked.relay)
+            .subscribe(checked.consumer)
+            .untilDestroy()
     }
 }
 
@@ -44,30 +42,26 @@ class CheckControl internal constructor(pm: PresentationModel, initialChecked: B
  * @param initialChecked initial checked state.
  */
 fun PresentationModel.checkControl(initialChecked: Boolean = false): CheckControl {
-    return CheckControl(this, initialChecked)
+    return CheckControl(initialChecked).apply {
+        attachToParent(this@checkControl)
+    }
 }
 
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun CheckControl.bind(
-    compoundButton: CompoundButton,
-    compositeDisposable: CompositeDisposable
-) {
+/**
+ * Binds the [CheckControl] to the [CompoundButton][compoundButton], use it ONLY in [PmView.onBindPresentationModel].
+ */
+infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
 
     var editing = false
 
-    compositeDisposable.addAll(
+    checked bindTo {
+        editing = true
+        compoundButton.isChecked = it
+        editing = false
+    }
 
-        checked.observable
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                editing = true
-                compoundButton.isChecked = it
-                editing = false
-            },
-
-        compoundButton.checkedChanges()
-            .skipInitialValue()
-            .filter { !editing }
-            .subscribe(checkedChanges.consumer)
-    )
+    compoundButton.checkedChanges()
+        .skipInitialValue()
+        .filter { !editing }
+        .bindTo(checkedChanges)
 }

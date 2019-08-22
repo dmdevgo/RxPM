@@ -1,12 +1,12 @@
 package me.dmdev.rxpm.sample
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.app.*
+import android.content.*
+import android.os.*
+import androidx.appcompat.app.*
 import kotlinx.android.synthetic.main.activity_launch.*
-import me.dmdev.rxpm.sample.counter.CounterActivity
-import me.dmdev.rxpm.sample.main.MainActivity
+import me.dmdev.rxpm.sample.counter.*
+import me.dmdev.rxpm.sample.main.*
 
 class LaunchActivity : AppCompatActivity() {
 

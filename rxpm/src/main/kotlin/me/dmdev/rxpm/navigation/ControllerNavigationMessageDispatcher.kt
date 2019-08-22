@@ -1,8 +1,8 @@
 package me.dmdev.rxpm.navigation
 
-import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.*
 
-internal class ControllerNavigationMessageDispatcher(
+class ControllerNavigationMessageDispatcher(
     controller: Controller
 ) : NavigationMessageDispatcher(controller) {
 
