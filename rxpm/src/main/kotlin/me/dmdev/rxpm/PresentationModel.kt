@@ -239,6 +239,11 @@ abstract class PresentationModel {
     protected val <T> State<T>.consumer: Consumer<T> get() = relay
 
     /**
+     * Post the [value] to the [State]
+     */
+    protected fun <T> State<T>.post(value: T) = relay.accept(value)
+
+    /**
      * Observable of the [Action].
      * Accessible only from a [PresentationModel].
      *
@@ -247,12 +252,22 @@ abstract class PresentationModel {
     protected val <T> Action<T>.observable: Observable<T> get() = relay
 
     /**
+     * Post the [value] to the [Action]
+     */
+    protected fun <T> Action<T>.post(value: T) = relay.accept(value)
+
+    /**
      * Consumer of the [Command].
      * Accessible only from a [PresentationModel].
      *
      * Use to subscribe the command to some [Observable] source.
      */
     protected val <T> Command<T>.consumer: Consumer<T> get() = relay
+
+    /**
+     * Post the [value] to the [Command]
+     */
+    protected fun <T> Command<T>.post(value: T) = relay.accept(value)
 
     /**
      * Convenience to bind the [progress][state] to the [Single].

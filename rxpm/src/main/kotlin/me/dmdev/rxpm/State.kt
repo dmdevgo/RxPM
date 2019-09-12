@@ -9,7 +9,7 @@ import me.dmdev.rxpm.util.*
 
 /**
  * Reactive property for the [view's][PmView] state.
- * Can be observed and changed in reactive manner with it's [observable] and [post].
+ * Can be observed and changed in reactive manner with it's [observable] and [PresentationModel.post].
  *
  * Use to represent a view state. It can be something simple, like some widget's text, or complex,
  * like inProgress or data.
@@ -75,11 +75,6 @@ class State<T> internal constructor(
      * Returns true if the [State] has any value.
      */
     fun hasValue() = behaviorRelay.hasValue()
-
-    /**
-     * Post the [value]
-     */
-    fun post(value: T) = behaviorRelay.accept(value)
 }
 
 /**
