@@ -30,7 +30,7 @@ abstract class ScreenPresentationModel : PresentationModel(),
     }
 
     protected fun sendMessage(message: NavigationMessage) {
-        navigationMessages.consumer.accept(message)
+        navigationMessages.post(message)
     }
 
     protected fun showError(errorMessage: String?) {

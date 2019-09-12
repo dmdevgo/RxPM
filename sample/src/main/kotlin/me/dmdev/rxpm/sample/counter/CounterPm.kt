@@ -20,24 +20,24 @@ class CounterPm : PresentationModel() {
 
         count.observable
             .map { it > 0 }
-            .subscribe(minusButtonEnabled.consumer)
+            .subscribe(minusButtonEnabled)
             .untilDestroy()
 
         count.observable
             .map { it < MAX_COUNT }
-            .subscribe(plusButtonEnabled.consumer)
+            .subscribe(plusButtonEnabled)
             .untilDestroy()
 
         minusButtonClicks.observable
             .filter { count.value > 0 }
             .map { count.value - 1 }
-            .subscribe(count.consumer)
+            .subscribe(count)
             .untilDestroy()
 
         plusButtonClicks.observable
             .filter { count.value < MAX_COUNT }
             .map { count.value + 1 }
-            .subscribe(count.consumer)
+            .subscribe(count)
             .untilDestroy()
     }
 }

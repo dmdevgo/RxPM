@@ -254,5 +254,54 @@ abstract class PresentationModel {
      */
     protected val <T> Command<T>.consumer: Consumer<T> get() = relay
 
+    /**
+     * Convenience to bind the [progress][state] to the [Single].
+     */
+    protected fun <T> Single<T>.bindProgress(state: State<Boolean>): Single<T> {
+        return this.bindProgress(state.relay)
+    }
+
+    /**
+     * Convenience to bind the [progress][state] to the [Maybe].
+     */
+    protected fun <T> Maybe<T>.bindProgress(state: State<Boolean>): Maybe<T> {
+        return this.bindProgress(state.relay)
+    }
+
+    /**
+     * Convenience to bind the [progress][state] to the [Completable].
+     */
+    protected fun Completable.bindProgress(state: State<Boolean>): Completable {
+        return this.bindProgress(state.relay)
+    }
+
+    /**
+     * Convenience to filter out items emitted by the source [Observable] when in progress ([state] last value is `true`).
+     */
+    protected fun <T> Observable<T>.skipWhileInProgress(state: State<Boolean>): Observable<T> {
+        return this.skipWhileInProgress(state.observable)
+    }
+
+    /**
+     * Convenience to subscribe [state] to the [Observable]
+     */
+    protected fun <T> Observable<T>.subscribe(state: State<T>): Disposable {
+        return this.subscribe(state.relay)
+    }
+
+    /**
+     * Convenience to subscribe [action] to the [Observable]
+     */
+    protected fun <T> Observable<T>.subscribe(action: Action<T>): Disposable {
+        return this.subscribe(action.relay)
+    }
+
+    /**
+     * Convenience to subscribe [command] to the [Observable]
+     */
+    protected fun <T> Observable<T>.subscribe(command: Command<T>): Disposable {
+        return this.subscribe(command.relay)
+    }
+
 }
 

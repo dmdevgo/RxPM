@@ -6,7 +6,7 @@ import io.reactivex.functions.*
 
 /**
  * Reactive property for the commands to the [view][PmView].
- * Can be observed and changed in reactive manner with it's [observable] and [PresentationModel.consumer].
+ * Can be observed and changed in reactive manner with it's [observable] and [post].
  *
  * Use to represent a command to the view, e.g. toast or dialog showing.
  *
@@ -41,6 +41,11 @@ class Command<T> internal constructor(
         }
             .publish()
             .apply { connect() }
+
+    /**
+     * Post the [value]
+     */
+    fun post(value: T) = relay.accept(value)
 }
 
 /**
