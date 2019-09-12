@@ -42,8 +42,8 @@ class InputControl internal constructor(
 
         if (formatter != null) {
             textChanges.observable
-                .filter { it != text.value }
                 .map { formatter.invoke(it) }
+                .filter { it != text.value }
                 .subscribe {
                     text.consumer.accept(it)
                     if (hideErrorOnUserInput) error.consumer.accept("")
@@ -108,5 +108,6 @@ infix fun InputControl.bindTo(editText: EditText) {
         .skipInitialValue()
         .filter { !editing }
         .map { it.toString() }
+        .filter { it != text.value }
         .bindTo(textChanges)
 }
