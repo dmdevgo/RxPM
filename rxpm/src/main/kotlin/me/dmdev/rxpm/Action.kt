@@ -45,7 +45,6 @@ infix fun <T> Observable<T>.bindTo(action: Action<T>) {
 
 /**
  * Pass the value to the [Action][Action].
- * @see [Action.post]
  */
 infix fun <T> T.passTo(action: Action<T>) {
     action.consumer.accept(this)
@@ -53,7 +52,6 @@ infix fun <T> T.passTo(action: Action<T>) {
 
 /**
  * Pass an empty value to the [Action][Action].
- * @see [Action.post]
  */
 infix fun Unit.passTo(action: Action<Unit>) {
     action.consumer.accept(Unit)
