@@ -7,6 +7,7 @@
     <string name="launch_title">RxPM samples</string>
     <string name="launch_main_sample">Main Sample</string>
     <string name="launch_counter_sample">Counter Sample</string>
+    <string name="launch_permissions_sample">Permissions Sample</string>
 
     <!-- Auth by phone -->
     <string name="auth_by_phone_screen_text">Please confirm your country code and enter your phone number.</string>
@@ -26,6 +27,25 @@
     <string name="code_confirmation_hint">Code</string>
     <string name="enter_confirmation_code">Enter confirmation code</string>
     <string name="invalid_confirmation_code">Enter four digits</string>
+
+    <!-- Permissions -->
+    <string name="permissions_title">Permissions samples</string>
+    <string name="allow_button">Allow</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="settings_button">Settings</string>
+    <string name="location_permissions">Location Permissions</string>
+    <string name="camera_permissions">Camera Permissions</string>
+    <string name="location_permissions_granted">Location permissions granted!</string>
+    <string name="camera_permissions_granted">Camera permissions granted!</string>
+    <string name="permissions_rationale_title">Allow the following permissions to proceed:</string>
+    <string name="permission_location">Location</string>
+    <string name="permission_camera">Camera</string>
+    <string name="permission_storage">Storage</string>
+    <string name="location_permission_rationale">Allow location permission to proceed</string>
+    <plurals name="permission_permanently_denied">
+        <item quantity="one">%s is permanently denied</item>
+        <item quantity="other">%s are permanently denied</item>
+    </plurals>
 
     <!-- Main -->
     <string name="main_logout_action">Logout</string>

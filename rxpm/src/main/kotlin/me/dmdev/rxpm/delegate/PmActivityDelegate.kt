@@ -73,6 +73,13 @@ class PmActivityDelegate<PM, A>(
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
+    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        commonDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    /**
+     * You must call this method from the containing [Activity]'s corresponding method.
+     */
     fun onPause() {
         commonDelegate.onPause()
     }

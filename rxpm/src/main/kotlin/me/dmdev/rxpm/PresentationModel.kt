@@ -5,6 +5,7 @@ import io.reactivex.*
 import io.reactivex.disposables.*
 import io.reactivex.functions.*
 import me.dmdev.rxpm.navigation.*
+import me.dmdev.rxpm.permission.*
 
 /**
  * Parent class for any Presentation Model.
@@ -20,7 +21,7 @@ abstract class PresentationModel {
     private val compositePause = CompositeDisposable()
 
     private val lifecycle = BehaviorRelay.create<Lifecycle>()
-    private val unbind = BehaviorRelay.createDefault(true)
+    internal val unbind = BehaviorRelay.createDefault(true)
     internal val paused = BehaviorRelay.createDefault(true)
 
     /**
@@ -28,6 +29,8 @@ abstract class PresentationModel {
      */
     val lifecycleObservable: Observable<Lifecycle> = lifecycle.distinctUntilChanged()
     internal val lifecycleConsumer = lifecycle.asConsumer()
+
+    internal var permissionDelegate: PermissionDelegate? = null
 
     /**
      * Current state of this presentation model lifecycle.
@@ -199,7 +202,6 @@ abstract class PresentationModel {
                 lifecycleConsumer.accept(Lifecycle.DESTROYED)
             }
 
-            null,
             Lifecycle.DESTROYED -> {
                 //  do nothing
             }
@@ -254,5 +256,6 @@ abstract class PresentationModel {
      */
     protected val <T> Command<T>.consumer: Consumer<T> get() = relay
 
+    protected fun Permission.request(): Single<Boolean> = request()
 }
 

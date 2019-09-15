@@ -1,12 +1,13 @@
 package me.dmdev.rxpm.sample
 
-import android.app.*
-import android.content.*
-import android.os.*
-import androidx.appcompat.app.*
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_launch.*
-import me.dmdev.rxpm.sample.counter.*
-import me.dmdev.rxpm.sample.main.*
+import me.dmdev.rxpm.sample.counter.CounterActivity
+import me.dmdev.rxpm.sample.main.MainActivity
+import me.dmdev.rxpm.sample.permissions.PermissionsActivity
 
 class LaunchActivity : AppCompatActivity() {
 
@@ -20,6 +21,10 @@ class LaunchActivity : AppCompatActivity() {
 
         mainSample.setOnClickListener {
             launchActivity(MainActivity::class.java)
+        }
+
+        permissionsSample.setOnClickListener {
+            launchActivity(PermissionsActivity::class.java)
         }
     }
 

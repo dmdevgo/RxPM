@@ -1,10 +1,12 @@
 package me.dmdev.rxpm
 
+import me.dmdev.rxpm.permission.PermissionCaller
+
 /**
  * Interface that need to be implemented by the View part of the RxPM pattern.
  * Has a few useful callbacks and extensions.
  */
-interface PmView<PM : PresentationModel> {
+interface PmView<PM : PresentationModel> : PermissionCaller {
 
     /**
      * [PresentationModel] for this view.

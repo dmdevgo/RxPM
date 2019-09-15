@@ -60,4 +60,11 @@ class PmControllerDelegate<PM, C>(pmController: C)
             }
         })
     }
+
+    /**
+     * You must call this method from the containing [Controller]'s corresponding method.
+     */
+    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        commonDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 }

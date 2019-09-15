@@ -1,7 +1,9 @@
 package me.dmdev.rxpm.base
 
+import android.content.pm.PackageManager
 import android.os.*
 import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.delegate.*
@@ -47,6 +49,14 @@ abstract class PmFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
     override fun onSaveInstanceState(outState: Bundle) {
         delegate.onSaveInstanceState(outState)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        delegate.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun isPermissionGranted(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(context!!, permission) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onPause() {

@@ -2,6 +2,12 @@
 <manifest package="me.dmdev.rxpm.sample"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name=".App"
         android:allowBackup="false"
@@ -20,6 +26,7 @@
 
         <activity android:name=".main.MainActivity"/>
         <activity android:name=".counter.CounterActivity"/>
+        <activity android:name=".permissions.PermissionsActivity"/>
 
     </application>
 

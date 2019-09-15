@@ -4,6 +4,7 @@ import android.os.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.PresentationModel.*
 import me.dmdev.rxpm.navigation.*
+import me.dmdev.rxpm.permission.PermissionDelegate
 import java.util.*
 
 /**
@@ -27,6 +28,10 @@ class CommonDelegate<PM, V>(
 
     private lateinit var pmTag: String
 
+    private val permissionDelegate: PermissionDelegate by lazy {
+        PermissionDelegate(pmView)
+    }
+
     val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) {
         @Suppress("UNCHECKED_CAST")
         PmStore.getPm(pmTag) { pmView.providePresentationModel() } as PM
@@ -46,6 +51,7 @@ class CommonDelegate<PM, V>(
         if (pm.currentLifecycleState == Lifecycle.CREATED
             || pm.currentLifecycleState == Lifecycle.UNBINDED
         ) {
+            pm.permissionDelegate = permissionDelegate
             pm.lifecycleConsumer.accept(Lifecycle.BINDED)
             pmView.onBindPresentationModel(pm)
 
@@ -69,6 +75,10 @@ class CommonDelegate<PM, V>(
         outState.putString(SAVED_PM_TAG_KEY, pmTag)
     }
 
+    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        permissionDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     fun onPause() {
         if (presentationModel.currentLifecycleState == Lifecycle.RESUMED) {
             presentationModel.lifecycleConsumer.accept(Lifecycle.PAUSED)
@@ -80,6 +90,7 @@ class CommonDelegate<PM, V>(
             || presentationModel.currentLifecycleState == Lifecycle.BINDED
         ) {
             pmView.onUnbindPresentationModel()
+            presentationModel.permissionDelegate = null
             presentationModel.lifecycleConsumer.accept(Lifecycle.UNBINDED)
         }
     }

@@ -1,6 +1,8 @@
 package me.dmdev.rxpm.base
 
+import android.content.pm.PackageManager
 import android.os.*
+import androidx.core.content.ContextCompat
 import com.bluelinelabs.conductor.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.delegate.*
@@ -22,4 +24,12 @@ abstract class PmController<PM : PresentationModel>(args: Bundle? = null) :
     private val delegate = PmControllerDelegate(this)
 
     final override val presentationModel get() = delegate.presentationModel
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        delegate.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun isPermissionGranted(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(activity!!, permission) == PackageManager.PERMISSION_GRANTED
+    }
 }

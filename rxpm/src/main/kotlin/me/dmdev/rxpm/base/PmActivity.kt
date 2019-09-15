@@ -1,7 +1,9 @@
 package me.dmdev.rxpm.base
 
+import android.content.pm.PackageManager
 import android.os.*
 import androidx.appcompat.app.*
+import androidx.core.content.ContextCompat
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.delegate.*
 import me.dmdev.rxpm.delegate.PmActivityDelegate.*
@@ -46,6 +48,14 @@ abstract class PmActivity<PM : PresentationModel> : AppCompatActivity(), PmView<
     override fun onSaveInstanceState(outState: Bundle) {
         delegate.onSaveInstanceState(outState)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        delegate.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun isPermissionGranted(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onPause() {
