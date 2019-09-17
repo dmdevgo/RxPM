@@ -1,14 +1,14 @@
 package me.dmdev.rxpm.base
 
 import android.os.*
-import android.support.v7.app.AppCompatDialogFragment
 import android.view.*
-import androidx.fragment.app.*
+import androidx.appcompat.app.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.delegate.*
+import me.dmdev.rxpm.delegate.PmFragmentDelegate.*
 
 /**
- * Predefined [DialogFragment] implementing the [PmView][PmView].
+ * Predefined [AppCompatDialogFragment] implementing the [PmView][PmView].
  *
  * Just override the [providePresentationModel] and [onBindPresentationModel] methods and you are good to go.
  *
@@ -19,7 +19,7 @@ import me.dmdev.rxpm.delegate.*
 abstract class PmDialogFragment<PM : PresentationModel> : AppCompatDialogFragment(), PmView<PM> {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) {
-        PmFragmentDelegate(this, PmFragmentDelegate.RetainMode.CONFIGURATION_CHANGES)
+        PmFragmentDelegate(this, RetainMode.CONFIGURATION_CHANGES)
     }
 
     final override val presentationModel get() = delegate.presentationModel
