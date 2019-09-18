@@ -44,8 +44,8 @@ class MainActivity : AppCompatActivity(), NavigationMessageHandler {
             is ChooseCountryMessage -> sfm.openScreen(ChooseCountryScreen())
 
             is CountryChosenMessage -> {
-                sfm.findScreen<AuthByPhoneScreen>()?.onCountryChosen(message.country)
                 sfm.back()
+                sfm.findScreen<AuthByPhoneScreen>()?.onCountryChosen(message.country)
             }
 
             is PhoneSentSuccessfullyMessage -> sfm.openScreen(
