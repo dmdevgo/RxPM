@@ -106,8 +106,7 @@ infix fun InputControl.bindTo(editText: EditText) {
 
     editText.textChanges()
         .skipInitialValue()
-        .filter { !editing }
+        .filter { !editing && text.valueOrNull?.contentEquals(it) != true }
         .map { it.toString() }
-        .filter { it != text.value }
         .bindTo(textChanges)
 }
