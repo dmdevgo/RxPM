@@ -92,6 +92,22 @@ fun <T> PresentationModel.state(
 }
 
 /**
+ * Creates the [State] that subscribes to [observable] until [destroy][PresentationModel.Lifecycle.DESTROYED].
+ *
+ * @param [observable] source to state consumer
+ * @param [diffStrategy] diff strategy.
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T> PresentationModel.stateOf(
+    observable: Observable<T>,
+    diffStrategy: DiffStrategy<T>? = DiffByEquals as DiffStrategy<T>
+): State<T> {
+    val state = state(diffStrategy = diffStrategy)
+    observable.subscribe(state.relay).untilDestroy()
+    return state
+}
+
+ /**
  * Subscribes to the [State][State] and adds it to the subscriptions list
  * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
  * so use it ONLY in [PmView.onBindPresentationModel].

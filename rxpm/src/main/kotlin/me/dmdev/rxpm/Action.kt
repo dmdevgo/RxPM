@@ -31,6 +31,20 @@ fun <T> PresentationModel.action(): Action<T> {
 }
 
 /**
+ * Creates the [Action] and sets up the [action chain][actionChain].
+ */
+fun <T> PresentationModel.action(
+    actionChain: Observable<T>.() -> Observable<*>
+): Action<T> {
+    val action = action<T>()
+    actionChain(action.relay)
+        .retry()
+        .subscribe()
+        .untilDestroy()
+    return action
+}
+
+/**
  * Subscribes [Action][Action] to the observable and adds it to the subscriptions list
  * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
  * so use it ONLY in [PmView.onBindPresentationModel].
