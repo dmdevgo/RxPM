@@ -26,12 +26,12 @@ class InputControl internal constructor(
     /**
      * The input field text [state][State].
      */
-    val text = state(initialText)
+    val text = state(initialText, diffStrategy = null)
 
     /**
      * The input field error [state][State].
      */
-    val error = state<String>()
+    val error = state<String>(diffStrategy = null)
 
     /**
      * The input field text changes [events][Action].
@@ -43,7 +43,6 @@ class InputControl internal constructor(
         if (formatter != null) {
             textChanges.observable
                 .map { formatter.invoke(it) }
-                .filter { it != text.value }
                 .subscribe {
                     text.consumer.accept(it)
                     if (hideErrorOnUserInput) error.consumer.accept("")
