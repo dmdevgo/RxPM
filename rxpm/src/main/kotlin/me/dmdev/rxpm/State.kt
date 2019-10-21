@@ -94,16 +94,18 @@ fun <T> PresentationModel.state(
 /**
  * Creates the [State] that subscribes to [observable] until [destroy][PresentationModel.Lifecycle.DESTROYED].
  *
- * @param [observable] source to state consumer
+ * @param [initialValue] initial value.
  * @param [diffStrategy] diff strategy.
+ * @param [observable] source to state consumer.
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> PresentationModel.stateOf(
-    observable: Observable<T>,
-    diffStrategy: DiffStrategy<T>? = DiffByEquals as DiffStrategy<T>
+    initialValue: T? = null,
+    diffStrategy: DiffStrategy<T>? = DiffByEquals as DiffStrategy<T>,
+    observable: (() -> Observable<T>)
 ): State<T> {
-    val state = state(diffStrategy = diffStrategy)
-    observable.subscribe(state.relay).untilDestroy()
+    val state = state(initialValue = initialValue, diffStrategy = diffStrategy)
+    observable().subscribe(state.relay).untilDestroy()
     return state
 }
 

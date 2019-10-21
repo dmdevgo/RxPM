@@ -10,13 +10,13 @@ class CounterPm : PresentationModel() {
 
     val count = state(initialValue = 0)
 
-    val minusButtonEnabled = stateOf(
+    val minusButtonEnabled = stateOf {
         count.observable.map { it > 0 }
-    )
+    }
 
-    val plusButtonEnabled = stateOf(
+    val plusButtonEnabled = stateOf {
         count.observable.map { it < MAX_COUNT }
-    )
+    }
 
     val minusButtonClicks = action<Unit> {
         this.filter { count.value > 0 }
