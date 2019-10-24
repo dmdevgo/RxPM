@@ -10,11 +10,11 @@ class CounterPm : PresentationModel() {
 
     val count = state(initialValue = 0)
 
-    val minusButtonEnabled = stateOf {
+    val minusButtonEnabled = state {
         count.observable.map { it > 0 }
     }
 
-    val plusButtonEnabled = stateOf {
+    val plusButtonEnabled = state {
         count.observable.map { it < MAX_COUNT }
     }
 

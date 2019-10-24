@@ -78,38 +78,36 @@ class State<T> internal constructor(
 }
 
 /**
- * Creates the [State].
+ * Creates the [State] that subscribes to [source] until [destroy][PresentationModel.Lifecycle.DESTROYED].
  *
  * @param [initialValue] initial value.
  * @param [diffStrategy] diff strategy.
+ * @param [source] source to state consumer.
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> PresentationModel.state(
     initialValue: T? = null,
-    diffStrategy: DiffStrategy<T>? = DiffByEquals as DiffStrategy<T>
-): State<T> {
-    return State(this, initialValue, diffStrategy)
-}
-
-/**
- * Creates the [State] that subscribes to [observable] until [destroy][PresentationModel.Lifecycle.DESTROYED].
- *
- * @param [initialValue] initial value.
- * @param [diffStrategy] diff strategy.
- * @param [observable] source to state consumer.
- */
-@Suppress("UNCHECKED_CAST")
-fun <T> PresentationModel.stateOf(
-    initialValue: T? = null,
     diffStrategy: DiffStrategy<T>? = DiffByEquals as DiffStrategy<T>,
-    observable: (() -> Observable<T>)
+    source: (() -> Observable<T>)? = null
 ): State<T> {
-    val state = state(initialValue = initialValue, diffStrategy = diffStrategy)
-    observable().subscribe(state.relay).untilDestroy()
+    val state = State(pm = this, initialValue = initialValue, diffStrategy = diffStrategy)
+    source?.invoke()
+        ?.onErrorResumeNext(
+            Function { throwable ->
+                Observable.error<T>(
+                    IllegalStateException(
+                        "Unprocessed error, the State can accepts only emitted items.",
+                        throwable
+                    )
+                )
+            }
+        )
+        ?.subscribe(state.relay)
+        ?.untilDestroy()
     return state
 }
 
- /**
+/**
  * Subscribes to the [State][State] and adds it to the subscriptions list
  * that will be CLEARED ON [UNBIND][PresentationModel.Lifecycle.UNBINDED],
  * so use it ONLY in [PmView.onBindPresentationModel].

@@ -24,23 +24,16 @@ class Action<T> internal constructor(internal val pm: PresentationModel) {
 }
 
 /**
- * Creates the [Action].
- */
-fun <T> PresentationModel.action(): Action<T> {
-    return Action(this)
-}
-
-/**
  * Creates the [Action] and sets up the [action chain][actionChain].
  */
 fun <T> PresentationModel.action(
-    actionChain: Observable<T>.() -> Observable<*>
+    actionChain: (Observable<T>.() -> Observable<*>)? = null
 ): Action<T> {
-    val action = action<T>()
-    actionChain(action.relay)
-        .retry()
-        .subscribe()
-        .untilDestroy()
+    val action = Action<T>(pm = this)
+    actionChain?.invoke(action.relay)
+        ?.retry()
+        ?.subscribe()
+        ?.untilDestroy()
     return action
 }
 
