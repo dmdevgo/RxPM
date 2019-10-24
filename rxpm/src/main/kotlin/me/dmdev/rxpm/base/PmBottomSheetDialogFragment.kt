@@ -1,12 +1,11 @@
 package me.dmdev.rxpm.base
 
-import android.os.Bundle
-import android.view.View
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import me.dmdev.rxpm.PmView
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.delegate.PmFragmentDelegate
-import me.dmdev.rxpm.delegate.PmFragmentDelegate.RetainMode
+import android.os.*
+import android.view.*
+import com.google.android.material.bottomsheet.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.delegate.*
+import me.dmdev.rxpm.delegate.PmFragmentDelegate.*
 
 /**
  * Predefined [BottomSheetDialogFragment] implementing the [PmView][PmView].
@@ -33,7 +32,12 @@ abstract class PmBottomSheetDialogFragment<PM : PresentationModel>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        delegate.onViewCreated()
+        delegate.onViewCreated(savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        delegate.onActivityCreated(savedInstanceState)
     }
 
     override fun onStart() {

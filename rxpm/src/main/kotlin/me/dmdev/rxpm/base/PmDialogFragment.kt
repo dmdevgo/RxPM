@@ -31,7 +31,12 @@ abstract class PmDialogFragment<PM : PresentationModel> : AppCompatDialogFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        delegate.onViewCreated()
+        delegate.onViewCreated(savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        delegate.onActivityCreated(savedInstanceState)
     }
 
     override fun onStart() {
