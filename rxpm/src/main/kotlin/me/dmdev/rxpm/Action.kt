@@ -24,16 +24,19 @@ class Action<T> internal constructor(internal val pm: PresentationModel) {
 }
 
 /**
- * Creates the [Action] and sets up the [action chain][actionChain].
+ * Creates the [Action] and optionally sets up the [action chain][actionChain].
+ * The chain will be unsubscribed ON [DESTROY][PresentationModel.Lifecycle.DESTROYED].
  */
 fun <T> PresentationModel.action(
     actionChain: (Observable<T>.() -> Observable<*>)? = null
 ): Action<T> {
     val action = Action<T>(pm = this)
-    actionChain?.invoke(action.relay)
-        ?.retry()
-        ?.subscribe()
-        ?.untilDestroy()
+    actionChain?.let {
+        it.invoke(action.relay)
+            .retry()
+            .subscribe()
+            .untilDestroy()
+    }
     return action
 }
 

@@ -77,8 +77,15 @@ class State<T> internal constructor(
     fun hasValue() = behaviorRelay.hasValue()
 }
 
+private val UNPROCESSED_ERROR_CONSUMER = Consumer<Throwable> { throwable ->
+    throw IllegalStateException(
+        "Unprocessed error, the State can accepts only emitted items.",
+        throwable
+    )
+}
+
 /**
- * Creates the [State] that subscribes to [source] until [destroy][PresentationModel.Lifecycle.DESTROYED].
+ * Creates the [State] that subscribes to [source] and unsubscribes ON [DESTROY][PresentationModel.Lifecycle.DESTROYED].
  *
  * @param [initialValue] initial value.
  * @param [diffStrategy] diff strategy.
@@ -91,19 +98,11 @@ fun <T> PresentationModel.state(
     source: (() -> Observable<T>)? = null
 ): State<T> {
     val state = State(pm = this, initialValue = initialValue, diffStrategy = diffStrategy)
-    source?.invoke()
-        ?.onErrorResumeNext(
-            Function { throwable ->
-                Observable.error<T>(
-                    IllegalStateException(
-                        "Unprocessed error, the State can accepts only emitted items.",
-                        throwable
-                    )
-                )
-            }
-        )
-        ?.subscribe(state.relay)
-        ?.untilDestroy()
+    source?.let {
+        it.invoke()
+            .subscribe(state.relay, UNPROCESSED_ERROR_CONSUMER)
+            .untilDestroy()
+    }
     return state
 }
 
