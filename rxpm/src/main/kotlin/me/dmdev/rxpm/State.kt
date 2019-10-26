@@ -6,7 +6,6 @@ import io.reactivex.android.schedulers.*
 import io.reactivex.functions.*
 import io.reactivex.schedulers.*
 import me.dmdev.rxpm.util.*
-import java.util.function.Consumer
 
 /**
  * Reactive property for the [view's][PmView] state.
