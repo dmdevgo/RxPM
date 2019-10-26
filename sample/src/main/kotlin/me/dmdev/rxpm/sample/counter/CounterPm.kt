@@ -9,35 +9,24 @@ class CounterPm : PresentationModel() {
     }
 
     val count = state(initialValue = 0)
-    val minusButtonEnabled = state(false)
-    val plusButtonEnabled = state(false)
 
-    val minusButtonClicks = action<Unit>()
-    val plusButtonClicks = action<Unit>()
+    val minusButtonEnabled = state {
+        count.observable.map { it > 0 }
+    }
 
-    override fun onCreate() {
-        super.onCreate()
+    val plusButtonEnabled = state {
+        count.observable.map { it < MAX_COUNT }
+    }
 
-        count.observable
-            .map { it > 0 }
-            .subscribe(minusButtonEnabled.consumer)
-            .untilDestroy()
-
-        count.observable
-            .map { it < MAX_COUNT }
-            .subscribe(plusButtonEnabled.consumer)
-            .untilDestroy()
-
-        minusButtonClicks.observable
-            .filter { count.value > 0 }
+    val minusButtonClicks = action<Unit> {
+        this.filter { count.value > 0 }
             .map { count.value - 1 }
-            .subscribe(count.consumer)
-            .untilDestroy()
+            .doOnNext(count.consumer)
+    }
 
-        plusButtonClicks.observable
-            .filter { count.value < MAX_COUNT }
+    val plusButtonClicks = action<Unit> {
+        this.filter { count.value < MAX_COUNT }
             .map { count.value + 1 }
-            .subscribe(count.consumer)
-            .untilDestroy()
+            .doOnNext(count.consumer)
     }
 }
