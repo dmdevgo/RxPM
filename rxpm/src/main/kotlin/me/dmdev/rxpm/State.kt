@@ -6,6 +6,7 @@ import io.reactivex.android.schedulers.*
 import io.reactivex.functions.*
 import io.reactivex.schedulers.*
 import me.dmdev.rxpm.util.*
+import java.util.function.Consumer
 
 /**
  * Reactive property for the [view's][PmView] state.
@@ -79,27 +80,30 @@ class State<T> internal constructor(
 
 private val UNPROCESSED_ERROR_CONSUMER = Consumer<Throwable> { throwable ->
     throw IllegalStateException(
-        "Unprocessed error, the State can accepts only emitted items.",
+        "Unprocessed error encountered in the State. " +
+                "State accepts only emitted items, so you need to process errors yourself.",
         throwable
     )
 }
 
 /**
- * Creates the [State] that subscribes to [source] and unsubscribes ON [DESTROY][PresentationModel.Lifecycle.DESTROYED].
+ * Creates the [State].
+ * Optionally subscribes to the provided [state source][stateSource] and
+ * unsubscribes from it ON [DESTROY][PresentationModel.Lifecycle.DESTROYED].
  *
  * @param [initialValue] initial value.
  * @param [diffStrategy] diff strategy.
- * @param [source] source to state consumer.
+ * @param [stateSource] source of the state.
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> PresentationModel.state(
     initialValue: T? = null,
     diffStrategy: DiffStrategy<T>? = DiffByEquals as DiffStrategy<T>,
-    source: (() -> Observable<T>)? = null
+    stateSource: (() -> Observable<T>)? = null
 ): State<T> {
     val state = State(pm = this, initialValue = initialValue, diffStrategy = diffStrategy)
-    source?.let {
-        it.invoke()
+    stateSource?.let { source ->
+        source()
             .subscribe(state.relay, UNPROCESSED_ERROR_CONSUMER)
             .untilDestroy()
     }
