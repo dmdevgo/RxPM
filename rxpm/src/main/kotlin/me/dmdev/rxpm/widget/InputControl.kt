@@ -77,7 +77,9 @@ infix fun InputControl.bindTo(textInputLayout: TextInputLayout) {
     bindTo(textInputLayout.editText!!)
 
     error bindTo { error ->
-        textInputLayout.error = if (error.isEmpty()) null else error
+        val hasError = error.isEmpty()
+        textInputLayout.error = if (hasError) null else error
+        textInputLayout.isErrorEnabled = hasError
     }
 }
 
