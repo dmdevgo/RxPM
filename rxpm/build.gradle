@@ -46,6 +46,7 @@ dependencies {
 
     // Rx
     api rootProject.rxJava2
+    implementation rootProject.annotation
     implementation rootProject.rxRelay2
     implementation rootProject.rxAndroid2
     implementation rootProject.rxBinding
