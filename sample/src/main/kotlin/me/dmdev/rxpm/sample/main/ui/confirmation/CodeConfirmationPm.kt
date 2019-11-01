@@ -59,11 +59,11 @@ class CodeConfirmationPm(
 
         return when {
             code.text.value.isEmpty() -> {
-                code.error.post(resourceProvider.getString(R.string.enter_confirmation_code))
+                code.error.accept(resourceProvider.getString(R.string.enter_confirmation_code))
                 false
             }
             code.text.value.length < CODE_LENGTH -> {
-                code.error.post(resourceProvider.getString(R.string.invalid_confirmation_code))
+                code.error.accept(resourceProvider.getString(R.string.invalid_confirmation_code))
                 false
             }
             else -> true

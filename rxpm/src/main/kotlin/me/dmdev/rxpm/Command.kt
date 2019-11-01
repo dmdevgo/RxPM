@@ -6,7 +6,7 @@ import io.reactivex.functions.*
 
 /**
  * Reactive property for the commands to the [view][PmView].
- * Can be observed and changed in reactive manner with it's [observable] and [PresentationModel.post].
+ * Can be observed and changed in reactive manner with it's [observable] and [PresentationModel.consumer].
  *
  * Use to represent a command to the view, e.g. toast or dialog showing.
  *

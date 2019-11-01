@@ -9,7 +9,7 @@ import me.dmdev.rxpm.util.*
 
 /**
  * Reactive property for the [view's][PmView] state.
- * Can be observed and changed in reactive manner with it's [observable] and [PresentationModel.post].
+ * Can be observed and changed in reactive manner with it's [observable] and [PresentationModel.accept].
  *
  * Use to represent a view state. It can be something simple, like some widget's text, or complex,
  * like inProgress or data.

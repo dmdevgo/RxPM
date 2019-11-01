@@ -239,9 +239,9 @@ abstract class PresentationModel {
     protected val <T> State<T>.consumer: Consumer<T> get() = relay
 
     /**
-     * Post the [value] to the [State]
+     * Accept the given [value] by the [State].
      */
-    protected fun <T> State<T>.post(value: T) = relay.accept(value)
+    protected fun <T> State<T>.accept(value: T) = relay.accept(value)
 
     /**
      * Observable of the [Action].
@@ -252,9 +252,9 @@ abstract class PresentationModel {
     protected val <T> Action<T>.observable: Observable<T> get() = relay
 
     /**
-     * Post the [value] to the [Action]
+     * Accept the given [value] by the [Action].
      */
-    protected fun <T> Action<T>.post(value: T) = relay.accept(value)
+    protected fun <T> Action<T>.accept(value: T) = relay.accept(value)
 
     /**
      * Consumer of the [Command].
@@ -265,58 +265,92 @@ abstract class PresentationModel {
     protected val <T> Command<T>.consumer: Consumer<T> get() = relay
 
     /**
-     * Post the [value] to the [Command]
+     * Accept the given [value] to the [Command].
      */
-    protected fun <T> Command<T>.post(value: T) = relay.accept(value)
+    protected fun <T> Command<T>.accept(value: T) = relay.accept(value)
 
     /**
-     * Convenience to bind the [progress][state] to the [Single].
-     */
-    protected fun <T> Single<T>.bindProgress(state: State<Boolean>): Single<T> {
-        return this.bindProgress(state.relay)
-    }
-
-    /**
-     * Convenience to bind the [progress][state] to the [Maybe].
-     */
-    protected fun <T> Maybe<T>.bindProgress(state: State<Boolean>): Maybe<T> {
-        return this.bindProgress(state.relay)
-    }
-
-    /**
-     * Convenience to bind the [progress][state] to the [Completable].
-     */
-    protected fun Completable.bindProgress(state: State<Boolean>): Completable {
-        return this.bindProgress(state.relay)
-    }
-
-    /**
-     * Convenience to filter out items emitted by the source [Observable] when in progress ([state] last value is `true`).
-     */
-    protected fun <T> Observable<T>.skipWhileInProgress(state: State<Boolean>): Observable<T> {
-        return this.skipWhileInProgress(state.observable)
-    }
-
-    /**
-     * Convenience to subscribe [state] to the [Observable]
+     * Convenience to subscribe [state] to the [Observable].
      */
     protected fun <T> Observable<T>.subscribe(state: State<T>): Disposable {
         return this.subscribe(state.relay)
     }
 
     /**
-     * Convenience to subscribe [action] to the [Observable]
+     * Convenience to subscribe [state] to the [Single].
+     */
+    protected fun <T> Single<T>.subscribe(state: State<T>): Disposable {
+        return this.subscribe(state.relay)
+    }
+
+    /**
+     * Convenience to subscribe [state] to the [Flowable].
+     */
+    protected fun <T> Flowable<T>.subscribe(state: State<T>): Disposable {
+        return this.subscribe(state.relay)
+    }
+
+    /**
+     * Convenience to subscribe [state] to the [Maybe].
+     */
+    protected fun <T> Maybe<T>.subscribe(state: State<T>): Disposable {
+        return this.subscribe(state.relay)
+    }
+
+    /**
+     * Convenience to subscribe [action] to the [Observable].
      */
     protected fun <T> Observable<T>.subscribe(action: Action<T>): Disposable {
         return this.subscribe(action.relay)
     }
 
     /**
-     * Convenience to subscribe [command] to the [Observable]
+     * Convenience to subscribe [action] to the [Single].
+     */
+    protected fun <T> Single<T>.subscribe(action: Action<T>): Disposable {
+        return this.subscribe(action.relay)
+    }
+
+    /**
+     * Convenience to subscribe [action] to the [Flowable].
+     */
+    protected fun <T> Flowable<T>.subscribe(action: Action<T>): Disposable {
+        return this.subscribe(action.relay)
+    }
+
+    /**
+     * Convenience to subscribe [action] to the [Maybe].
+     */
+    protected fun <T> Maybe<T>.subscribe(action: Action<T>): Disposable {
+        return this.subscribe(action.relay)
+    }
+
+    /**
+     * Convenience to subscribe [command] to the [Observable].
      */
     protected fun <T> Observable<T>.subscribe(command: Command<T>): Disposable {
         return this.subscribe(command.relay)
     }
 
+    /**
+     * Convenience to subscribe [command] to the [Single].
+     */
+    protected fun <T> Single<T>.subscribe(command: Command<T>): Disposable {
+        return this.subscribe(command.relay)
+    }
+
+    /**
+     * Convenience to subscribe [command] to the [Flowable].
+     */
+    protected fun <T> Flowable<T>.subscribe(command: Command<T>): Disposable {
+        return this.subscribe(command.relay)
+    }
+
+    /**
+     * Convenience to subscribe [command] to the [Maybe].
+     */
+    protected fun <T> Maybe<T>.subscribe(command: Command<T>): Disposable {
+        return this.subscribe(command.relay)
+    }
 }
 

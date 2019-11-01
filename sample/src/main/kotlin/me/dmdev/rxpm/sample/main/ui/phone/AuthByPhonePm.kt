@@ -27,8 +27,8 @@ class AuthByPhonePm(
             if (code.length > 5) {
                 try {
                     val number = phoneUtil.parsePhone(code)
-                    phoneNumberFocus.post(Unit)
-                    phoneNumber.textChanges.post(number.nationalNumber.toString())
+                    phoneNumberFocus.accept(Unit)
+                    phoneNumber.textChanges.accept(number.nationalNumber.toString())
                     "+${number.countryCode}"
                 } catch (e: NumberParseException) {
                     code
@@ -85,9 +85,9 @@ class AuthByPhonePm(
 
         chooseCountryAction.observable
             .subscribe {
-                countryCode.textChanges.post("+${it.countryCallingCode}")
-                chosenCountry.post(it)
-                phoneNumberFocus.post(Unit)
+                countryCode.textChanges.accept("+${it.countryCallingCode}")
+                chosenCountry.accept(it)
+                phoneNumberFocus.accept(Unit)
             }
             .untilDestroy()
 
@@ -111,10 +111,10 @@ class AuthByPhonePm(
     private fun validateForm(): Boolean {
 
         return if (phoneNumber.text.value.isEmpty()) {
-            phoneNumber.error.post(resourceProvider.getString(R.string.enter_phone_number))
+            phoneNumber.error.accept(resourceProvider.getString(R.string.enter_phone_number))
             false
         } else if (!phoneUtil.isValidPhone(chosenCountry.value, phoneNumber.text.value)) {
-            phoneNumber.error.post(resourceProvider.getString(R.string.invalid_phone_number))
+            phoneNumber.error.accept(resourceProvider.getString(R.string.invalid_phone_number))
             false
         } else {
             true

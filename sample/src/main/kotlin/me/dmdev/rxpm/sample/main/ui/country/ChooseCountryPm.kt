@@ -34,9 +34,9 @@ class ChooseCountryPm(private val phoneUtil: PhoneUtil) : ScreenPresentationMode
         clearAction.observable
             .subscribe {
                 if (searchQueryInput.text.value.isEmpty()) {
-                    mode.post(SEARCH_CLOSED)
+                    mode.accept(SEARCH_CLOSED)
                 } else {
-                    searchQueryInput.text.post("")
+                    searchQueryInput.text.accept("")
                 }
             }
             .untilDestroy()
@@ -44,9 +44,9 @@ class ChooseCountryPm(private val phoneUtil: PhoneUtil) : ScreenPresentationMode
         backAction.observable
             .subscribe {
                 if (mode.value == SEARCH_OPENED) {
-                    mode.post(SEARCH_CLOSED)
+                    mode.accept(SEARCH_CLOSED)
                 } else {
-                    super.backAction.post(Unit)
+                    super.backAction.accept(Unit)
                 }
             }
             .untilDestroy()

@@ -6,7 +6,7 @@ import io.reactivex.android.schedulers.*
 
 /**
  * Reactive property for the actions from the [view][PmView].
- * Can be changed and observed in reactive manner with it's [PresentationModel.post] and [PresentationModel.observable].
+ * Can be changed and observed in reactive manner with it's [consumer] and [PresentationModel.observable].
  *
  * Use to send actions of the view, e.g. some widget's clicks.
  *
@@ -20,7 +20,7 @@ class Action<T> internal constructor(internal val pm: PresentationModel) {
     /**
      * Consumer of the [Action][Action].
      */
-    internal val consumer get() = relay.asConsumer()
+    val consumer get() = relay.asConsumer()
 }
 
 /**
