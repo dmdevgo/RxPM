@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "me.dmdev.rxpm.sample"
-        minSdkVersion rootProject.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion rootProject.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
         versionCode 1

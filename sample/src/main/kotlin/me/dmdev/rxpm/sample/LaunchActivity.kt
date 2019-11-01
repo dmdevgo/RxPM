@@ -7,6 +7,7 @@ import androidx.appcompat.app.*
 import kotlinx.android.synthetic.main.activity_launch.*
 import me.dmdev.rxpm.sample.counter.*
 import me.dmdev.rxpm.sample.main.*
+import me.dmdev.rxpm.sample.validation.*
 
 class LaunchActivity : AppCompatActivity() {
 
@@ -20,6 +21,10 @@ class LaunchActivity : AppCompatActivity() {
 
         mainSample.setOnClickListener {
             launchActivity(MainActivity::class.java)
+        }
+
+        formValidationSample.setOnClickListener {
+            launchActivity(FormValidationActivity::class.java)
         }
     }
 
