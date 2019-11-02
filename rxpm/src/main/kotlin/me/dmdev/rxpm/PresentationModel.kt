@@ -239,12 +239,22 @@ abstract class PresentationModel {
     protected val <T> State<T>.consumer: Consumer<T> get() = relay
 
     /**
+     * Accept the given [value] by the [State].
+     */
+    protected fun <T> State<T>.accept(value: T) = relay.accept(value)
+
+    /**
      * Observable of the [Action].
      * Accessible only from a [PresentationModel].
      *
      * Use to subscribe to this [Action]s source.
      */
     protected val <T> Action<T>.observable: Observable<T> get() = relay
+
+    /**
+     * Accept the given [value] by the [Action].
+     */
+    protected fun <T> Action<T>.accept(value: T) = relay.accept(value)
 
     /**
      * Consumer of the [Command].
@@ -254,5 +264,93 @@ abstract class PresentationModel {
      */
     protected val <T> Command<T>.consumer: Consumer<T> get() = relay
 
+    /**
+     * Accept the given [value] to the [Command].
+     */
+    protected fun <T> Command<T>.accept(value: T) = relay.accept(value)
+
+    /**
+     * Convenience to subscribe [state] to the [Observable].
+     */
+    protected fun <T> Observable<T>.subscribe(state: State<T>): Disposable {
+        return this.subscribe(state.relay)
+    }
+
+    /**
+     * Convenience to subscribe [state] to the [Single].
+     */
+    protected fun <T> Single<T>.subscribe(state: State<T>): Disposable {
+        return this.subscribe(state.relay)
+    }
+
+    /**
+     * Convenience to subscribe [state] to the [Flowable].
+     */
+    protected fun <T> Flowable<T>.subscribe(state: State<T>): Disposable {
+        return this.subscribe(state.relay)
+    }
+
+    /**
+     * Convenience to subscribe [state] to the [Maybe].
+     */
+    protected fun <T> Maybe<T>.subscribe(state: State<T>): Disposable {
+        return this.subscribe(state.relay)
+    }
+
+    /**
+     * Convenience to subscribe [action] to the [Observable].
+     */
+    protected fun <T> Observable<T>.subscribe(action: Action<T>): Disposable {
+        return this.subscribe(action.relay)
+    }
+
+    /**
+     * Convenience to subscribe [action] to the [Single].
+     */
+    protected fun <T> Single<T>.subscribe(action: Action<T>): Disposable {
+        return this.subscribe(action.relay)
+    }
+
+    /**
+     * Convenience to subscribe [action] to the [Flowable].
+     */
+    protected fun <T> Flowable<T>.subscribe(action: Action<T>): Disposable {
+        return this.subscribe(action.relay)
+    }
+
+    /**
+     * Convenience to subscribe [action] to the [Maybe].
+     */
+    protected fun <T> Maybe<T>.subscribe(action: Action<T>): Disposable {
+        return this.subscribe(action.relay)
+    }
+
+    /**
+     * Convenience to subscribe [command] to the [Observable].
+     */
+    protected fun <T> Observable<T>.subscribe(command: Command<T>): Disposable {
+        return this.subscribe(command.relay)
+    }
+
+    /**
+     * Convenience to subscribe [command] to the [Single].
+     */
+    protected fun <T> Single<T>.subscribe(command: Command<T>): Disposable {
+        return this.subscribe(command.relay)
+    }
+
+    /**
+     * Convenience to subscribe [command] to the [Flowable].
+     */
+    protected fun <T> Flowable<T>.subscribe(command: Command<T>): Disposable {
+        return this.subscribe(command.relay)
+    }
+
+    /**
+     * Convenience to subscribe [command] to the [Maybe].
+     */
+    protected fun <T> Maybe<T>.subscribe(command: Command<T>): Disposable {
+        return this.subscribe(command.relay)
+    }
 }
 

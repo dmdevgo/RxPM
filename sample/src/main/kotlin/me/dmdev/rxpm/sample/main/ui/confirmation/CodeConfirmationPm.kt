@@ -35,12 +35,12 @@ class CodeConfirmationPm(
             .distinctUntilChanged()
 
         Observable.merge(sendAction.observable, codeFilledAction)
-            .skipWhileInProgress(inProgress.observable)
+            .skipWhileInProgress(inProgress)
             .map { code.text.value }
             .filter { validateForm() }
             .switchMapCompletable { code ->
                 authModel.sendConfirmationCode(phone, code)
-                    .bindProgress(inProgress.consumer)
+                    .bindProgress(inProgress)
                     .doOnComplete { sendMessage(PhoneConfirmedMessage()) }
                     .doOnError { showError(it.message) }
             }
@@ -50,7 +50,7 @@ class CodeConfirmationPm(
 
         code.text.observable
             .map { it.length == CODE_LENGTH }
-            .subscribe(sendButtonEnabled.consumer)
+            .subscribe(sendButtonEnabled)
             .untilDestroy()
 
     }
@@ -59,11 +59,11 @@ class CodeConfirmationPm(
 
         return when {
             code.text.value.isEmpty() -> {
-                code.error.consumer.accept(resourceProvider.getString(R.string.enter_confirmation_code))
+                code.error.accept(resourceProvider.getString(R.string.enter_confirmation_code))
                 false
             }
             code.text.value.length < CODE_LENGTH -> {
-                code.error.consumer.accept(resourceProvider.getString(R.string.invalid_confirmation_code))
+                code.error.accept(resourceProvider.getString(R.string.invalid_confirmation_code))
                 false
             }
             else -> true

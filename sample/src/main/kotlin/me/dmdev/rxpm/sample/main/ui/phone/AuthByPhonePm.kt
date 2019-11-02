@@ -27,8 +27,8 @@ class AuthByPhonePm(
             if (code.length > 5) {
                 try {
                     val number = phoneUtil.parsePhone(code)
-                    phoneNumberFocus.consumer.accept(Unit)
-                    phoneNumber.textChanges.consumer.accept(number.nationalNumber.toString())
+                    phoneNumberFocus.accept(Unit)
+                    phoneNumber.textChanges.accept(number.nationalNumber.toString())
                     "+${number.countryCode}"
                 } catch (e: NumberParseException) {
                     code
@@ -59,14 +59,14 @@ class AuthByPhonePm(
                     Country.UNKNOWN
                 }
             }
-            .subscribe(chosenCountry.consumer)
+            .subscribe(chosenCountry)
             .untilDestroy()
 
         Observable.combineLatest(phoneNumber.textChanges.observable, chosenCountry.observable,
             BiFunction { number: String, country: Country ->
                 phoneUtil.formatPhoneNumber(country, number)
             })
-            .subscribe(phoneNumber.text.consumer)
+            .subscribe(phoneNumber.text)
             .untilDestroy()
 
 
@@ -74,7 +74,7 @@ class AuthByPhonePm(
             BiFunction { number: String, country: Country ->
                 phoneUtil.isValidPhone(country, number)
             })
-            .subscribe(sendButtonEnabled.consumer)
+            .subscribe(sendButtonEnabled)
             .untilDestroy()
 
         countryClicks.observable
@@ -85,19 +85,19 @@ class AuthByPhonePm(
 
         chooseCountryAction.observable
             .subscribe {
-                countryCode.textChanges.consumer.accept("+${it.countryCallingCode}")
-                chosenCountry.consumer.accept(it)
-                phoneNumberFocus.consumer.accept(Unit)
+                countryCode.textChanges.accept("+${it.countryCallingCode}")
+                chosenCountry.accept(it)
+                phoneNumberFocus.accept(Unit)
             }
             .untilDestroy()
 
         sendAction.observable
-            .skipWhileInProgress(inProgress.observable)
+            .skipWhileInProgress(inProgress)
             .filter { validateForm() }
             .map { "${countryCode.text.value} ${phoneNumber.text.value}" }
             .switchMapCompletable { phone ->
                 authModel.sendPhone(phone)
-                    .bindProgress(inProgress.consumer)
+                    .bindProgress(inProgress)
                     .doOnComplete {
                         sendMessage(PhoneSentSuccessfullyMessage(phone))
                     }
@@ -111,10 +111,10 @@ class AuthByPhonePm(
     private fun validateForm(): Boolean {
 
         return if (phoneNumber.text.value.isEmpty()) {
-            phoneNumber.error.consumer.accept(resourceProvider.getString(R.string.enter_phone_number))
+            phoneNumber.error.accept(resourceProvider.getString(R.string.enter_phone_number))
             false
         } else if (!phoneUtil.isValidPhone(chosenCountry.value, phoneNumber.text.value)) {
-            phoneNumber.error.consumer.accept(resourceProvider.getString(R.string.invalid_phone_number))
+            phoneNumber.error.accept(resourceProvider.getString(R.string.invalid_phone_number))
             false
         } else {
             true
