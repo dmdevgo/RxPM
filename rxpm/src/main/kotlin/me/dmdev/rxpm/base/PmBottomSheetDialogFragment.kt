@@ -2,13 +2,13 @@ package me.dmdev.rxpm.base
 
 import android.os.*
 import android.view.*
-import androidx.fragment.app.*
+import com.google.android.material.bottomsheet.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.delegate.*
 import me.dmdev.rxpm.delegate.PmFragmentDelegate.*
 
 /**
- * Predefined [Fragment] implementing the [PmView][PmView].
+ * Predefined [BottomSheetDialogFragment] implementing the [PmView][PmView].
  *
  * Just override the [providePresentationModel] and [onBindPresentationModel] methods and you are good to go.
  *
@@ -16,7 +16,8 @@ import me.dmdev.rxpm.delegate.PmFragmentDelegate.*
  * create a [PmFragmentDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class PmFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
+abstract class PmBottomSheetDialogFragment<PM : PresentationModel>
+    : BottomSheetDialogFragment(), PmView<PM> {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) {
         PmFragmentDelegate(this, RetainMode.CONFIGURATION_CHANGES)

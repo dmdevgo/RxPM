@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
@@ -27,14 +27,15 @@ ext {
     targetSdkVersion = 29
     rxBindingVersion = '3.0.0'
 
-    appCompat = 'androidx.appcompat:appcompat:1.0.0'
-    materialDesign = 'com.google.android.material:material:1.0.0'
+    annotation = 'androidx.annotation:annotation:1.1.0'
+    appCompat = 'androidx.appcompat:appcompat:1.1.0'
+    materialDesign = 'com.google.android.material:material:1.2.0-alpha01'
 
     kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
-    rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.11"
-    rxRelay2 = "com.jakewharton.rxrelay2:rxrelay:2.1.0"
-    rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.1.0"
+    rxJava2 = "io.reactivex.rxjava2:rxjava:2.2.13"
+    rxRelay2 = "com.jakewharton.rxrelay2:rxrelay:2.1.1"
+    rxAndroid2 = "io.reactivex.rxjava2:rxandroid:2.1.1"
 
     rxBinding = "com.jakewharton.rxbinding3:rxbinding:$rxBindingVersion"
     rxBindingAppCompat = "com.jakewharton.rxbinding3:rxbinding-appcompat:$rxBindingVersion"
@@ -42,5 +43,5 @@ ext {
     conductor = "com.bluelinelabs:conductor:3.0.0-rc2"
 
     junitKotlin = "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-    mockitoKotlin = 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
+    mockitoKotlin = 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0'
 }

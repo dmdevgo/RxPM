@@ -44,7 +44,14 @@ class PmFragmentDelegate<PM, F>(
     /**
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
-    fun onViewCreated() {
+    fun onViewCreated(savedInstanceState: Bundle?) {
+        // For symmetry, may be used in the future
+    }
+
+    /**
+     * You must call this method from the containing [Fragment]'s corresponding method.
+     */
+    fun onActivityCreated(savedInstanceState: Bundle?) {
         commonDelegate.onBind()
     }
 
