@@ -62,3 +62,11 @@ fun InputValidator.pattern(regex: String, message: String) {
 fun InputValidator.invalid(validator: ValidateFunction, message: String) {
     validators.add(Validator(validator, message))
 }
+
+fun InputValidator.minSymbols(number: Int, message: String) {
+    validators.add(Validator({ it.length >= number }, message))
+}
+
+fun InputValidator.confirm(input: InputControl, message: String) {
+    validators.add(Validator( { it == input.text.valueOrNull } , message))
+}

@@ -1,12 +1,23 @@
 package me.dmdev.rxpm.sample.validation
 
 import me.dmdev.rxpm.*
+import me.dmdev.rxpm.sample.main.util.*
 import me.dmdev.rxpm.widget.*
 
-class FormValidationPm : PresentationModel() {
+class FormValidationPm(
+    private val phoneUtil: PhoneUtil
+) : PresentationModel() {
 
-    val name = inputControl()
+    val name = inputControl(
+        formatter = { it.replace("[^a-zA-Z ]".toRegex(), "").take(100) }
+    )
     val email = inputControl()
+    val phone = inputControl(
+        initialText = "+7",
+        formatter = { phoneUtil.formatPhoneNumber(it) }
+    )
+    val password = inputControl()
+    val confirmPassword = inputControl()
 
     val validateButtonClicks = action<Unit> {
         doOnNext { formValidator.validate() }
@@ -21,6 +32,24 @@ class FormValidationPm : PresentationModel() {
         input(email) {
             empty("Input E-mail")
             pattern(ANDROID_EMAIL_PATTERN, "Invalid e-mail address")
+        }
+
+        input(phone) {
+            invalid( { phoneUtil.isValidPhone(it) }, "Invalid phone number")
+        }
+
+        input(password) {
+            empty("Input Password")
+            minSymbols(6, "Minimum 6 symbols")
+            pattern(
+                regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d]).{6,}\$",
+                message = "The password must contain a large and small letters, numbers."
+            )
+        }
+
+        input(confirmPassword) {
+            empty("Confirm Password")
+            confirm(password, "Passwords do not match")
         }
     }
 }
