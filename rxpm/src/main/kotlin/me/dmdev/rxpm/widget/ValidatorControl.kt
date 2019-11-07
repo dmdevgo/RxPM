@@ -2,22 +2,19 @@ package me.dmdev.rxpm.widget
 
 import me.dmdev.rxpm.*
 
-typealias ValidateFunction = (input: String) -> Boolean
-
-class Validator(
-    val validateFunction: ValidateFunction,
-    val errorText: String
-)
+private typealias ValidateFunction = (input: String) -> Boolean
+private typealias Message = String
 
 class InputValidator(
     private val inputControl: InputControl
-): PresentationModel() {
-    val validators = mutableListOf<Validator>()
+) : PresentationModel() {
+
+    val validators = mutableListOf<Pair<ValidateFunction, Message>>()
 
     fun validate(): Boolean {
         validators.forEach {
-            if (!it.validateFunction(inputControl.text.value)){
-                inputControl.error.consumer.accept(it.errorText)
+            if (!it.first(inputControl.text.value)) {
+                inputControl.error.consumer.accept(it.second)
                 return false
             }
         }
@@ -26,9 +23,10 @@ class InputValidator(
 }
 
 class ValidatorControl : PresentationModel() {
+
     val fields = mutableListOf<InputValidator>()
 
-    fun validate() : Boolean {
+    fun validate(): Boolean {
         var isValid = true
         fields.forEach {
             if (!it.validate()) {
@@ -52,21 +50,23 @@ fun ValidatorControl.input(inputControl: InputControl, block: InputValidator.() 
 }
 
 fun InputValidator.empty(message: String) {
-    validators.add(Validator(String::isNotEmpty, message))
+    validators.add(String::isNotEmpty to message)
 }
 
 fun InputValidator.pattern(regex: String, message: String) {
-    validators.add(Validator({ regex.toRegex().matches(it) }, message))
+    validators.add(
+        { str: String -> regex.toRegex().matches(str) } to message
+    )
 }
 
 fun InputValidator.invalid(validator: ValidateFunction, message: String) {
-    validators.add(Validator(validator, message))
+    validators.add(validator to message)
 }
 
 fun InputValidator.minSymbols(number: Int, message: String) {
-    validators.add(Validator({ it.length >= number }, message))
+    validators.add({ str: String -> str.length >= number } to message)
 }
 
 fun InputValidator.confirm(input: InputControl, message: String) {
-    validators.add(Validator( { it == input.text.valueOrNull } , message))
+    validators.add({ str: String -> str == input.text.valueOrNull } to message)
 }
