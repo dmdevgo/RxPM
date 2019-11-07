@@ -2,14 +2,11 @@ package me.dmdev.rxpm.widget
 
 import me.dmdev.rxpm.*
 
-private typealias ValidateFunction = (input: String) -> Boolean
-private typealias Message = String
-
 class InputValidator(
     private val inputControl: InputControl
 ) : PresentationModel() {
 
-    val validators = mutableListOf<Pair<ValidateFunction, Message>>()
+    val validators = mutableListOf<Pair<(input: String) -> Boolean, String>>()
 
     fun validate(): Boolean {
         validators.forEach {
@@ -59,7 +56,7 @@ fun InputValidator.pattern(regex: String, message: String) {
     )
 }
 
-fun InputValidator.invalid(validator: ValidateFunction, message: String) {
+fun InputValidator.invalid(validator: (input: String) -> Boolean, message: String) {
     validators.add(validator to message)
 }
 
