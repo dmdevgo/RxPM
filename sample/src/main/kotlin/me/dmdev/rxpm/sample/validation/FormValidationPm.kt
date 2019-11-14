@@ -1,7 +1,9 @@
 package me.dmdev.rxpm.sample.validation
 
-import me.dmdev.rxpm.*
-import me.dmdev.rxpm.sample.main.util.*
+import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.action
+import me.dmdev.rxpm.sample.main.util.PhoneUtil
+import me.dmdev.rxpm.validation.*
 import me.dmdev.rxpm.widget.*
 
 class FormValidationPm(
@@ -23,7 +25,7 @@ class FormValidationPm(
         doOnNext { formValidator.validate() }
     }
 
-    private val formValidator = validator {
+    private val formValidator = formValidator {
 
         input(name) {
             empty("Input Name")
@@ -35,7 +37,7 @@ class FormValidationPm(
         }
 
         input(phone) {
-            invalid( { phoneUtil.isValidPhone(it) }, "Invalid phone number")
+            valid(phoneUtil::isValidPhone, "Invalid phone number")
         }
 
         input(password) {
@@ -43,13 +45,13 @@ class FormValidationPm(
             minSymbols(6, "Minimum 6 symbols")
             pattern(
                 regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d]).{6,}\$",
-                message = "The password must contain a large and small letters, numbers."
+                errorMessage = "The password must contain a large and small letters, numbers."
             )
         }
 
         input(confirmPassword) {
             empty("Confirm Password")
-            confirm(password, "Passwords do not match")
+            equalsTo(password, "Passwords do not match")
         }
     }
 }
