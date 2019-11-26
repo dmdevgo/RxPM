@@ -96,6 +96,10 @@ infix fun InputControl.bindTo(editText: EditText) {
                 val ss = SpannableString(it)
                 TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
                 editable.replace(0, editable.length, ss)
+
+                val selection = editText.selectionStart
+                editText.text = editable
+                editText.setSelection(selection)
             } else {
                 editable.replace(0, editable.length, it)
             }
