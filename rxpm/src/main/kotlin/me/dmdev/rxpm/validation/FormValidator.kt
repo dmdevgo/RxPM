@@ -1,7 +1,7 @@
 package me.dmdev.rxpm.validation
 
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.widget.InputControl
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.widget.*
 
 class FormValidator internal constructor() {
 
@@ -27,8 +27,12 @@ fun PresentationModel.formValidator(init: FormValidator.() -> Unit): FormValidat
     return formValidator
 }
 
-fun FormValidator.input(inputControl: InputControl, init: InputValidator.() -> Unit) {
-    val inputValidator = InputValidator(inputControl)
+fun FormValidator.input(
+    inputControl: InputControl,
+    required: Boolean = true,
+    init: InputValidator.() -> Unit
+) {
+    val inputValidator = InputValidator(inputControl, required)
     inputValidator.init()
     inputValidators.add(inputValidator)
 }

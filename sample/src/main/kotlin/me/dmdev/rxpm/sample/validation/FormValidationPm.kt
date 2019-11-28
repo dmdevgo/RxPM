@@ -1,8 +1,7 @@
 package me.dmdev.rxpm.sample.validation
 
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.action
-import me.dmdev.rxpm.sample.main.util.PhoneUtil
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.sample.main.util.*
 import me.dmdev.rxpm.validation.*
 import me.dmdev.rxpm.widget.*
 
@@ -31,8 +30,7 @@ class FormValidationPm(
             empty("Input Name")
         }
 
-        input(email) {
-            empty("Input E-mail")
+        input(email, required = false) {
             pattern(ANDROID_EMAIL_PATTERN, "Invalid e-mail address")
         }
 

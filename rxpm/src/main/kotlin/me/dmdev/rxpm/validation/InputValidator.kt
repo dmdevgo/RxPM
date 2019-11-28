@@ -1,9 +1,10 @@
 package me.dmdev.rxpm.validation
 
-import me.dmdev.rxpm.widget.InputControl
+import me.dmdev.rxpm.widget.*
 
 class InputValidator internal constructor(
-    private val inputControl: InputControl
+    private val inputControl: InputControl,
+    private val required: Boolean
 ) {
 
     private val validations = mutableListOf<Pair<(String) -> Boolean, String>>()
@@ -13,12 +14,18 @@ class InputValidator internal constructor(
     }
 
     internal fun validate(): Boolean {
+
+        if (inputControl.text.value.isBlank() && !required) {
+            return true
+        }
+
         validations.forEach { (predicate, errorMessage) ->
             if (!predicate(inputControl.text.value)) {
                 inputControl.error.relay.accept(errorMessage)
                 return false
             }
         }
+
         return true
     }
 }
