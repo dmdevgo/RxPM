@@ -28,15 +28,15 @@ class ChooseCountryPm(private val phoneUtil: PhoneUtil) : ScreenPresentationMode
 
         openSearchAction.observable
             .map { SEARCH_OPENED }
-            .subscribe(mode.consumer)
+            .subscribe(mode)
             .untilDestroy()
 
         clearAction.observable
             .subscribe {
                 if (searchQueryInput.text.value.isEmpty()) {
-                    mode.consumer.accept(SEARCH_CLOSED)
+                    mode.accept(SEARCH_CLOSED)
                 } else {
-                    searchQueryInput.text.consumer.accept("")
+                    searchQueryInput.text.accept("")
                 }
             }
             .untilDestroy()
@@ -44,9 +44,9 @@ class ChooseCountryPm(private val phoneUtil: PhoneUtil) : ScreenPresentationMode
         backAction.observable
             .subscribe {
                 if (mode.value == SEARCH_OPENED) {
-                    mode.consumer.accept(SEARCH_CLOSED)
+                    mode.accept(SEARCH_CLOSED)
                 } else {
-                    super.backAction.consumer.accept(Unit)
+                    super.backAction.accept(Unit)
                 }
             }
             .untilDestroy()
@@ -61,7 +61,7 @@ class ChooseCountryPm(private val phoneUtil: PhoneUtil) : ScreenPresentationMode
                         compareValues(c1.name.toLowerCase(), c2.name.toLowerCase())
                     })
             }
-            .subscribe(countries.consumer)
+            .subscribe(countries)
             .untilDestroy()
 
         countryClicks.observable

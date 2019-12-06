@@ -17,7 +17,7 @@ import me.dmdev.rxpm.widget.*
 class ChooseCountryScreen : Screen<ChooseCountryPm>() {
 
     private val countriesAdapter = CountriesAdapter(null) { country ->
-        presentationModel.countryClicks.consumer.accept(country)
+        country passTo presentationModel.countryClicks
     }
 
     override val screenLayout = R.layout.screen_choose_country

@@ -1,16 +1,14 @@
 package me.dmdev.rxpm.base
 
-import android.content.pm.PackageManager
 import android.os.*
 import android.view.*
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.*
+import com.google.android.material.bottomsheet.*
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.delegate.*
 import me.dmdev.rxpm.delegate.PmFragmentDelegate.*
 
 /**
- * Predefined [Fragment] implementing the [PmView][PmView].
+ * Predefined [BottomSheetDialogFragment] implementing the [PmView][PmView].
  *
  * Just override the [providePresentationModel] and [onBindPresentationModel] methods and you are good to go.
  *
@@ -18,7 +16,8 @@ import me.dmdev.rxpm.delegate.PmFragmentDelegate.*
  * create a [PmFragmentDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class PmFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
+abstract class PmBottomSheetDialogFragment<PM : PresentationModel>
+    : BottomSheetDialogFragment(), PmView<PM> {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) {
         PmFragmentDelegate(this, RetainMode.CONFIGURATION_CHANGES)
@@ -54,14 +53,6 @@ abstract class PmFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
     override fun onSaveInstanceState(outState: Bundle) {
         delegate.onSaveInstanceState(outState)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        delegate.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    override fun isPermissionGranted(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(context!!, permission) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onPause() {

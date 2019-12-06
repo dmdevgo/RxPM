@@ -62,6 +62,6 @@ infix fun CheckControl.bindTo(compoundButton: CompoundButton) {
 
     compoundButton.checkedChanges()
         .skipInitialValue()
-        .filter { !editing }
+        .filter { !editing && it != checked.value }
         .bindTo(checkedChanges)
 }

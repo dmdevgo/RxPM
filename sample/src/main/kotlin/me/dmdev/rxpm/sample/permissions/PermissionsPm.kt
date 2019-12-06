@@ -32,13 +32,13 @@ class PermissionsPm : PresentationModel() {
         locationAction.observable
             .switchMapSingle { locationPermission.request() }
             .filter { it }
-            .subscribe { locationGranted.consumer.accept(Unit) }
+            .subscribe { locationGranted.accept(Unit) }
             .untilDestroy()
 
         cameraAction.observable
             .switchMapSingle { cameraPermissions.request() }
             .filter { it }
-            .subscribe { cameraGranted.consumer.accept(Unit) }
+            .subscribe { cameraGranted.accept(Unit) }
             .untilDestroy()
     }
 

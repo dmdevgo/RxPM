@@ -26,12 +26,12 @@ class InputControl internal constructor(
     /**
      * The input field text [state][State].
      */
-    val text = state(initialText)
+    val text = state(initialText, diffStrategy = null)
 
     /**
      * The input field error [state][State].
      */
-    val error = state<String>()
+    val error = state<String>(diffStrategy = null)
 
     /**
      * The input field text changes [events][Action].
@@ -42,7 +42,6 @@ class InputControl internal constructor(
 
         if (formatter != null) {
             textChanges.observable
-                .filter { it != text.value }
                 .map { formatter.invoke(it) }
                 .subscribe {
                     text.consumer.accept(it)
@@ -97,6 +96,10 @@ infix fun InputControl.bindTo(editText: EditText) {
                 val ss = SpannableString(it)
                 TextUtils.copySpansFrom(editable, 0, ss.length, null, ss, 0)
                 editable.replace(0, editable.length, ss)
+
+                val selection = editText.selectionStart
+                editText.text = editable
+                editText.setSelection(selection)
             } else {
                 editable.replace(0, editable.length, it)
             }
@@ -106,7 +109,7 @@ infix fun InputControl.bindTo(editText: EditText) {
 
     editText.textChanges()
         .skipInitialValue()
-        .filter { !editing }
+        .filter { !editing && text.valueOrNull?.contentEquals(it) != true }
         .map { it.toString() }
         .bindTo(textChanges)
 }
