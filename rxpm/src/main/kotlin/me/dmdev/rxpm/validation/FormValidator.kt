@@ -5,14 +5,18 @@ import me.dmdev.rxpm.widget.InputControl
 
 class FormValidator internal constructor() {
 
-    internal val inputValidators = mutableListOf<InputValidator>()
+    private val itemValidators = mutableListOf<Validator>()
+
+    fun addItemValidator(itemValidator: Validator) {
+        itemValidators.add(itemValidator)
+    }
 
     fun validate(): Boolean {
         var isFormValid = true
-        inputValidators.forEach { inputValidator ->
-            val isFieldValid = inputValidator.validate()
+        itemValidators.forEach { itemValidator ->
+            val isItemValid = itemValidator.validate()
 
-            if (!isFieldValid) {
+            if (!isItemValid) {
                 isFormValid = false
             }
         }
@@ -30,5 +34,5 @@ fun PresentationModel.formValidator(init: FormValidator.() -> Unit): FormValidat
 fun FormValidator.input(inputControl: InputControl, init: InputValidator.() -> Unit) {
     val inputValidator = InputValidator(inputControl)
     inputValidator.init()
-    inputValidators.add(inputValidator)
+    addItemValidator(inputValidator)
 }

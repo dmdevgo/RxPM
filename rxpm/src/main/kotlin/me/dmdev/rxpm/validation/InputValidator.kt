@@ -4,7 +4,7 @@ import me.dmdev.rxpm.widget.InputControl
 
 class InputValidator internal constructor(
     private val inputControl: InputControl
-) {
+) : Validator {
 
     private val validations = mutableListOf<Pair<(String) -> Boolean, String>>()
 
@@ -12,7 +12,7 @@ class InputValidator internal constructor(
         validations.add(validation)
     }
 
-    internal fun validate(): Boolean {
+    override fun validate(): Boolean {
         validations.forEach { (predicate, errorMessage) ->
             if (!predicate(inputControl.text.value)) {
                 inputControl.error.relay.accept(errorMessage)
