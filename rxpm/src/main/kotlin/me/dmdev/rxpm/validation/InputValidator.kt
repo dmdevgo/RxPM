@@ -3,8 +3,9 @@ package me.dmdev.rxpm.validation
 import me.dmdev.rxpm.widget.*
 
 class InputValidator internal constructor(
-    private val inputControl: InputControl,
-    private val required: Boolean
+    internal val inputControl: InputControl,
+    private val required: Boolean,
+    internal val validateOnFocusLoss: Boolean
 ) {
 
     private val validations = mutableListOf<Pair<(String) -> Boolean, String>>()

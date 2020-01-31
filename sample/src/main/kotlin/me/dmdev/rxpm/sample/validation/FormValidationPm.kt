@@ -34,7 +34,7 @@ class FormValidationPm(
             pattern(ANDROID_EMAIL_PATTERN, "Invalid e-mail address")
         }
 
-        input(phone) {
+        input(phone, validateOnFocusLoss = true) {
             valid(phoneUtil::isValidPhone, "Invalid phone number")
         }
 

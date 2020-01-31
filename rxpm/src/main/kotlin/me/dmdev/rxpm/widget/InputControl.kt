@@ -62,7 +62,6 @@ class InputControl internal constructor(
         }
 
         focusChanges.observable
-            .distinctUntilChanged()
             .subscribe(focus)
             .untilDestroy()
     }
@@ -135,5 +134,8 @@ infix fun InputControl.bindTo(editText: EditText) {
         .map { it.toString() }
         .bindTo(textChanges)
 
-    editText.focusChanges() bindTo focusChanges
+    editText.focusChanges()
+        .distinctUntilChanged()
+        .filter { it != focus.valueOrNull }
+        .bindTo(focusChanges)
 }
