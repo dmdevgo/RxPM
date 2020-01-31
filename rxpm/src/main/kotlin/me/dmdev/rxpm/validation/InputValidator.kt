@@ -6,7 +6,7 @@ class InputValidator internal constructor(
     internal val inputControl: InputControl,
     private val required: Boolean,
     internal val validateOnFocusLoss: Boolean
-) {
+) : Validator {
 
     private val validations = mutableListOf<Pair<(String) -> Boolean, String>>()
 
@@ -14,7 +14,7 @@ class InputValidator internal constructor(
         validations.add(validation)
     }
 
-    internal fun validate(): Boolean {
+    override fun validate(): Boolean {
 
         if (inputControl.text.value.isBlank() && !required) {
             return true

@@ -39,5 +39,6 @@
     <string name="fv_phone_hint">Phone</string>
     <string name="fv_password_hint">Password</string>
     <string name="fv_confirm_password_hint">Confirm Password</string>
+    <string name="fv_terms_checkbox">Accept Terms of Use</string>
 
 </resources>

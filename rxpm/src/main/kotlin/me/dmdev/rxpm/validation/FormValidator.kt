@@ -3,16 +3,20 @@ package me.dmdev.rxpm.validation
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.widget.*
 
-class FormValidator internal constructor(): PresentationModel() {
+class FormValidator internal constructor(): PresentationModel(), Validator {
 
-    internal val inputValidators = mutableListOf<InputValidator>()
+    private val validators = mutableListOf<Validator>()
 
-    fun validate(): Boolean {
+    fun addValidator(validator: Validator) {
+        validators.add(validator)
+    }
+
+    override fun validate(): Boolean {
         var isFormValid = true
-        inputValidators.forEach { inputValidator ->
-            val isFieldValid = inputValidator.validate()
+        validators.forEach { validator ->
+            val isValid = validator.validate()
 
-            if (!isFieldValid) {
+            if (!isValid) {
                 isFormValid = false
             }
         }
@@ -21,11 +25,11 @@ class FormValidator internal constructor(): PresentationModel() {
 
     override fun onCreate() {
 
-        inputValidators.forEach { validator ->
-            if (validator.validateOnFocusLoss) {
+        validators.forEach { validator ->
+            if (validator is InputValidator && validator.validateOnFocusLoss) {
                 validator.inputControl.focus.observable
                     .skip(1)
-                    .filter { focus -> focus.not() }
+                    .filter { hasFocus -> !hasFocus }
                     .subscribe {
                         validator.validate()
                     }
@@ -52,5 +56,36 @@ fun FormValidator.input(
 ) {
     val inputValidator = InputValidator(inputControl, required, validateOnFocusLoss)
     inputValidator.init()
-    inputValidators.add(inputValidator)
+    addValidator(inputValidator)
+}
+
+fun FormValidator.check(
+    state: State<Boolean>,
+    doOnFalse: () -> Unit = {}
+) {
+    addValidator(
+        CheckValidator(
+            validation = { state.valueOrNull == true },
+            doOnFalse = doOnFalse
+        )
+    )
+}
+
+fun FormValidator.check(
+    checkControl: CheckControl,
+    doOnFalse: () -> Unit = {}
+) {
+    check(checkControl.checked, doOnFalse)
+}
+
+fun FormValidator.check(
+    validation: () -> Boolean,
+    doOnFalse: () -> Unit = {}
+) {
+    addValidator(
+        CheckValidator(
+            validation = validation,
+            doOnFalse = doOnFalse
+        )
+    )
 }

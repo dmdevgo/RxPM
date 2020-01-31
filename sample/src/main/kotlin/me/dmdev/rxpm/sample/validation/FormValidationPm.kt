@@ -20,6 +20,10 @@ class FormValidationPm(
     val password = inputControl()
     val confirmPassword = inputControl()
 
+    val termsCheckBox = checkControl(false)
+
+    val acceptTermsOfUse = command<String>()
+
     val validateButtonClicks = action<Unit> {
         doOnNext { formValidator.validate() }
     }
@@ -50,6 +54,10 @@ class FormValidationPm(
         input(confirmPassword) {
             empty("Confirm Password")
             equalsTo(password, "Passwords do not match")
+        }
+
+        check(termsCheckBox) {
+            acceptTermsOfUse.accept("Please accept the terms of use")
         }
     }
 }
