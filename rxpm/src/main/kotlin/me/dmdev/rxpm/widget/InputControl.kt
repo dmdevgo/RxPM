@@ -3,6 +3,7 @@ package me.dmdev.rxpm.widget
 import android.text.*
 import android.widget.*
 import com.google.android.material.textfield.*
+import com.jakewharton.rxbinding3.view.*
 import com.jakewharton.rxbinding3.widget.*
 import me.dmdev.rxpm.*
 
@@ -34,9 +35,19 @@ class InputControl internal constructor(
     val error = state<String>(diffStrategy = null)
 
     /**
+     * The input field focus [state][State].
+     */
+    val focus = state<Boolean>(initialValue = false, diffStrategy = null)
+
+    /**
      * The input field text changes [events][Action].
      */
     val textChanges = action<String>()
+
+    /**
+     * The input field focus changes [events][Action].
+     */
+    val focusChanges = action<Boolean>()
 
     override fun onCreate() {
 
@@ -49,6 +60,11 @@ class InputControl internal constructor(
                 }
                 .untilDestroy()
         }
+
+        focusChanges.observable
+            .distinctUntilChanged()
+            .subscribe(focus)
+            .untilDestroy()
     }
 }
 
@@ -107,9 +123,17 @@ infix fun InputControl.bindTo(editText: EditText) {
         }
     }
 
+    focus bindTo {
+        if (it && !editText.hasFocus()) {
+            editText.requestFocus()
+        }
+    }
+
     editText.textChanges()
         .skipInitialValue()
         .filter { !editing && text.valueOrNull?.contentEquals(it) != true }
         .map { it.toString() }
         .bindTo(textChanges)
+
+    editText.focusChanges() bindTo focusChanges
 }
