@@ -1,10 +1,12 @@
 package me.dmdev.rxpm.widget
 
-import android.text.*
-import android.widget.*
-import com.google.android.material.textfield.*
-import com.jakewharton.rxbinding3.view.*
-import com.jakewharton.rxbinding3.widget.*
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextUtils
+import android.widget.EditText
+import com.google.android.material.textfield.TextInputLayout
+import com.jakewharton.rxbinding3.view.focusChanges
+import com.jakewharton.rxbinding3.widget.textChanges
 import me.dmdev.rxpm.*
 
 /**
@@ -62,6 +64,8 @@ class InputControl internal constructor(
         }
 
         focusChanges.observable
+            .distinctUntilChanged()
+            .filter { it != focus.valueOrNull }
             .subscribe(focus)
             .untilDestroy()
     }
@@ -134,8 +138,5 @@ infix fun InputControl.bindTo(editText: EditText) {
         .map { it.toString() }
         .bindTo(textChanges)
 
-    editText.focusChanges()
-        .distinctUntilChanged()
-        .filter { it != focus.valueOrNull }
-        .bindTo(focusChanges)
+    editText.focusChanges().bindTo(focusChanges)
 }
