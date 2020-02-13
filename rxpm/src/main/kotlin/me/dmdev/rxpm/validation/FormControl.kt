@@ -1,9 +1,10 @@
 package me.dmdev.rxpm.validation
 
-import me.dmdev.rxpm.*
-import me.dmdev.rxpm.widget.*
+import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.widget.CheckControl
+import me.dmdev.rxpm.widget.InputControl
 
-class FormValidator internal constructor(): PresentationModel(), Validator {
+class FormControl internal constructor(): PresentationModel(), Validator {
 
     private val validators = mutableListOf<Validator>()
 
@@ -40,15 +41,15 @@ class FormValidator internal constructor(): PresentationModel(), Validator {
 }
 
 @Suppress("unused")
-fun PresentationModel.formValidator(init: FormValidator.() -> Unit): FormValidator {
-    val formValidator = FormValidator()
+fun PresentationModel.formValidator(init: FormControl.() -> Unit): FormControl {
+    val formValidator = FormControl()
     formValidator.init()
     return formValidator.apply {
         attachToParent(this@formValidator)
     }
 }
 
-fun FormValidator.input(
+fun FormControl.input(
     inputControl: InputControl,
     required: Boolean = true,
     validateOnFocusLoss: Boolean = false,
@@ -59,33 +60,13 @@ fun FormValidator.input(
     addValidator(inputValidator)
 }
 
-fun FormValidator.check(
-    state: State<Boolean>,
-    doOnFalse: () -> Unit = {}
-) {
-    addValidator(
-        CheckValidator(
-            validation = { state.valueOrNull == true },
-            doOnFalse = doOnFalse
-        )
-    )
-}
-
-fun FormValidator.check(
+fun FormControl.check(
     checkControl: CheckControl,
-    doOnFalse: () -> Unit = {}
+    doOnInvalid: () -> Unit = {}
 ) {
-    check(checkControl.checked, doOnFalse)
-}
-
-fun FormValidator.check(
-    validation: () -> Boolean,
-    doOnFalse: () -> Unit = {}
-) {
-    addValidator(
-        CheckValidator(
-            validation = validation,
-            doOnFalse = doOnFalse
-        )
+    val checkValidator = CheckValidator(
+        validation = { checkControl.checked.valueOrNull == true },
+        doOnInvalid = doOnInvalid
     )
+    addValidator(checkValidator)
 }
