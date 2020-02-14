@@ -4,7 +4,7 @@ import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.widget.CheckControl
 import me.dmdev.rxpm.widget.InputControl
 
-class FormControl internal constructor(): PresentationModel(), Validator {
+class FormValidator internal constructor(): PresentationModel(), Validator {
 
     private val validators = mutableListOf<Validator>()
 
@@ -41,15 +41,15 @@ class FormControl internal constructor(): PresentationModel(), Validator {
 }
 
 @Suppress("unused")
-fun PresentationModel.formValidator(init: FormControl.() -> Unit): FormControl {
-    val formValidator = FormControl()
+fun PresentationModel.formValidator(init: FormValidator.() -> Unit): FormValidator {
+    val formValidator = FormValidator()
     formValidator.init()
     return formValidator.apply {
         attachToParent(this@formValidator)
     }
 }
 
-fun FormControl.input(
+fun FormValidator.input(
     inputControl: InputControl,
     required: Boolean = true,
     validateOnFocusLoss: Boolean = false,
@@ -60,7 +60,7 @@ fun FormControl.input(
     addValidator(inputValidator)
 }
 
-fun FormControl.check(
+fun FormValidator.check(
     checkControl: CheckControl,
     doOnInvalid: () -> Unit = {}
 ) {
