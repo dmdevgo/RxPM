@@ -1,5 +1,13 @@
 package me.dmdev.rxpm.validation
 
+
+/**
+ * Implements [Validator] that uses a predefined [check condition][validation].
+ * If the condition is invalid, then [doOnInvalid] is called.
+ *
+ * @see InputValidator
+ * @see FormValidator
+ */
 class CheckValidator internal constructor(
     private val validation: () -> Boolean,
     private val doOnInvalid: () -> Unit

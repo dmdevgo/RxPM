@@ -4,10 +4,22 @@ import me.dmdev.rxpm.PresentationModel
 import me.dmdev.rxpm.widget.CheckControl
 import me.dmdev.rxpm.widget.InputControl
 
+
+/**
+ * Use this class to validate the form.
+ * For this, [create][formValidator] FormValidator using DSL, to check the [input fields][input] and [checkbox][check].
+ * Also you can create your own validators by analogy and use them together.
+ *
+ * @see InputValidator
+ * @see CheckValidator
+ */
 class FormValidator internal constructor(): PresentationModel(), Validator {
 
     private val validators = mutableListOf<Validator>()
 
+    /**
+     * Adds a [validator].
+     */
     fun addValidator(validator: Validator) {
         validators.add(validator)
     }
@@ -40,6 +52,9 @@ class FormValidator internal constructor(): PresentationModel(), Validator {
     }
 }
 
+/**
+ * Creates the [FormValidator]. Add [input][input] and [check][check] validators in [init].
+ */
 @Suppress("unused")
 fun PresentationModel.formValidator(init: FormValidator.() -> Unit): FormValidator {
     val formValidator = FormValidator()
@@ -49,6 +64,10 @@ fun PresentationModel.formValidator(init: FormValidator.() -> Unit): FormValidat
     }
 }
 
+
+/**
+ * Creates the [InputValidator] for [inputControl] and adds it to the [FormValidator].
+ */
 fun FormValidator.input(
     inputControl: InputControl,
     required: Boolean = true,
@@ -60,6 +79,10 @@ fun FormValidator.input(
     addValidator(inputValidator)
 }
 
+
+/**
+ * Creates the [CheckValidator] for [checkControl] and adds it to the [FormValidator].
+ */
 fun FormValidator.check(
     checkControl: CheckControl,
     doOnInvalid: () -> Unit = {}
