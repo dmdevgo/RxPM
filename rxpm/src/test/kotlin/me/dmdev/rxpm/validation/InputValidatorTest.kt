@@ -97,10 +97,10 @@ class InputValidatorTest {
 
         inputValidator.empty(errorText)
 
-        inputControl.text.relay.accept("")
+        inputControl.text.relay.accept("abc")
 
-        assertFalse(inputValidator.validate())
-        assertEquals(errorText, inputControl.error.valueOrNull)
+        assertTrue(inputValidator.validate())
+        assertNull(inputControl.error.valueOrNull)
 
     }
 
@@ -108,10 +108,10 @@ class InputValidatorTest {
 
         inputValidator.empty(errorText)
 
-        inputControl.text.relay.accept("abc")
+        inputControl.text.relay.accept("")
 
-        assertTrue(inputValidator.validate())
-        assertNull(inputControl.error.valueOrNull)
+        assertFalse(inputValidator.validate())
+        assertEquals(errorText, inputControl.error.valueOrNull)
 
     }
 
