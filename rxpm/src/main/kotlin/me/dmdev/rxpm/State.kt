@@ -1,5 +1,6 @@
 package me.dmdev.rxpm
 
+import android.annotation.*
 import com.jakewharton.rxrelay2.*
 import io.reactivex.*
 import io.reactivex.android.schedulers.*
@@ -94,18 +95,29 @@ private val UNPROCESSED_ERROR_CONSUMER = Consumer<Throwable> { throwable ->
  * @param [diffStrategy] diff strategy.
  * @param [stateSource] source of the state.
  */
+@SuppressLint("CheckResult")
 @Suppress("UNCHECKED_CAST")
 fun <T> PresentationModel.state(
     initialValue: T? = null,
     diffStrategy: DiffStrategy<T>? = DiffByEquals as DiffStrategy<T>,
     stateSource: (() -> Observable<T>)? = null
 ): State<T> {
+
     val state = State(pm = this, initialValue = initialValue, diffStrategy = diffStrategy)
-    stateSource?.let { source ->
-        source()
-            .subscribe(state.relay, UNPROCESSED_ERROR_CONSUMER)
-            .untilDestroy()
+
+    if (stateSource != null) {
+        lifecycleObservable
+            .filter { it == PresentationModel.Lifecycle.CREATED }
+            .take(1)
+            .subscribe {
+                stateSource.let { source ->
+                    source()
+                        .subscribe(state.relay, UNPROCESSED_ERROR_CONSUMER)
+                        .untilDestroy()
+                }
+            }
     }
+
     return state
 }
 

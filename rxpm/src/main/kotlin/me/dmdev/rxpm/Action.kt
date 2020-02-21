@@ -1,5 +1,6 @@
 package me.dmdev.rxpm
 
+import android.annotation.*
 import com.jakewharton.rxrelay2.*
 import io.reactivex.*
 import io.reactivex.android.schedulers.*
@@ -28,17 +29,27 @@ class Action<T> internal constructor(internal val pm: PresentationModel) {
  * Optionally subscribes the [action chain][actionChain] to this action.
  * This chain will be unsubscribed ON [DESTROY][PresentationModel.Lifecycle.DESTROYED].
  */
+@SuppressLint("CheckResult")
 fun <T> PresentationModel.action(
     actionChain: (Observable<T>.() -> Observable<*>)? = null
 ): Action<T> {
     val action = Action<T>(pm = this)
-    actionChain?.let { chain ->
-        action.relay
-            .chain()
-            .retry()
-            .subscribe()
-            .untilDestroy()
+
+    if (actionChain != null) {
+        lifecycleObservable
+            .filter { it == PresentationModel.Lifecycle.CREATED }
+            .take(1)
+            .subscribe {
+                actionChain.let { chain ->
+                    action.relay
+                        .chain()
+                        .retry()
+                        .subscribe()
+                        .untilDestroy()
+                }
+            }
     }
+
     return action
 }
 
