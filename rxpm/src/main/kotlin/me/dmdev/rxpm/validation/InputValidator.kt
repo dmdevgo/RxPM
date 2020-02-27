@@ -47,7 +47,7 @@ class InputValidator internal constructor(
 }
 
 /**
- * Adds a check that a text is not empty.
+ * Adds a check that the text is not empty.
  */
 fun InputValidator.empty(errorMessage: String) {
     addValidation(String::isNotEmpty to errorMessage)
@@ -63,7 +63,7 @@ fun InputValidator.pattern(regex: String, errorMessage: String) {
 }
 
 /**
- * Adds a custom condition to check a text.
+ * Adds a custom condition to check the text.
  */
 fun InputValidator.valid(validation: (input: String) -> Boolean, errorMessage: String) {
     addValidation(validation to errorMessage)

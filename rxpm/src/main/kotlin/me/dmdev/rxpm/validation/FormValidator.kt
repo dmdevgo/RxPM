@@ -7,7 +7,7 @@ import me.dmdev.rxpm.widget.InputControl
 
 /**
  * Use this class to validate the form.
- * For this, [create][formValidator] FormValidator using DSL, to check the [input fields][input] and [checkbox][check].
+ * To check the [input fields][input] and [checkbox][check] [create][formValidator] FormValidator using DSL.
  * Also you can create your own validators by analogy and use them together.
  *
  * @see InputValidator
