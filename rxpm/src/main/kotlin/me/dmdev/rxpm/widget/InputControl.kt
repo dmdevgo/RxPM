@@ -1,9 +1,12 @@
 package me.dmdev.rxpm.widget
 
-import android.text.*
-import android.widget.*
-import com.google.android.material.textfield.*
-import com.jakewharton.rxbinding3.widget.*
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextUtils
+import android.widget.EditText
+import com.google.android.material.textfield.TextInputLayout
+import com.jakewharton.rxbinding3.view.focusChanges
+import com.jakewharton.rxbinding3.widget.textChanges
 import me.dmdev.rxpm.*
 
 /**
@@ -34,9 +37,19 @@ class InputControl internal constructor(
     val error = state<String>(diffStrategy = null)
 
     /**
+     * The input field focus [state][State].
+     */
+    val focus = state<Boolean>(initialValue = false, diffStrategy = null)
+
+    /**
      * The input field text changes [events][Action].
      */
     val textChanges = action<String>()
+
+    /**
+     * The input field focus changes [events][Action].
+     */
+    val focusChanges = action<Boolean>()
 
     override fun onCreate() {
 
@@ -49,6 +62,12 @@ class InputControl internal constructor(
                 }
                 .untilDestroy()
         }
+
+        focusChanges.observable
+            .distinctUntilChanged()
+            .filter { it != focus.valueOrNull }
+            .subscribe(focus)
+            .untilDestroy()
     }
 }
 
@@ -107,9 +126,17 @@ infix fun InputControl.bindTo(editText: EditText) {
         }
     }
 
+    focus bindTo {
+        if (it && !editText.hasFocus()) {
+            editText.requestFocus()
+        }
+    }
+
     editText.textChanges()
         .skipInitialValue()
         .filter { !editing && text.valueOrNull?.contentEquals(it) != true }
         .map { it.toString() }
         .bindTo(textChanges)
+
+    editText.focusChanges().bindTo(focusChanges)
 }

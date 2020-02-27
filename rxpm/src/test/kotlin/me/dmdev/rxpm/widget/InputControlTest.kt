@@ -17,6 +17,7 @@ class InputControlTest {
     }
 
     @Test fun formatInput() {
+
         val inputControl = presentationModel.inputControl(
             formatter = { it.toUpperCase() }
         )
@@ -41,6 +42,7 @@ class InputControlTest {
     }
 
     @Test fun notFilterDuplicateValues() {
+
         val inputControl = presentationModel.inputControl(
             formatter = { it.take(3) }
         )
@@ -63,6 +65,33 @@ class InputControlTest {
                 "ab",
                 "abc",
                 "abc" // clear user input after formatting because editText contains "abcd"
+            )
+            .assertNoErrors()
+    }
+
+    @Test fun filterIfFocusNotChanged() {
+
+        val inputControl = presentationModel.inputControl()
+
+        val testObserver = inputControl.focus.observable.test()
+
+        pmTestHelper.setLifecycleTo(CREATED)
+
+        inputControl.focusChanges.consumer.run {
+            accept(true)
+            accept(true)
+            accept(false)
+            accept(false)
+            accept(true)
+            accept(true)
+        }
+
+        testObserver
+            .assertValues(
+                false, // initial value
+                true,
+                false,
+                true
             )
             .assertNoErrors()
     }
