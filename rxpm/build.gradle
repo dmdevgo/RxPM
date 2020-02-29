@@ -63,7 +63,7 @@ ext {
     bintrayName = 'RxPM'
     publishedGroupId = 'me.dmdev.rxpm'
     artifact = 'rxpm'
-    libraryVersion = '2.0'
+    libraryVersion = '2.1'
     gitUrl = 'https://github.com/dmdevgo/RxPM'
     allLicenses = ['MIT']
 }
