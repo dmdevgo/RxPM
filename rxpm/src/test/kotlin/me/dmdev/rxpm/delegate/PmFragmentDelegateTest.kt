@@ -41,7 +41,8 @@ class PmFragmentDelegateTest {
     @Test fun callViewMethods() {
 
         delegate.onCreate(null)
-        delegate.onViewCreated()
+        delegate.onViewCreated(null)
+        delegate.onActivityCreated(null)
 
         verify(view).providePresentationModel()
         assertEquals(pm, delegate.presentationModel)
@@ -62,7 +63,8 @@ class PmFragmentDelegateTest {
         val testObserver = pm.lifecycleObservable.test()
 
         delegate.onCreate(null)
-        delegate.onViewCreated()
+        delegate.onViewCreated(null)
+        delegate.onActivityCreated(null)
         delegate.onStart()
         delegate.onResume()
         delegate.onPause()

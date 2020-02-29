@@ -46,6 +46,7 @@ dependencies {
 
     // Rx
     api rootProject.rxJava2
+    implementation rootProject.annotation
     implementation rootProject.rxRelay2
     implementation rootProject.rxAndroid2
     implementation rootProject.rxBinding
@@ -62,7 +63,7 @@ ext {
     bintrayName = 'RxPM'
     publishedGroupId = 'me.dmdev.rxpm'
     artifact = 'rxpm'
-    libraryVersion = '2.0'
+    libraryVersion = '2.1'
     gitUrl = 'https://github.com/dmdevgo/RxPM'
     allLicenses = ['MIT']
 }

@@ -5,6 +5,7 @@ import android.view.*
 import androidx.appcompat.app.*
 import io.reactivex.functions.*
 import me.dmdev.rxpm.base.*
+import me.dmdev.rxpm.passTo
 import me.dmdev.rxpm.sample.*
 import me.dmdev.rxpm.sample.main.extensions.*
 import me.dmdev.rxpm.widget.*
@@ -34,7 +35,7 @@ abstract class Screen<PM : ScreenPresentationModel> :
     }
 
     override fun handleBack(): Boolean {
-        presentationModel.backAction.consumer.accept(Unit)
+        Unit passTo presentationModel.backAction
         return true
     }
 

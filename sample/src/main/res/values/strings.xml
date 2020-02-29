@@ -7,6 +7,7 @@
     <string name="launch_title">RxPM samples</string>
     <string name="launch_main_sample">Main Sample</string>
     <string name="launch_counter_sample">Counter Sample</string>
+    <string name="launch_form_validation_sample">Form Validation</string>
 
     <!-- Auth by phone -->
     <string name="auth_by_phone_screen_text">Please confirm your country code and enter your phone number.</string>
@@ -29,5 +30,15 @@
 
     <!-- Main -->
     <string name="main_logout_action">Logout</string>
+
+    <!--  Form Validation  -->
+    <string name="fv_title">Form Validation</string>
+    <string name="fv_name_hint">Name</string>
+    <string name="fv_validate_button">Validate</string>
+    <string name="fv_email_hint">E-mail</string>
+    <string name="fv_phone_hint">Phone</string>
+    <string name="fv_password_hint">Password</string>
+    <string name="fv_confirm_password_hint">Confirm Password</string>
+    <string name="fv_terms_checkbox">Accept Terms of Use</string>
 
 </resources>

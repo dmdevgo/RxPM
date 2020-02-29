@@ -22,14 +22,14 @@ class MainPm(private val authModel: AuthModel) : ScreenPresentationModel() {
         super.onCreate()
 
         logoutAction.observable
-            .skipWhileInProgress(inProgress.observable)
+            .skipWhileInProgress(inProgress)
             .switchMapMaybe {
                 logoutDialog.showForResult(Unit)
                     .filter { it == DialogResult.Ok }
             }
             .switchMapCompletable {
                 authModel.logout()
-                    .bindProgress(inProgress.consumer)
+                    .bindProgress(inProgress)
                     .doOnError { showError(it.message) }
                     .doOnComplete { sendMessage(LogoutCompletedMessage()) }
             }
