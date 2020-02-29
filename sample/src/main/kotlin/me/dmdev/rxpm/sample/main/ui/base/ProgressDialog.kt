@@ -15,7 +15,7 @@ class ProgressDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return Dialog(context!!, R.style.ProgressDialogTheme).apply {
+        return Dialog(requireContext(), R.style.ProgressDialogTheme).apply {
             setContentView(ProgressBar(context))
         }
     }

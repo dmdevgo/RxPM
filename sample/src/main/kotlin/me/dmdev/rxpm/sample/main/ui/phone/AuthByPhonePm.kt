@@ -1,14 +1,15 @@
 package me.dmdev.rxpm.sample.main.ui.phone
 
 import com.google.i18n.phonenumbers.*
-import io.reactivex.*
-import io.reactivex.functions.*
+import io.reactivex.rxkotlin.Observables.combineLatest
 import me.dmdev.rxpm.*
 import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.main.*
+import me.dmdev.rxpm.sample.main.AppNavigationMessage.*
 import me.dmdev.rxpm.sample.main.model.*
 import me.dmdev.rxpm.sample.main.ui.base.*
 import me.dmdev.rxpm.sample.main.util.*
+import me.dmdev.rxpm.validation.*
 import me.dmdev.rxpm.widget.*
 
 
@@ -18,7 +19,6 @@ class AuthByPhonePm(
     private val authModel: AuthModel
 ) : ScreenPresentationModel() {
 
-    val chosenCountry = state<Country>()
     val phoneNumber = inputControl(formatter = null)
     val countryCode = inputControl(
         initialText = "+7",
@@ -27,7 +27,7 @@ class AuthByPhonePm(
             if (code.length > 5) {
                 try {
                     val number = phoneUtil.parsePhone(code)
-                    phoneNumberFocus.accept(Unit)
+                    phoneNumber.focus.accept(true)
                     phoneNumber.textChanges.accept(number.nationalNumber.toString())
                     "+${number.countryCode}"
                 } catch (e: NumberParseException) {
@@ -38,18 +38,7 @@ class AuthByPhonePm(
             }
         }
     )
-
-    val inProgress = state(false)
-    val sendButtonEnabled = state(false)
-    val phoneNumberFocus = command<Unit>(bufferSize = 1)
-
-    val sendAction = action<Unit>()
-    val countryClicks = action<Unit>()
-    val chooseCountryAction = action<Country>()
-
-    override fun onCreate() {
-        super.onCreate()
-
+    val chosenCountry = state<Country> {
         countryCode.text.observable
             .map {
                 val code = it.onlyDigits()
@@ -59,67 +48,67 @@ class AuthByPhonePm(
                     Country.UNKNOWN
                 }
             }
-            .subscribe(chosenCountry)
-            .untilDestroy()
+    }
 
-        Observable.combineLatest(phoneNumber.textChanges.observable, chosenCountry.observable,
-            BiFunction { number: String, country: Country ->
-                phoneUtil.formatPhoneNumber(country, number)
-            })
-            .subscribe(phoneNumber.text)
-            .untilDestroy()
+    val inProgress = state(false)
 
+    val sendButtonEnabled = state(false) {
+        combineLatest(
+            phoneNumber.textChanges.observable,
+            chosenCountry.observable
+        ) { number: String, country: Country ->
+            phoneUtil.isValidPhone(country, number)
+        }
+    }
 
-        Observable.combineLatest(phoneNumber.textChanges.observable, chosenCountry.observable,
-            BiFunction { number: String, country: Country ->
-                phoneUtil.isValidPhone(country, number)
-            })
-            .subscribe(sendButtonEnabled)
-            .untilDestroy()
+    val countryClicks = action<Unit> {
+        this.map { AppNavigationMessage.ChooseCountry }
+            .doOnNext(navigationMessages.consumer)
+    }
 
-        countryClicks.observable
-            .subscribe {
-                sendMessage(ChooseCountryMessage())
-            }
-            .untilDestroy()
+    val chooseCountry = action<Country> {
+        this.doOnNext {
+            countryCode.textChanges.accept("+${it.countryCallingCode}")
+            chosenCountry.accept(it)
+            phoneNumber.focus.accept(true)
+        }
+    }
 
-        chooseCountryAction.observable
-            .subscribe {
-                countryCode.textChanges.accept("+${it.countryCallingCode}")
-                chosenCountry.accept(it)
-                phoneNumberFocus.accept(Unit)
-            }
-            .untilDestroy()
-
-        sendAction.observable
-            .skipWhileInProgress(inProgress)
-            .filter { validateForm() }
+    val sendClicks = action<Unit> {
+        this.skipWhileInProgress(inProgress)
+            .filter { formValidator.validate() }
             .map { "${countryCode.text.value} ${phoneNumber.text.value}" }
             .switchMapCompletable { phone ->
                 authModel.sendPhone(phone)
                     .bindProgress(inProgress)
-                    .doOnComplete {
-                        sendMessage(PhoneSentSuccessfullyMessage(phone))
-                    }
-                    .doOnError { showError(it.message) }
+                    .doOnComplete { sendMessage(PhoneSentSuccessfully(phone)) }
+                    .doOnError(errorConsumer)
             }
-            .retry()
-            .subscribe()
+            .toObservable<Any>()
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        combineLatest(
+            phoneNumber.textChanges.observable,
+            chosenCountry.observable
+        ) { number: String, country: Country ->
+            phoneUtil.formatPhoneNumber(country, number)
+        }
+            .subscribe(phoneNumber.text)
             .untilDestroy()
     }
 
-    private fun validateForm(): Boolean {
-
-        return if (phoneNumber.text.value.isEmpty()) {
-            phoneNumber.error.accept(resourceProvider.getString(R.string.enter_phone_number))
-            false
-        } else if (!phoneUtil.isValidPhone(chosenCountry.value, phoneNumber.text.value)) {
-            phoneNumber.error.accept(resourceProvider.getString(R.string.invalid_phone_number))
-            false
-        } else {
-            true
+    private val formValidator = formValidator {
+        input(phoneNumber) {
+            empty(resourceProvider.getString(R.string.enter_phone_number))
+            valid(
+                validation = { phoneNumber ->
+                    phoneUtil.isValidPhone(chosenCountry.value, phoneNumber)
+                },
+                errorMessage = resourceProvider.getString(R.string.invalid_phone_number)
+            )
         }
-
     }
-
 }

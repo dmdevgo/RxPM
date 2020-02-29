@@ -1,12 +1,13 @@
 package me.dmdev.rxpm.sample.main
 
-import me.dmdev.rxpm.navigation.NavigationMessage
-import me.dmdev.rxpm.sample.main.util.Country
+import me.dmdev.rxpm.navigation.*
+import me.dmdev.rxpm.sample.main.util.*
 
-class BackMessage : NavigationMessage
-
-class ChooseCountryMessage : NavigationMessage
-class CountryChosenMessage(val country: Country) : NavigationMessage
-class PhoneSentSuccessfullyMessage(val phone: String) : NavigationMessage
-class PhoneConfirmedMessage : NavigationMessage
-class LogoutCompletedMessage : NavigationMessage
+sealed class AppNavigationMessage : NavigationMessage {
+    object Back : AppNavigationMessage()
+    object ChooseCountry : AppNavigationMessage()
+    class CountryChosen(val country: Country) : AppNavigationMessage()
+    class PhoneSentSuccessfully(val phone: String) : AppNavigationMessage()
+    object PhoneConfirmed : AppNavigationMessage()
+    object LogoutCompleted : AppNavigationMessage()
+}

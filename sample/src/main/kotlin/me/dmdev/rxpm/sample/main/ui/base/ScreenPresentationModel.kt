@@ -1,32 +1,25 @@
 package me.dmdev.rxpm.sample.main.ui.base
 
-import me.dmdev.rxpm.Action
-import me.dmdev.rxpm.PresentationModel
-import me.dmdev.rxpm.action
-import me.dmdev.rxpm.command
-import me.dmdev.rxpm.navigation.NavigationMessage
-import me.dmdev.rxpm.navigation.NavigationalPm
-import me.dmdev.rxpm.sample.main.BackMessage
-import me.dmdev.rxpm.widget.dialogControl
+import io.reactivex.functions.*
+import me.dmdev.rxpm.*
+import me.dmdev.rxpm.navigation.*
+import me.dmdev.rxpm.sample.main.AppNavigationMessage.*
+import me.dmdev.rxpm.widget.*
 
 
-abstract class ScreenPresentationModel : PresentationModel(),
-    NavigationalPm {
+abstract class ScreenPresentationModel : PresentationModel(), NavigationalPm {
 
     override val navigationMessages = command<NavigationMessage>()
 
     val errorDialog = dialogControl<String, Unit>()
 
-    private val backActionDefault = action<Unit>()
+    protected val errorConsumer = Consumer<Throwable?> {
+        errorDialog.show(it?.message ?: "Unknown error")
+    }
 
-    open val backAction: Action<Unit> = backActionDefault
-
-    override fun onCreate() {
-        super.onCreate()
-
-        backActionDefault.observable
-            .subscribe { sendMessage(BackMessage()) }
-            .untilDestroy()
+    open val backAction = action<Unit> {
+        this.map { Back }
+            .doOnNext(navigationMessages.consumer)
     }
 
     protected fun sendMessage(message: NavigationMessage) {

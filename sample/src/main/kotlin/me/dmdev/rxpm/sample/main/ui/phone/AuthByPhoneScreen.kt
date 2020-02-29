@@ -35,7 +35,6 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
 
         pm.inProgress bindTo progressConsumer
         pm.sendButtonEnabled bindTo sendButton::setEnabled
-        pm.phoneNumberFocus bindTo { phoneNumberEdit.requestFocus() }
 
         countryName.clicks() bindTo pm.countryClicks
 
@@ -46,12 +45,12 @@ class AuthByPhoneScreen : Screen<AuthByPhonePm>() {
                     .filter { it == EditorInfo.IME_ACTION_SEND }
                     .map { Unit }
             )
-            .bindTo(pm.sendAction)
+            .bindTo(pm.sendClicks)
 
     }
 
     fun onCountryChosen(country: Country) {
-        country passTo presentationModel.chooseCountryAction
+        country passTo presentationModel.chooseCountry
     }
 
     override fun onResume() {

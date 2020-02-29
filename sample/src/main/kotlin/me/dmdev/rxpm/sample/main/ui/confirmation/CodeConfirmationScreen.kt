@@ -52,7 +52,7 @@ class CodeConfirmationScreen : Screen<CodeConfirmationPm>() {
                     .filter { it == EditorInfo.IME_ACTION_SEND }
                     .map { Unit }
             )
-            .bindTo(pm.sendAction)
+            .bindTo(pm.sendClicks)
 
     }
 
