@@ -202,7 +202,7 @@ pm.errorMessage bindTo { message ->
 
 When the View is pauses, **Command** collects all received values and emits them on resume:
 
-![Command](/docs/images/bwu.png)
+![Command](/docs/images/bwp.png)
 
 ## Controls
 
