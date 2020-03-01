@@ -305,6 +305,10 @@ private val formValidator = formValidator {
 }
 ```
 
+## Paging and Loading
+In almost every application, we have pagination and data loading. And also we must correctly handle screen states.
+We recommend using the library [RxPagingLoading](https://github.com/MobileUpLLC/RxPagingLoading). The solution is based on the usage of [Unidirectional Data Flow](https://en.wikipedia.org/wiki/Unidirectional_Data_Flow_(computer_science)) pattern and well compatible with RxPM.
+
 ## Sample
 
 The [sample](https://github.com/dmdevgo/RxPM/tree/develop/sample) shows how to use RxPM in practice.
