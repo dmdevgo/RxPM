@@ -263,6 +263,48 @@ pm.dialogControl bindTo { message, dialogControl ->
 }
 ```
 
+### Form Validation
+
+Validating forms is now easy. Create the `FormValidator` using DSL to check `InputControls` and `CheckControls`:
+```kotlin
+val validateButtonClicks = action<Unit> {
+    doOnNext { formValidator.validate() }
+}
+    
+private val formValidator = formValidator {
+
+    input(name) {
+        empty("Input Name")
+    }
+    
+    input(email, required = false) {
+        pattern(ANDROID_EMAIL_PATTERN, "Invalid e-mail address")
+    }
+    
+    input(phone, validateOnFocusLoss = true) {
+        valid(phoneUtil::isValidPhone, "Invalid phone number")
+    }
+    
+    input(password) {
+        empty("Input Password")
+        minSymbols(6, "Minimum 6 symbols")
+        pattern(
+            regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d]).{6,}\$",
+            errorMessage = "The password must contain a large and small letters, numbers."
+        )
+    }
+    
+    input(confirmPassword) {
+        empty("Confirm Password")
+        equalsTo(password, "Passwords do not match")
+    }
+    
+    check(termsCheckBox) {
+        acceptTermsOfUse.accept("Please accept the terms of use")
+    }
+}
+```
+
 ## Sample
 
 The [sample](https://github.com/dmdevgo/RxPM/tree/develop/sample) shows how to use RxPM in practice.
