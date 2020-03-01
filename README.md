@@ -318,7 +318,7 @@ The [sample](https://github.com/dmdevgo/RxPM/tree/develop/sample) shows how to u
 You can test PresentationModel in the same way as any other class with RxJava (using TestObserver, Mockito, other).  
 The only difference is that you have to change it's lifecycle state while testing. And **PmTestHelper** allows you to do that.
 
-Note that Command passes events only when PM is in the BINDED state.
+Note that Command passes events only when PM is in the RESUMED state.
 
 ## License
 
