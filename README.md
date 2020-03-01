@@ -165,8 +165,8 @@ buttonClicks.observable
     .switchMapSingle {
         requestInteractor()
             .bindProgress(inProgress)
-            .doOnSuccess { // handle result }
-            .doOnError { // handel error }
+            .doOnSuccess { /* handle result */ }
+            .doOnError { /* handel error */ }
     }
     .retry()
     .subscribe()
@@ -174,13 +174,13 @@ buttonClicks.observable
 ```
 Often forget about it. Therefore, we added the ability to describe the rx-chain of `Action` in a lambda when the it is declared. This improves readability and eliminates boilerplate code:
 ```kotlin
-val buttonClicks = action<Unit>() {
+val buttonClicks = action<Unit> {
     this.skipWhileInProgress(inProgress) // filter clicks during the request
         .switchMapSingle {
             requestInteractor()
                 .bindProgress(inProgress)
-                .doOnSuccess { // handle result }
-                .doOnError { // handel error }
+                .doOnSuccess { /* handle result */ }
+                .doOnError { /* handel error */ }
     }
 }
 ```
@@ -237,13 +237,13 @@ enum class DialogResult { EXIT, CANCEL }
 
 val dialogControl = dialogControl<String, DialogResult>()
 
-val backButtonClicks = action<Unit>() {
+val backButtonClicks = action<Unit> {
     this.switchMapMaybe {
             dialogControl.showForResult("Do you really want to exit?")
         }
         .filter { it == DialogResult.EXIT }
         .doOnNext {
-          // close application
+            // close application
         }
 }
 ```
