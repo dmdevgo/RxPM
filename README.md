@@ -62,6 +62,7 @@ class CounterPm : PresentationModel() {
     }
 }
 ```
+In this sample initialisation of the states and actions done in their blocks, but you also can do it in onCreate() or other callbacks. Don't forget to use untilDestroy() or other similar extension.
 ### Bind to the PresentationModel properties
 ```kotlin
 class CounterActivity : PmActivity<CounterPm>() {
@@ -126,7 +127,7 @@ Observe changes in the View:
 ```kotlin
 pm.inProgress bindTo progressBar.visibility()
 ```
-Usually there is already a data source or the state is derived from other states. In this case, it’s convenient to describe the rx-chain using lambda like as shown bellow:
+Usually there is already a data source or the state is derived from other states. In this case, it’s convenient to describe this using lambda like as shown below:
 ```kotlin
 // Disable a button during the request
 val buttonEnabled = state(false) {
@@ -154,6 +155,8 @@ buttonClicks.observable
     }
     .untilDestroy()
 ```
+
+#### Action initialisation block to avoid mistakes
 Typically, the Action triggers an asynchronous operations, such as a request to backend. In this case, the rx-chain will may throw an exception and app will crash. We can handle errors in `subscribe`, but this is not enough. After the first failure, the chain will be completed and stop processing clicks. Therefore, the correct handling involves the use of the `retry` operator and looks as follows:
 
 ```kotlin
@@ -172,7 +175,7 @@ buttonClicks.observable
     .subscribe()
     .untilDestroy()
 ```
-Often forget about it. Therefore, we added the ability to describe the rx-chain of `Action` in a lambda when the it is declared. This improves readability and eliminates boilerplate code:
+But often people forget about it. Therefore, we added the ability to describe the rx-chain of `Action` in it's initialisation block. This improves readability and eliminates boilerplate code:
 ```kotlin
 val buttonClicks = action<Unit> {
     this.skipWhileInProgress(inProgress) // filter clicks during the request
