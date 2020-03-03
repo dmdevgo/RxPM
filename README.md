@@ -100,7 +100,7 @@ Lifecycle callbacks:
 - `onUnbind()` — Called when the View unbinds from the PresentationModel.
 - `onDestroy()` — Called when the PresentationModel is being destroyed. Dispose all subscriptions in this method.
 
-What's more you can observe lifecycle changes via `lifecycleObservable`.
+What's more, you can observe lifecycle changes via `lifecycleObservable`.
 
 Also the useful extensions of the *Disposable* are available to make lifecycle handling easier: `untilPause`,`untilUnbind` and `untilDestroy`.
 
@@ -129,7 +129,7 @@ pm.inProgress bindTo progressBar.visibility()
 ```
 Usually there is a data source already or the state is derived from other states. In this case, it’s convenient to describe this using lambda as shown below:
 ```kotlin
-// Disable a button during the request
+// Disable the button during the request
 val buttonEnabled = state(false) {
     inProgress.observable.map { progress -> !progress }
 }
@@ -203,7 +203,7 @@ pm.errorMessage bindTo { message ->
 }
 ```
 
-When the View is pauses, **Command** collects all received values and emits them on resume:
+When the View is paused, **Command** collects all received values and emits them on resume:
 
 ![Command](/docs/images/bwp.png)
 
