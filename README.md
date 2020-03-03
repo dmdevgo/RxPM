@@ -62,7 +62,7 @@ class CounterPm : PresentationModel() {
     }
 }
 ```
-In this sample initialisation of the states and actions done in their blocks, but you also can do it in onCreate() or other callbacks. Don't forget to use untilDestroy() or other similar extension.
+In this sample the initialisation of states and actions is done in their own blocks, but it's also possible to do it in `onCreate()` or other callbacks. Don't forget to use `untilDestroy()` or other similar extension.
 ### Bind to the PresentationModel properties
 ```kotlin
 class CounterActivity : PmActivity<CounterPm>() {
@@ -96,7 +96,7 @@ Lifecycle callbacks:
 - `onCreate()` — Called when the PresentationModel is created. Initialize your Rx chains in this method.
 - `onBind()` — Called when the View binds to the PresentationModel.
 - `onResume` - Called when the View resumes and begins to receive updates from states and commands.
-- `onPause` - Called when the View pauses. At this point, states and commands stops emitting to the View and turn on internal buffer until the View resumes again. 
+- `onPause` - Called when the View pauses. At this point, states and commands stop emitting to the View and turn on internal buffer until the View resumes again.
 - `onUnbind()` — Called when the View unbinds from the PresentationModel.
 - `onDestroy()` — Called when the PresentationModel is being destroyed. Dispose all subscriptions in this method.
 
@@ -127,7 +127,7 @@ Observe changes in the View:
 ```kotlin
 pm.inProgress bindTo progressBar.visibility()
 ```
-Usually there is already a data source or the state is derived from other states. In this case, it’s convenient to describe this using lambda like as shown below:
+Usually there is a data source already or the state is derived from other states. In this case, it’s convenient to describe this using lambda as shown below:
 ```kotlin
 // Disable a button during the request
 val buttonEnabled = state(false) {
@@ -157,7 +157,7 @@ buttonClicks.observable
 ```
 
 #### Action initialisation block to avoid mistakes
-Typically, the Action triggers an asynchronous operations, such as a request to backend. In this case, the rx-chain will may throw an exception and app will crash. We can handle errors in `subscribe`, but this is not enough. After the first failure, the chain will be completed and stop processing clicks. Therefore, the correct handling involves the use of the `retry` operator and looks as follows:
+Typically, some Action triggers an asynchronous operation, such as a request to backend. In this case, the rx-chain may throw an exception and app will crash. It's possible to handle errors in the subscribe block, but this is not enough. After the first failure, the chain will be terminated and stop processing clicks. Therefore, the correct handling involves the use of the `retry` operator and looks as follows:
 
 ```kotlin
 val buttonClicks = action<Unit>()
@@ -230,7 +230,6 @@ pm.checked bindTo checkBox
 ```
 
 ### Dialogs
-
 The DialogControl is a component make possible the interaction with the dialogs in reactive style.  
 It manages the lifecycle and the state of the dialog. Just bind your Dialog object (eg. AlertDialog) to the DialogControl. No need in DialogFragment anymore.
 
@@ -267,7 +266,6 @@ pm.dialogControl bindTo { message, dialogControl ->
 ```
 
 ### Form Validation
-
 Validating forms is now easy. Create the `FormValidator` using DSL to check `InputControls` and `CheckControls`:
 ```kotlin
 val validateButtonClicks = action<Unit> {
@@ -309,9 +307,8 @@ private val formValidator = formValidator {
 ```
 
 ## Paging and Loading
-In almost every application, we have pagination and data loading. And also we must correctly handle screen states.
-We recommend using the library [RxPagingLoading](https://github.com/MobileUpLLC/RxPagingLoading). The solution is based on the usage of [Unidirectional Data Flow](https://en.wikipedia.org/wiki/Unidirectional_Data_Flow_(computer_science)) pattern and well compatible with RxPM.
-
+In almost every application, there are pagination and data loading. What's more, we have to handle screen states correctly.
+We recommend using the library [RxPagingLoading](https://github.com/MobileUpLLC/RxPagingLoading). The solution is based on the usage of [Unidirectional Data Flow](https://en.wikipedia.org/wiki/Unidirectional_Data_Flow_(computer_science)) pattern and is perfectly compatible with RxPM.
 ## Sample
 
 The [sample](https://github.com/dmdevgo/RxPM/tree/develop/sample) shows how to use RxPM in practice.
