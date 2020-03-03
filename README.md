@@ -135,6 +135,8 @@ val buttonEnabled = state(false) {
 }
 ```
 
+In order to optimize the state update and to avoid unnecessary rendering on the view you can add a `DiffStrategy` in the `State`. By default, the `DiffByEquals` strategy is used. It's suitable for primitives and simple date classes, whereas `DiffByReference` is better to use for collections(like List).
+
 ### Action
 **Action** is the reactive property which represents the user actions.  
 It's mostly used for receiving events from the View, such as clicks.
