@@ -55,8 +55,8 @@ class ChooseCountryScreen : Screen<ChooseCountryPm>() {
         pm.searchQueryInput bindTo searchQueryEdit
         pm.countries bindTo { countriesAdapter.setData(it) }
 
-        searchButton.clicks() bindTo pm.openSearchAction
-        clearButton.clicks() bindTo pm.clearAction
+        searchButton.clicks() bindTo pm.openSearchClicks
+        clearButton.clicks() bindTo pm.clearClicks
         navButton.clicks() bindTo pm.backAction
     }
 }

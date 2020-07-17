@@ -4,6 +4,7 @@ import android.os.*
 import androidx.appcompat.app.*
 import me.dmdev.rxpm.navigation.*
 import me.dmdev.rxpm.sample.*
+import me.dmdev.rxpm.sample.main.AppNavigationMessage.*
 import me.dmdev.rxpm.sample.main.extensions.*
 import me.dmdev.rxpm.sample.main.ui.base.*
 import me.dmdev.rxpm.sample.main.ui.confirmation.*
@@ -39,25 +40,25 @@ class MainActivity : AppCompatActivity(), NavigationMessageHandler {
 
         when (message) {
 
-            is BackMessage -> super.onBackPressed()
+            is Back -> super.onBackPressed()
 
-            is ChooseCountryMessage -> sfm.openScreen(ChooseCountryScreen())
+            is ChooseCountry -> sfm.openScreen(ChooseCountryScreen())
 
-            is CountryChosenMessage -> {
+            is CountryChosen -> {
                 sfm.back()
                 sfm.findScreen<AuthByPhoneScreen>()?.onCountryChosen(message.country)
             }
 
-            is PhoneSentSuccessfullyMessage -> sfm.openScreen(
+            is PhoneSentSuccessfully -> sfm.openScreen(
                 CodeConfirmationScreen.newInstance(message.phone)
             )
 
-            is PhoneConfirmedMessage -> {
+            is PhoneConfirmed -> {
                 sfm.clearBackStack()
                 sfm.openScreen(MainScreen(), addToBackStack = false)
             }
 
-            is LogoutCompletedMessage -> {
+            is LogoutCompleted -> {
                 sfm.clearBackStack()
                 sfm.openScreen(AuthByPhoneScreen(), addToBackStack = false)
             }

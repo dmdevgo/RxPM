@@ -4,16 +4,14 @@ import android.os.*
 import android.view.*
 import androidx.appcompat.app.*
 import io.reactivex.functions.*
+import me.dmdev.rxpm.*
 import me.dmdev.rxpm.base.*
-import me.dmdev.rxpm.passTo
-import me.dmdev.rxpm.sample.*
+import me.dmdev.rxpm.sample.R
 import me.dmdev.rxpm.sample.main.extensions.*
 import me.dmdev.rxpm.widget.*
 
 
-abstract class Screen<PM : ScreenPresentationModel> :
-    PmFragment<PM>(),
-    BackHandler {
+abstract class Screen<PM : ScreenPresentationModel> : PmFragment<PM>(), BackHandler {
 
     abstract val screenLayout: Int
 

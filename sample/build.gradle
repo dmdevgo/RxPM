@@ -36,6 +36,7 @@ dependencies {
 
     // Rx
     implementation rootProject.rxAndroid2
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
 
     // RxBindings
     implementation rootProject.rxBinding

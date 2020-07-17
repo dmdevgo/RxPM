@@ -1,14 +1,21 @@
 package me.dmdev.rxpm
 
-import com.nhaarman.mockitokotlin2.*
-import io.reactivex.observers.*
-import me.dmdev.rxpm.PresentationModel.*
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
+import io.reactivex.observers.TestObserver
+import me.dmdev.rxpm.PresentationModel.Lifecycle
 import me.dmdev.rxpm.PresentationModel.Lifecycle.*
-import org.junit.*
+import me.dmdev.rxpm.util.SchedulersRule
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class PresentationModelTest {
+
+    @get:Rule val schedulers = SchedulersRule()
 
     private lateinit var lifecycleCallbacks: LifecycleCallbacks
     private lateinit var pm: TestPm

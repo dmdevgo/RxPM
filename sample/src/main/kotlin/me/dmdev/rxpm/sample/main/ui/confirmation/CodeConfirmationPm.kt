@@ -1,13 +1,20 @@
 package me.dmdev.rxpm.sample.main.ui.confirmation
 
-import io.reactivex.*
-import me.dmdev.rxpm.*
+import me.dmdev.rxpm.action
+import me.dmdev.rxpm.bindProgress
 import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.main.*
-import me.dmdev.rxpm.sample.main.model.*
-import me.dmdev.rxpm.sample.main.ui.base.*
-import me.dmdev.rxpm.sample.main.util.*
-import me.dmdev.rxpm.widget.*
+import me.dmdev.rxpm.sample.main.AppNavigationMessage.PhoneConfirmed
+import me.dmdev.rxpm.sample.main.model.AuthModel
+import me.dmdev.rxpm.sample.main.ui.base.ScreenPresentationModel
+import me.dmdev.rxpm.sample.main.util.ResourceProvider
+import me.dmdev.rxpm.sample.main.util.onlyDigits
+import me.dmdev.rxpm.skipWhileInProgress
+import me.dmdev.rxpm.state
+import me.dmdev.rxpm.validation.empty
+import me.dmdev.rxpm.validation.formValidator
+import me.dmdev.rxpm.validation.input
+import me.dmdev.rxpm.validation.minSymbols
+import me.dmdev.rxpm.widget.inputControl
 
 class CodeConfirmationPm(
     private val phone: String,
@@ -23,51 +30,34 @@ class CodeConfirmationPm(
         formatter = { it.onlyDigits().take(CODE_LENGTH) }
     )
     val inProgress = state(false)
-    val sendButtonEnabled = state(false)
 
-    val sendAction = action<Unit>()
+    val sendButtonEnabled = state(false) {
+        code.text.observable.map { it.length == CODE_LENGTH }
+    }
 
-    override fun onCreate() {
-        super.onCreate()
+    private val codeFilled = code.textChanges.observable
+        .filter { it.length == CODE_LENGTH }
+        .distinctUntilChanged()
+        .map { Unit }
 
-        val codeFilledAction = code.text.observable
-            .filter { it.length == CODE_LENGTH }
-            .distinctUntilChanged()
-
-        Observable.merge(sendAction.observable, codeFilledAction)
+    val sendClicks = action<Unit> {
+        this.mergeWith(codeFilled)
             .skipWhileInProgress(inProgress)
             .map { code.text.value }
-            .filter { validateForm() }
+            .filter { formValidator.validate() }
             .switchMapCompletable { code ->
                 authModel.sendConfirmationCode(phone, code)
                     .bindProgress(inProgress)
-                    .doOnComplete { sendMessage(PhoneConfirmedMessage()) }
-                    .doOnError { showError(it.message) }
+                    .doOnComplete { sendMessage(PhoneConfirmed) }
+                    .doOnError(errorConsumer)
             }
-            .retry()
-            .subscribe()
-            .untilDestroy()
-
-        code.text.observable
-            .map { it.length == CODE_LENGTH }
-            .subscribe(sendButtonEnabled)
-            .untilDestroy()
-
+            .toObservable<Any>()
     }
 
-    private fun validateForm(): Boolean {
-
-        return when {
-            code.text.value.isEmpty() -> {
-                code.error.accept(resourceProvider.getString(R.string.enter_confirmation_code))
-                false
-            }
-            code.text.value.length < CODE_LENGTH -> {
-                code.error.accept(resourceProvider.getString(R.string.invalid_confirmation_code))
-                false
-            }
-            else -> true
+    private val formValidator = formValidator {
+        input(code) {
+            empty(resourceProvider.getString(R.string.enter_confirmation_code))
+            minSymbols(CODE_LENGTH, resourceProvider.getString(R.string.invalid_confirmation_code))
         }
-
     }
 }

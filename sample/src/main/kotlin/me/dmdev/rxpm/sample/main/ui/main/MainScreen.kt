@@ -40,7 +40,7 @@ class MainScreen : Screen<MainPm>() {
         toolbar.itemClicks()
             .filter { it.itemId == R.id.logoutAction }
             .map { Unit }
-            .bindTo(pm.logoutAction)
+            .bindTo(pm.logoutClicks)
     }
 
 }
