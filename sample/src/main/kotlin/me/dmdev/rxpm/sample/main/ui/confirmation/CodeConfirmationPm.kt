@@ -1,13 +1,20 @@
 package me.dmdev.rxpm.sample.main.ui.confirmation
 
-import me.dmdev.rxpm.*
+import me.dmdev.rxpm.action
+import me.dmdev.rxpm.bindProgress
 import me.dmdev.rxpm.sample.R
-import me.dmdev.rxpm.sample.main.AppNavigationMessage.*
-import me.dmdev.rxpm.sample.main.model.*
-import me.dmdev.rxpm.sample.main.ui.base.*
-import me.dmdev.rxpm.sample.main.util.*
-import me.dmdev.rxpm.validation.*
-import me.dmdev.rxpm.widget.*
+import me.dmdev.rxpm.sample.main.AppNavigationMessage.PhoneConfirmed
+import me.dmdev.rxpm.sample.main.model.AuthModel
+import me.dmdev.rxpm.sample.main.ui.base.ScreenPresentationModel
+import me.dmdev.rxpm.sample.main.util.ResourceProvider
+import me.dmdev.rxpm.sample.main.util.onlyDigits
+import me.dmdev.rxpm.skipWhileInProgress
+import me.dmdev.rxpm.state
+import me.dmdev.rxpm.validation.empty
+import me.dmdev.rxpm.validation.formValidator
+import me.dmdev.rxpm.validation.input
+import me.dmdev.rxpm.validation.minSymbols
+import me.dmdev.rxpm.widget.inputControl
 
 class CodeConfirmationPm(
     private val phone: String,
@@ -28,7 +35,7 @@ class CodeConfirmationPm(
         code.text.observable.map { it.length == CODE_LENGTH }
     }
 
-    private val codeFilled = code.text.observable
+    private val codeFilled = code.textChanges.observable
         .filter { it.length == CODE_LENGTH }
         .distinctUntilChanged()
         .map { Unit }
