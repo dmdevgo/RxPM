@@ -1,12 +1,13 @@
 package me.dmdev.rxpm.base
 
-import android.os.*
-import com.bluelinelabs.conductor.*
-import me.dmdev.rxpm.*
-import me.dmdev.rxpm.delegate.*
+import android.os.Bundle
+import com.bluelinelabs.conductor.Controller
+import me.dmdev.rxpm.PmView
+import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.delegate.PmControllerDelegate
 
 /**
- * Predefined [Conductor's Controller][RestoreViewOnCreateController] implementing the [PmView][PmView].
+ * Predefined [Conductor's Controller][Controller] implementing the [PmView][PmView].
  *
  * Just override the [providePresentationModel] and [onBindPresentationModel] methods and you are good to go.
  *
@@ -15,7 +16,7 @@ import me.dmdev.rxpm.delegate.*
  * See this class's source code for the example.
  */
 abstract class PmController<PM : PresentationModel>(args: Bundle? = null) :
-    RestoreViewOnCreateController(args),
+    Controller(args),
     PmView<PM> {
 
     @Suppress("LeakingThis")

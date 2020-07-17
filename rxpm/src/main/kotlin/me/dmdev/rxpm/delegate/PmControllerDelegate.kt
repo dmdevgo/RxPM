@@ -1,10 +1,11 @@
 package me.dmdev.rxpm.delegate
 
-import android.view.*
-import com.bluelinelabs.conductor.*
-import me.dmdev.rxpm.*
-import me.dmdev.rxpm.base.*
-import me.dmdev.rxpm.navigation.*
+import android.view.View
+import com.bluelinelabs.conductor.Controller
+import me.dmdev.rxpm.PmView
+import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.base.PmController
+import me.dmdev.rxpm.navigation.ControllerNavigationMessageDispatcher
 
 /**
  * Delegate for the [Controller] that helps with creation and binding of
@@ -27,10 +28,9 @@ class PmControllerDelegate<PM, C>(pmController: C)
     val presentationModel: PM get() = commonDelegate.presentationModel
 
     init {
-        pmController.addLifecycleListener(object : Controller.LifecycleListener() {
+        pmController.addLifecycleListener(object : Controller.LifecycleListener {
 
             override fun preCreateView(controller: Controller) {
-                super.preCreateView(controller)
                 if (!created) {
                     commonDelegate.onCreate(null)
                     created = true
