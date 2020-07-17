@@ -1,12 +1,12 @@
 package me.dmdev.rxpm
 
-import android.annotation.*
-import com.jakewharton.rxrelay2.*
-import io.reactivex.*
-import io.reactivex.android.schedulers.*
-import io.reactivex.functions.*
-import io.reactivex.schedulers.*
-import me.dmdev.rxpm.util.*
+import android.annotation.SuppressLint
+import com.jakewharton.rxrelay2.BehaviorRelay
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
+import me.dmdev.rxpm.util.BufferSingleValueWhileIdleOperator
 
 /**
  * Reactive property for the [view's][PmView] state.
@@ -163,7 +163,7 @@ interface DiffStrategy<T> {
 
     /**
      * Compares the old and the new values.
-     * @return [true] if both values ​​are identical or [false] if they are different.
+     * @return true if both values ​​are identical or false if they are different.
      */
     fun areTheSame(new: T, old: T): Boolean
 
