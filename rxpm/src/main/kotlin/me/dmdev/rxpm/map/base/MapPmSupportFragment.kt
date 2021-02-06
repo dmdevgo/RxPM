@@ -1,13 +1,42 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2017-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ *                     and Vasili Chyrvon (vasili.chyrvon@gmail.com)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package me.dmdev.rxpm.map.base
 
-import android.os.*
-import android.support.v4.app.*
-import android.view.*
-import com.google.android.gms.maps.*
-import io.reactivex.disposables.*
-import me.dmdev.rxpm.*
-import me.dmdev.rxpm.map.*
-import me.dmdev.rxpm.map.delegate.*
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import io.reactivex.disposables.CompositeDisposable
+import me.dmdev.rxpm.PresentationModel
+import me.dmdev.rxpm.map.MapPmExtension
+import me.dmdev.rxpm.map.MapPmView
+import me.dmdev.rxpm.map.delegate.MapPmSupportFragmentDelegate
 
 /**
  * Predefined [Fragment] implementing the [MapPmView].
