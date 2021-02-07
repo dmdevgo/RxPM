@@ -53,7 +53,7 @@ class PmControllerDelegate<PM, C>(pmController: C)
     val presentationModel: PM get() = commonDelegate.presentationModel
 
     init {
-        pmController.addLifecycleListener(object : Controller.LifecycleListener {
+        pmController.addLifecycleListener(object : Controller.LifecycleListener() {
 
             override fun preCreateView(controller: Controller) {
                 if (!created) {
