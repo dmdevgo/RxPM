@@ -1,13 +1,3 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
-    }
-}
-
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
@@ -59,25 +49,9 @@ dependencies {
 }
 
 ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'RxPM'
-    publishedGroupId = 'me.dmdev.rxpm'
-    artifact = 'rxpm'
-    libraryVersion = '2.1.1'
-    gitUrl = 'https://github.com/dmdevgo/RxPM'
-    allLicenses = ['MIT']
+    PUBLISH_GROUP_ID = 'me.dmdev.rxpm'
+    PUBLISH_VERSION = '2.1.2'
+    PUBLISH_ARTIFACT_ID = 'rxpm'
 }
 
-// Configuration of the library uploading to the Bintray
-// Note: Call 'bintrayUpload' task (it will execute 'install' task first)
-apply from: 'androidmaven.gradle'
-apply from: 'bintray.gradle'
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier.set("sources")
-}
-
-artifacts {
-    archives sourcesJar
-}
+apply from: "publish-mavencentral.gradle"

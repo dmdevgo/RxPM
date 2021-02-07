@@ -325,11 +325,10 @@ Note that Command passes events only when PM is in the RESUMED state.
 ## License
 
 ```
+The MIT License (MIT)
 
-MIT License
-
-Copyright (c) 2017 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
-                   and Vasili Chyrvon (vasili.chyrvon@gmail.com)
+Copyright (c) 2017-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+                    and Vasili Chyrvon (vasili.chyrvon@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
