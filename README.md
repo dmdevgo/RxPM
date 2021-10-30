@@ -11,11 +11,15 @@ The main advantage of that is the **ability to write UI logic declaratively**.
 
 We focus on practice, so the library solves most of the typical presentation layer problems.
 
+> Also, see a [multiplatform implementation](https://github.com/dmdevgo/Premo) of the Presentation Model.
+
 ### Why PM and not MVVM?
+
 Actually the only difference between these two is that PM does'n have automated binding.  
 So PM name is just more correct for us. However many call it MVVM, so let it be.
 
 ### The Diagram
+
 <img src="/docs/images/rxpm_diagram.png">
 
 ## Usage
@@ -33,6 +37,7 @@ dependencies {
 ```
 
 ### Create a Presentation Model class and define reactive properties
+
 ```kotlin
 class CounterPm : PresentationModel() {
 
@@ -64,7 +69,9 @@ class CounterPm : PresentationModel() {
 }
 ```
 In this sample the initialisation of states and actions is done in their own blocks, but it's also possible to do it in `onCreate()` or other callbacks. Don't forget to use `untilDestroy()` or other similar extension.
+
 ### Bind to the PresentationModel properties
+
 ```kotlin
 class CounterActivity : PmActivity<CounterPm>() {
 
@@ -90,6 +97,7 @@ class CounterActivity : PmActivity<CounterPm>() {
 ## Main Components
 
 ### PresentationModel
+
 The PresentationModel stores the state of the View and holds the UI logic.  
 PresentationModel instance is automatically retained during configuration changes. This behavior is provided by the delegate which controls the lifecycle.
 
@@ -106,6 +114,7 @@ What's more, you can observe lifecycle changes via `lifecycleObservable`.
 Also the useful extensions of the *Disposable* are available to make lifecycle handling easier: `untilPause`,`untilUnbind` and `untilDestroy`.
 
 ### PmView
+
 The library has several predefined PmView implementations: `PmActivity`, `PmFragment`, `PmDialogFragment` and `PmController` (for [Conductor](https://github.com/bluelinelabs/Conductor/)'s users).  
 
 You have to implement only two methods:
@@ -113,6 +122,7 @@ You have to implement only two methods:
 2) `onBindPresentationModel()` — Bind to the PresentationModel properties in this method. Use the `bindTo`, `passTo` extensions and [RxBinding](https://github.com/JakeWharton/RxBinding) to do this.
 
 ### State
+
 **State** is a reactive property which represents a View state.  
 It holds the latest value and emits it on binding. For example, **State** can be used to represent a progress of the http-request or some data that can change in time.
 
@@ -139,6 +149,7 @@ val buttonEnabled = state(false) {
 In order to optimize the state update and to avoid unnecessary rendering on the view you can add a `DiffStrategy` in the `State`. By default, the `DiffByEquals` strategy is used. It's suitable for primitives and simple date classes, whereas `DiffByReference` is better to use for collections(like List).
 
 ### Action
+
 **Action** is the reactive property which represents the user actions.  
 It's mostly used for receiving events from the View, such as clicks.
 
@@ -160,6 +171,7 @@ buttonClicks.observable
 ```
 
 #### Action initialisation block to avoid mistakes
+
 Typically, some Action triggers an asynchronous operation, such as a request to backend. In this case, the rx-chain may throw an exception and app will crash. It's possible to handle errors in the subscribe block, but this is not enough. After the first failure, the chain will be terminated and stop processing clicks. Therefore, the correct handling involves the use of the `retry` operator and looks as follows:
 
 ```kotlin
@@ -192,6 +204,7 @@ val buttonClicks = action<Unit> {
 ```
 
 ### Command
+
 **Command** is the reactive property which represents a command to the View.  
 It can be used to show a toast or snackbar.
 
@@ -213,6 +226,7 @@ When the View is paused, **Command** collects all received values and emits them
 ## Controls
 
 ### Two-way Data Binding
+
 For the cases of two-way data binding (eg. input field text changes) the library has predefined [Сontrols](https://github.com/dmdevgo/RxPM/tree/develop/rxpm/src/main/kotlin/me/dmdev/rxpm/widget).
 
 In the PresentationModel:
@@ -233,6 +247,7 @@ pm.checked bindTo checkBox
 ```
 
 ### Dialogs
+
 The DialogControl is a component make possible the interaction with the dialogs in reactive style.  
 It manages the lifecycle and the state of the dialog. Just bind your Dialog object (eg. AlertDialog) to the DialogControl. No need in DialogFragment anymore.
 
@@ -269,6 +284,7 @@ pm.dialogControl bindTo { message, dialogControl ->
 ```
 
 ### Form Validation
+
 Validating forms is now easy. Create the `FormValidator` using DSL to check `InputControls` and `CheckControls`:
 ```kotlin
 val validateButtonClicks = action<Unit> {
@@ -310,8 +326,10 @@ private val formValidator = formValidator {
 ```
 
 ## Paging and Loading
+
 In almost every application, there are pagination and data loading. What's more, we have to handle screen states correctly.
 We recommend using the library [RxPagingLoading](https://github.com/MobileUpLLC/RxPagingLoading). The solution is based on the usage of [Unidirectional Data Flow](https://en.wikipedia.org/wiki/Unidirectional_Data_Flow_(computer_science)) pattern and is perfectly compatible with RxPM.
+
 ## Sample
 
 The [sample](https://github.com/dmdevgo/RxPM/tree/develop/sample) shows how to use RxPM in practice.
@@ -322,6 +340,15 @@ You can test PresentationModel in the same way as any other class with RxJava (u
 The only difference is that you have to change it's lifecycle state while testing. And **PmTestHelper** allows you to do that.
 
 Note that Command passes events only when PM is in the RESUMED state.
+
+## Thanks
+
+Thanks for contributing:
+[@Jeevuz](https://github.com/Jeevuz)
+[@sdelaysam](https://github.com/sdelaysam)
+[@vchernyshovnullgr](https://github.com/vchernyshovnullgr)
+[@aasitnikov](https://github.com/aasitnikov)
+[@mochalovv](https://github.com/mochalovv)
 
 ## License
 
